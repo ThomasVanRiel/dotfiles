@@ -1,0 +1,23 @@
+# Sensitive files
+**/secrets
+**/secret.*
+**/*.secret
+**/private
+**/*.key
+**/*.pem
+**/.env
+**/.env.*
+
+# SSH keys
+**/.ssh/id_*
+**/.ssh/*.pem
+
+# GPG keys
+**/.gnupg/*.key
+**/.gnupg/private-keys-v1.d/
+
+# Application-specific
+**/.aws/credentials
+**/.config/rclone/rclone.conf
+**/.docker/config.json
+**/auth-token
