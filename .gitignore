@@ -21,3 +21,5 @@
 **/.config/rclone/rclone.conf
 **/.docker/config.json
 **/auth-token
+
+*-lock*
