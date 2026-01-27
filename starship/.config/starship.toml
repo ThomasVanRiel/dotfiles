@@ -65,8 +65,6 @@ format = '[$user]($style)'
 
 [hostname]
 ssh_only = true
-style_user = "bg:red fg:crust"
-style_root = "bg:red fg:crust"
 format = '[@$hostname](bg:red fg:crust)'
 disabled = false
 
