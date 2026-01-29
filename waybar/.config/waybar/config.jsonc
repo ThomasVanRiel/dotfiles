@@ -12,6 +12,7 @@
         "clock"
     ],
     "modules-right": [
+        "custom/claude",
         "cpu",
         "memory",
         "disk",
@@ -110,6 +111,13 @@
     "tray": {
         "icon-size": 16,
         "spacing": 8
+    },
+
+    "custom/claude": {
+        "exec": "~/.config/waybar/scripts/claude-usage.sh",
+        "return-type": "json",
+        "interval": 5,
+        "on-click": "kitty -e claude"
     },
 
     "custom/power": {
