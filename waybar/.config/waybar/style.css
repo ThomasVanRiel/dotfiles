@@ -33,7 +33,7 @@
 }
 
 window#waybar {
-    background-color: alpha(@base, 0.9);
+    background-color: alpha(@base, 1.0);
     color: @text;
 }
 
@@ -65,7 +65,7 @@ tooltip label {
 #workspaces button:hover {
     background-color: @surface1;
     color: @text;
-}
+} 
 
 #workspaces button.active {
     background-color: @blue;
@@ -75,6 +75,11 @@ tooltip label {
 #workspaces button.urgent {
     background-color: @red;
     color: @crust;
+}
+
+#window {
+    margin: 4px 0;
+    padding-left: 8px;
 }
 
 /* Center clock */

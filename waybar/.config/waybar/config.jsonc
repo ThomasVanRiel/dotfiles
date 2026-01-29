@@ -5,7 +5,8 @@
     "spacing": 0,
 
     "modules-left": [
-        "hyprland/workspaces"
+        "hyprland/workspaces",
+	"hyprland/window"
     ],
     "modules-center": [
         "clock"
@@ -20,6 +21,13 @@
         "tray",
         "custom/power"
     ],
+
+    "hyprland/window": {
+	"name": "windowtitle",
+	"format": "{}",
+	"max-length": 32,
+	"separate-outputs": false
+    },
 
     "hyprland/workspaces": {
         "format": "{icon}",
