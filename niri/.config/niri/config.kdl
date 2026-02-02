@@ -106,11 +106,17 @@ window-rule {
     draw-border-with-background true
 }
 
+debug {
+  // Allows notification actions and window activation from Noctalia.
+  honor-xdg-activation-with-invalid-serial
+}
+
 // ========================================
 // STARTUP
 // ========================================
-spawn-at-startup "waybar"
-spawn-at-startup "dunst"
+//spawn-at-startup "waybar"
+spawn-at-startup "qs" "-c" "noctalia-shell"
+//spawn-at-startup "dunst"
 spawn-at-startup "wl-paste" "--type" "text" "--watch" "cliphist" "store"
 spawn-at-startup "wl-paste" "--type" "image" "--watch" "cliphist" "store"
 spawn-at-startup "swaybg" "-i" "/home/thomas/Pictures/wallpaper"  // uncomment and set path
@@ -125,9 +131,13 @@ binds {
     Super+Shift+E { quit; }
     Super+E { spawn "dolphin"; }
     Super+B { spawn "firefox"; }
-    Super+Space { spawn "rofi" "-show" "drun"; }
+    //Super+Space { spawn "rofi" "-show" "drun"; }
+    Super+Space { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
+    Super+S { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "controlCenter" "toggle"; }
+    Super+D { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "settings" "toggle"; }
     Super+F { maximize-column; }
     Super+Shift+F { fullscreen-window; }
+    Super+X { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "sessionMenu" "toggle"; }
 
     // Toggle floating
     Super+V { toggle-window-floating; }
@@ -136,8 +146,9 @@ binds {
     Super+Tab { toggle-overview; }
 
     // Lock screen
-    Super+L { spawn "~/.config/scripts/lock-niri.sh"; }
-
+    //Super+L { spawn "~/.config/scripts/lock-niri.sh"; }
+    Super+L { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
+    
     // Screenshots
     Super+Shift+S { screenshot; }
     Print { screenshot-screen; }
@@ -211,3 +222,6 @@ binds {
     XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
     XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
 }
+
+include "./noctalia.kdl"
+

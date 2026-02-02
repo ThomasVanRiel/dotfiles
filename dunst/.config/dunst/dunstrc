@@ -1,5 +1,5 @@
 [global]
-font = JetBrainsMono Nerd Font Regular 13
+font = FiraCode Nerd Font Regular 13
 width = 400
 corner_radius = 8
 frame_color = "#89b4fa"
