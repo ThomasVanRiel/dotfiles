@@ -1,0 +1,56 @@
+# Swaylock-effects config - Catppuccin Mocha theme
+
+# Indicator
+indicator-radius=200
+indicator-thickness=20
+
+# Clock above indicator
+clock
+timestr=%H:%M
+datestr=%-d %b %Y
+
+# Font
+font=JetBrainsMono Nerd Font
+font-size=68
+
+# Ring colors (white base)
+ring-color=ffffff
+ring-ver-color=a6e3a1
+ring-wrong-color=f38ba8
+ring-clear-color=89b4fa
+
+# Inside (dark background with lock icon)
+inside-color=1e1e2eee
+inside-ver-color=1e1e2eee
+inside-wrong-color=1e1e2eee
+inside-clear-color=1e1e2eee
+
+# Text
+text-color=ffffff
+text-ver-color=a6e3a1
+text-wrong-color=f38ba8
+text-clear-color=89b4fa
+
+# Key highlight - cycles through Catppuccin colors
+key-hl-color=cba6f7
+bs-hl-color=f38ba8
+caps-lock-key-hl-color=fab387
+
+# Line between ring and inside
+line-color=00000000
+line-ver-color=00000000
+line-wrong-color=00000000
+line-clear-color=00000000
+separator-color=00000000
+
+# Indicator text (lock symbol)
+indicator
+indicator-idle-visible
+
+# Layout
+layout-bg-color=00000000
+layout-text-color=ffffff
+
+# General
+ignore-empty-password
+show-failed-attempts
