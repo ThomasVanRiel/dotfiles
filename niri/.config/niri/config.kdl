@@ -184,6 +184,13 @@ binds {
     // Column width adjustmentsudo 
     Super+Minus { set-column-width "-10%"; }
     Super+Equal { set-column-width "+10%"; }
+    
+    Super+Ctrl+1 {set-column-width "100%"; }
+    Super+Ctrl+2 {set-column-width "50%"; }
+    Super+Ctrl+3 {set-column-width "33%"; }
+    Super+Ctrl+4 {set-column-width "25%"; }
+
+
 
     // Consume/expel windows (niri-specific - merge windows into column)
     Super+Comma { consume-window-into-column; }
