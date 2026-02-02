@@ -1,0 +1,18 @@
+configuration {
+    show-icons: true;
+    terminal: "kitty";
+    icon-theme: "Papirus";
+    font: "JetBrainsMono Nerd Font 14";
+    me-select-entry: "MousePrimary";
+    me-accept-entry: "MouseDPrimary";
+    parse-known-hosts: false;
+    hover-select: true;
+}
+
+@theme "catppuccin-default"
+
+window {
+    width: 30%;
+    border-radius: 5px;
+    //background-color: #1e1e2e;
+}

@@ -5,14 +5,14 @@
     "spacing": 0,
 
     "modules-left": [
-        "hyprland/workspaces",
-	"hyprland/window"
+        "niri/workspaces",
+	"niri/window"
     ],
     "modules-center": [
         "clock"
     ],
     "modules-right": [
-        "custom/claude",
+//        "custom/claude",
         "cpu",
         "memory",
         "disk",
@@ -23,14 +23,12 @@
         "custom/power"
     ],
 
-    "hyprland/window": {
-	"name": "windowtitle",
-	"format": "{}",
-	"max-length": 64,
+    "niri/window": {
+	"format": "{title}",
 	"separate-outputs": false
     },
 
-    "hyprland/workspaces": {
+    "niri/workspaces": {
         "format": "{icon}",
         "format-icons": {
             "1": "󰋜",
@@ -38,11 +36,6 @@
             "3": "󰊗",
             "4": ">_",
             "default": ""
-        },
-        "on-click": "activate",
-        "sort-by-number": true,
-        "persistent-workspaces": {
-            "*": [1, 2, 3]
         }
     },
 
@@ -126,8 +119,8 @@
         "menu": "on-click",
         "menu-file": "$HOME/.config/waybar/power_menu.xml",
         "menu-actions": {
-            "lock": "~/.config/scripts/lock.sh",
-            "logout": "hyprctl dispatch exit",
+            "lock": "~/.config/scripts/lock-niri.sh",
+            "logout": "niri msg action quit",
             "reboot": "systemctl reboot",
             "poweroff": "systemctl poweroff"
         }
