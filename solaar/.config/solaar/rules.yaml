@@ -1,0 +1,9 @@
+---
+- Rule:
+  - MouseGesture: Mouse Up
+  - Execute: [qs, -c, noctalia-shell, ipc, call, launcher, toggle]
+- Rule:
+  - MouseGesture: Mouse Down
+  - KeyPress:
+    - [Super_L, Tab]
+    - click
