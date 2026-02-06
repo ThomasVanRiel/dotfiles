@@ -16,6 +16,7 @@ environment {
     XCURSOR_SIZE "18"
     XCURSOR_THEME "catppuccin-mocha-light-cursors"
     QT_QPA_PLATFORMTHEME "kde"
+    XDG_SESSION_TYPE "wayland"
     // NVIDIA
     LIBVA_DRIVER_NAME "nvidia"
     NVD_BACKEND "direct"
@@ -122,7 +123,8 @@ spawn-at-startup "qs" "-c" "noctalia-shell"
 spawn-at-startup "wl-paste" "--type" "text" "--watch" "cliphist" "store"
 spawn-at-startup "wl-paste" "--type" "image" "--watch" "cliphist" "store"
 spawn-at-startup "swaybg" "-i" "/home/thomas/Pictures/wallpaper"  // uncomment and set path
-spawn-at-startup "solaar"
+spawn-at-startup "solaar" "--window=hide"
+spawn-at-startup "xwayland-satellite"
 
 // ========================================
 // KEYBINDS

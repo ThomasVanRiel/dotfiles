@@ -13,7 +13,8 @@
         "iconMode": "tabler",
         "ignoreMouseInput": false,
         "pinnedApps": [
-            "factorio"
+            "factorio",
+            "firefox"
         ],
         "position": "center",
         "screenshotAnnotationTool": "",
@@ -22,7 +23,7 @@
         "sortByMostUsed": true,
         "terminalCommand": "kitty -e",
         "useApp2Unit": false,
-        "viewMode": "list"
+        "viewMode": "grid"
     },
     "audio": {
         "cavaFrameRate": 30,
@@ -372,11 +373,11 @@
     "nightLight": {
         "autoSchedule": true,
         "dayTemp": "6500",
-        "enabled": false,
+        "enabled": true,
         "forced": false,
         "manualSunrise": "06:30",
         "manualSunset": "18:30",
-        "nightTemp": "4000"
+        "nightTemp": "4259"
     },
     "notifications": {
         "backgroundOpacity": 1,
