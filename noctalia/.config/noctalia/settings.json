@@ -13,6 +13,7 @@
         "iconMode": "tabler",
         "ignoreMouseInput": false,
         "pinnedApps": [
+            "factorio"
         ],
         "position": "center",
         "screenshotAnnotationTool": "",
@@ -123,11 +124,13 @@
                     "colorizeIcons": false,
                     "hideMode": "hidden",
                     "id": "ActiveWindow",
-                    "maxWidth": 300,
+                    "maxWidth": 1000,
                     "scrollingMode": "hover",
                     "showIcon": false,
                     "useFixedWidth": true
-                },
+                }
+            ],
+            "right": [
                 {
                     "compactMode": false,
                     "compactShowAlbumArt": true,
@@ -135,7 +138,7 @@
                     "hideMode": "hidden",
                     "hideWhenIdle": false,
                     "id": "MediaMini",
-                    "maxWidth": 145,
+                    "maxWidth": 400,
                     "panelShowAlbumArt": true,
                     "panelShowVisualizer": true,
                     "scrollingMode": "hover",
@@ -145,9 +148,7 @@
                     "showVisualizer": false,
                     "useFixedWidth": false,
                     "visualizerType": "linear"
-                }
-            ],
-            "right": [
+                },
                 {
                     "blacklist": [
                     ],
@@ -209,7 +210,7 @@
         "manualSunrise": "06:30",
         "manualSunset": "18:30",
         "monitorForColors": "",
-        "predefinedScheme": "Catppuccin",
+        "predefinedScheme": "Tokyo Night Moon",
         "schedulingMode": "off",
         "useWallpaperColors": false
     },
@@ -262,13 +263,7 @@
                     "id": "Notifications"
                 },
                 {
-                    "id": "PowerProfile"
-                },
-                {
                     "id": "KeepAwake"
-                },
-                {
-                    "id": "NightLight"
                 }
             ]
         }
@@ -511,10 +506,6 @@
             },
             {
                 "enabled": true,
-                "id": "code"
-            },
-            {
-                "enabled": true,
                 "id": "discord"
             },
             {
@@ -528,6 +519,10 @@
             {
                 "enabled": true,
                 "id": "niri"
+            },
+            {
+                "enabled": true,
+                "id": "code"
             }
         ],
         "enableUserTheming": false

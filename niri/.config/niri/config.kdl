@@ -18,6 +18,8 @@ environment {
     QT_QPA_PLATFORMTHEME "kde"
     // NVIDIA
     LIBVA_DRIVER_NAME "nvidia"
+    NVD_BACKEND "direct"
+    MOZ_DISABLE_RDD_SANDBOX "1"
     GBM_BACKEND "nvidia-drm"
     __GLX_VENDOR_LIBRARY_NAME "nvidia"
     // Firefox
@@ -120,6 +122,7 @@ spawn-at-startup "qs" "-c" "noctalia-shell"
 spawn-at-startup "wl-paste" "--type" "text" "--watch" "cliphist" "store"
 spawn-at-startup "wl-paste" "--type" "image" "--watch" "cliphist" "store"
 spawn-at-startup "swaybg" "-i" "/home/thomas/Pictures/wallpaper"  // uncomment and set path
+spawn-at-startup "solaar"
 
 // ========================================
 // KEYBINDS
