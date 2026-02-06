@@ -5,12 +5,14 @@
     "spacing": 0,
 
     "modules-left": [
-        "hyprland/workspaces"
+        "niri/workspaces",
+	"niri/window"
     ],
     "modules-center": [
         "clock"
     ],
     "modules-right": [
+//        "custom/claude",
         "cpu",
         "memory",
         "disk",
@@ -21,19 +23,16 @@
         "custom/power"
     ],
 
-    "hyprland/workspaces": {
+    "niri/window": {
+	"format": "{title}",
+	"separate-outputs": false
+    },
+
+    "niri/workspaces": {
         "format": "{icon}",
         "format-icons": {
-            "1": "󰋜",
-            "2": "󰒍",
-            "3": "󰊗",
-            "4": ">_",
-            "default": ""
-        },
-        "on-click": "activate",
-        "sort-by-number": true,
-        "persistent-workspaces": {
-            "*": [1, 2, 3]
+            "default": "\uf4c3",
+	    "active": "\uf444"
         }
     },
 
@@ -104,14 +103,21 @@
         "spacing": 8
     },
 
+    "custom/claude": {
+        "exec": "~/.config/waybar/scripts/claude-usage.sh",
+        "return-type": "json",
+        "interval": 5,
+        "on-click": "kitty -e claude"
+    },
+
     "custom/power": {
         "format": "󰐥",
         "tooltip": false,
         "menu": "on-click",
         "menu-file": "$HOME/.config/waybar/power_menu.xml",
         "menu-actions": {
-            "lock": "~/.config/scripts/lock.sh",
-            "logout": "hyprctl dispatch exit",
+            "lock": "~/.config/scripts/lock-niri.sh",
+            "logout": "niri msg action quit",
             "reboot": "systemctl reboot",
             "poweroff": "systemctl poweroff"
         }

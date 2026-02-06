@@ -28,5 +28,15 @@
         "is_default_search": true,
         "run_without_argument": false,
         "added": 1769339629.0253854
+    },
+    "778cfe0a-fe0d-4e83-8555-7758ad368c77": {
+        "id": "778cfe0a-fe0d-4e83-8555-7758ad368c77",
+        "name": "shutdown",
+        "keyword": "shutdown",
+        "cmd": "#!/bin/bash\npoweroff",
+        "icon": null,
+        "is_default_search": false,
+        "run_without_argument": true,
+        "added": 1769550320.9849188
     }
 }
