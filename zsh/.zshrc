@@ -108,9 +108,6 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias vim='nvim'
-alias ssh="kitten ssh"
-alias icat="kitten icat"
-alias diff="kitten diff"
 
 
 export PATH="$HOME/.local/bin:$PATH"
