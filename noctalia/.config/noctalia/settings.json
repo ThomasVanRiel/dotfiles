@@ -73,6 +73,7 @@
                     "id": "Workspace",
                     "labelMode": "index",
                     "occupiedColor": "onSurface",
+                    "pillSize": 0.6,
                     "reverseScroll": false,
                     "showApplications": false,
                     "showBadge": true,
@@ -87,13 +88,13 @@
                     "usePrimaryColor": false
                 },
                 {
+                    "clockColor": "none",
                     "customFont": "",
                     "formatHorizontal": "HH:mm dddd, MMM dd",
                     "formatVertical": "HH mm - dd MM",
                     "id": "Clock",
                     "tooltipFormat": "HH:mm ddd, MMM dd",
-                    "useCustomFont": false,
-                    "usePrimaryColor": false
+                    "useCustomFont": false
                 },
                 {
                     "id": "Spacer",
@@ -106,8 +107,9 @@
                     "showCpuFreq": true,
                     "showCpuTemp": true,
                     "showCpuUsage": true,
-                    "showDiskAsFree": true,
+                    "showDiskAvailable": false,
                     "showDiskUsage": true,
+                    "showDiskUsageAsPercent": false,
                     "showGpuTemp": false,
                     "showLoadAverage": true,
                     "showMemoryAsPercent": true,
@@ -381,6 +383,8 @@
     },
     "notifications": {
         "backgroundOpacity": 1,
+        "batteryCriticalThreshold": 5,
+        "batteryWarningThreshold": 20,
         "criticalUrgencyDuration": 15,
         "enableKeyboardLayoutToast": true,
         "enableMediaToast": false,
@@ -468,12 +472,14 @@
         "showHeader": true,
         "showNumberLabels": true
     },
-    "settingsVersion": 46,
+    "settingsVersion": 47,
     "systemMonitor": {
         "cpuCriticalThreshold": 90,
-        "cpuPollingInterval": 3000,
+        "cpuPollingInterval": 1000,
         "cpuWarningThreshold": 80,
         "criticalColor": "#f38ba8",
+        "diskAvailCriticalThreshold": 10,
+        "diskAvailWarningThreshold": 20,
         "diskCriticalThreshold": 90,
         "diskPollingInterval": 30000,
         "diskWarningThreshold": 80,
@@ -484,13 +490,12 @@
         "gpuWarningThreshold": 80,
         "loadAvgPollingInterval": 3000,
         "memCriticalThreshold": 90,
-        "memPollingInterval": 3000,
+        "memPollingInterval": 1000,
         "memWarningThreshold": 80,
-        "networkPollingInterval": 3000,
+        "networkPollingInterval": 1000,
         "swapCriticalThreshold": 90,
         "swapWarningThreshold": 80,
         "tempCriticalThreshold": 90,
-        "tempPollingInterval": 3000,
         "tempWarningThreshold": 80,
         "useCustomColors": false,
         "warningColor": "#94e2d5"
