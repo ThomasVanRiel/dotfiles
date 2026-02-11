@@ -35,8 +35,6 @@ Generate a commit message from the current diff and recent commit log, then comm
    ```
    git commit -m "$(cat <<'EOF'
    <message here>
-
-   Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
    EOF
    )"
    ```
