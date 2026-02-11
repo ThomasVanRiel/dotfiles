@@ -113,5 +113,4 @@ export SUDO_EDITOR=nvim
 export VISUAL=nvim
 
 eval "$(starship init zsh)"
-
 . "$HOME/.local/share/../bin/env"
