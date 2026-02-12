@@ -38,6 +38,7 @@ Generate a commit message from the current diff and recent commit log, then comm
    EOF
    )"
    ```
+   Do not add LLM coauthorship or other metadata unless explicitly asked by the user.
 
 7. After committing, run `git status` to confirm success and show the result.
 
