@@ -10,6 +10,16 @@ return {
         trigger = {
           show_on_insert_on_trigger_character = true,
         },
+        menu = {
+          auto_show = function()
+            return not vim.tbl_contains({ "markdown", "markdown.mdx" }, vim.bo.filetype)
+          end,
+        },
+        ghost_text = {
+          enabled = function()
+            return not vim.tbl_contains({ "markdown", "markdown.mdx" }, vim.bo.filetype)
+          end,
+        },
       },
     },
   },
