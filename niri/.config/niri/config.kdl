@@ -125,6 +125,7 @@ spawn-at-startup "wl-paste" "--type" "image" "--watch" "cliphist" "store"
 spawn-at-startup "swaybg" "-i" "/home/thomas/Pictures/wallpaper"  // uncomment and set path
 spawn-at-startup "solaar" "--window=hide"
 spawn-at-startup "xwayland-satellite"
+spawn-at-startup "swayidle" "-w" "timeout" "600" "niri msg action power-off-monitors" "resume" "niri msg action power-on-monitors"
 
 // ========================================
 // KEYBINDS
