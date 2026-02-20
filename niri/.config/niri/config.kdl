@@ -173,16 +173,16 @@ binds {
   Super+Down { focus-window-down; }
 
   // Focus (vim-style with Alt)
-  Alt+H { focus-column-left; }
-  Alt+L { focus-column-right; }
-  Alt+K { focus-window-up; }
-  Alt+J { focus-window-down; }
+  // Alt+H { focus-column-left; }
+  // Alt+L { focus-column-right; }
+  // Alt+K { focus-window-up; }
+  // Alt+J { focus-window-down; }
 
   // Move windows (vim-style with Alt+Shift)
-  Alt+Shift+H { move-column-left; }
-  Alt+Shift+L { move-column-right; }
-  Alt+Shift+K { move-window-up; }
-  Alt+Shift+J { move-window-down; }
+  // Alt+Shift+H { move-column-left; }
+  // Alt+Shift+L { move-column-right; }
+  // Alt+Shift+K { move-window-up; }
+  // Alt+Shift+J { move-window-down; }
 
   // Workspaces
   Super+1 { focus-workspace 1; }
