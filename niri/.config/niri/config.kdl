@@ -5,81 +5,82 @@
 // OUTPUT (Monitor)
 // ========================================
 output "DP-1" {
-    mode "3440x1440@165"
-    scale 1.0
+  mode "3440x1440@165"
+  scale 1.0
 }
 
 // ========================================
 // ENVIRONMENT
 // ========================================
 environment {
-    XCURSOR_SIZE "18"
-    XCURSOR_THEME "catppuccin-mocha-light-cursors"
-    QT_QPA_PLATFORMTHEME "kde"
-    XDG_SESSION_TYPE "wayland"
-    // NVIDIA
-    LIBVA_DRIVER_NAME "nvidia"
-    NVD_BACKEND "direct"
-    MOZ_DISABLE_RDD_SANDBOX "1"
-    GBM_BACKEND "nvidia-drm"
-    __GLX_VENDOR_LIBRARY_NAME "nvidia"
-    // Firefox
-    MOZ_ENABLE_WAYLAND "1"
+  XCURSOR_SIZE "18"
+  XCURSOR_THEME "catppuccin-mocha-light-cursors"
+  QT_QPA_PLATFORMTHEME "kde"
+  XDG_SESSION_TYPE "wayland"
+  // NVIDIA
+  LIBVA_DRIVER_NAME "nvidia"
+  NVD_BACKEND "direct"
+  MOZ_DISABLE_RDD_SANDBOX "1"
+  GBM_BACKEND "nvidia-drm"
+  __GLX_VENDOR_LIBRARY_NAME "nvidia"
+  // Firefox
+  MOZ_ENABLE_WAYLAND "1"
 }
 
 // ========================================
 // INPUT
 // ========================================
 input {
-    keyboard {
-        xkb {
-            layout "us"
-            variant "altgr-intl"
-        }
-        numlock
+  keyboard {
+    xkb {
+      layout "us"
+      variant "altgr-intl"
     }
-    mouse {
-        accel-speed 0.0
-    }
-    touchpad {
-        natural-scroll
-    }
-    focus-follows-mouse
-    warp-mouse-to-focus
+    numlock
+  }
+  mouse {
+    accel-speed 0.0
+  }
+  touchpad {
+    natural-scroll
+  }
+  focus-follows-mouse
+  warp-mouse-to-focus
 }
 
 // ========================================
 // LAYOUT
 // ========================================
 layout {
-    gaps 4
+  gaps 4
 
-    center-focused-column "never"
+  always-center-single-column
+  center-focused-column "never"
 
-    preset-column-widths {
-        proportion 0.33333
-        proportion 0.5
-        proportion 0.66667
-    }
+  preset-column-widths {
+    proportion 0.33333
+    proportion 0.5
+    proportion 0.66667
+  }
 
-    default-column-width { proportion 0.33333; }
+  default-column-width { proportion 0.33333; }
 
-    focus-ring {
-        width 2
-        active-color "#89b4fa"    // blue
-        inactive-color "#313244"  // surface0
-    }
+  focus-ring {
+    width 2
+    active-color "#89b4fa"    // blue
+    inactive-color "#313244"  // surface0
+  }
 
-    border {
-        off
-    }
+  border {
+    off
+  }
 
-    struts {
-        // left 0
-        // right 0
-        // top 0
-        // bottom 0
-    }
+  struts {
+    left 12
+    right 12
+    // top 0
+    // bottom 0
+  }
 }
 
 // ========================================
@@ -90,23 +91,28 @@ screenshot-path "~/Pictures/screenshots/%Y%m%d_%H%M%S.png"
 
 // Animations (snappy like your Hyprland config)
 animations {
-    slowdown 0.6
+  slowdown 0.6
 }
 
 // Disable hot corner for overview
 gestures {
-    hot-corners {
-        off
-    }
+  hot-corners {
+    off
+  }
 }
+
+hotkey-overlay {
+  skip-at-startup
+}
+
 
 // ========================================
 // WINDOW RULES
 // ========================================
 window-rule {
-    geometry-corner-radius 5
-    clip-to-geometry true
-    draw-border-with-background true
+  geometry-corner-radius 5
+  clip-to-geometry true
+  draw-border-with-background true
 }
 
 debug {
@@ -131,102 +137,102 @@ spawn-at-startup "swayidle" "-w" "timeout" "600" "niri msg action power-off-moni
 // KEYBINDS
 // ========================================
 binds {
-    // Core (using Super explicitly so it works when nested)
-    Super+Return { spawn "kitty"; }
-    Super+Q { close-window; }
-    Super+Shift+E { quit; }
-    Super+E { spawn "dolphin"; }
-    Super+B { spawn "firefox"; }
-    //Super+Space { spawn "rofi" "-show" "drun"; }
-    Super+Space { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
-    Super+S { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "controlCenter" "toggle"; }
-    Super+D { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "settings" "toggle"; }
-    Super+F { maximize-column; }
-    Super+Shift+F { fullscreen-window; }
-    Super+X { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "sessionMenu" "toggle"; }
+  // Core (using Super explicitly so it works when nested)
+  Super+Return { spawn "kitty"; }
+  Super+Q { close-window; }
+  Super+Shift+E { quit; }
+  Super+E { spawn "dolphin"; }
+  Super+B { spawn "firefox"; }
+  //Super+Space { spawn "rofi" "-show" "drun"; }
+  Super+Space { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
+  Super+S { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "controlCenter" "toggle"; }
+  Super+D { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "settings" "toggle"; }
+  Super+F { maximize-column; }
+  Super+Shift+F { fullscreen-window; }
+  Super+X { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "sessionMenu" "toggle"; }
 
-    // Toggle floating
-    Super+V { toggle-window-floating; }
+  // Toggle floating
+  Super+V { toggle-window-floating; }
 
-    // Overview
-    Super+Tab { toggle-overview; }
+  // Overview
+  Super+Tab { toggle-overview; }
 
-    // Lock screen
-    //Super+L { spawn "~/.config/scripts/lock-niri.sh"; }
-    Super+L { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
-    
-    // Screenshots
-    Super+Shift+S { screenshot; }
-    Print { screenshot-screen; }
+  // Lock screen
+  //Super+L { spawn "~/.config/scripts/lock-niri.sh"; }
+  Super+L { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
 
-    // Focus (arrow keys)
-    Super+Left { focus-column-left; }
-    Super+Right { focus-column-right; }
-    Super+Up { focus-window-up; }
-    Super+Down { focus-window-down; }
+  // Screenshots
+  Super+Shift+S { screenshot; }
+  Print { screenshot-screen; }
 
-    // Focus (vim-style with Alt)
-    Alt+H { focus-column-left; }
-    Alt+L { focus-column-right; }
-    Alt+K { focus-window-up; }
-    Alt+J { focus-window-down; }
+  // Focus (arrow keys)
+  Super+Left { focus-column-left; }
+  Super+Right { focus-column-right; }
+  Super+Up { focus-window-up; }
+  Super+Down { focus-window-down; }
 
-    // Move windows (vim-style with Alt+Shift)
-    Alt+Shift+H { move-column-left; }
-    Alt+Shift+L { move-column-right; }
-    Alt+Shift+K { move-window-up; }
-    Alt+Shift+J { move-window-down; }
+  // Focus (vim-style with Alt)
+  Alt+H { focus-column-left; }
+  Alt+L { focus-column-right; }
+  Alt+K { focus-window-up; }
+  Alt+J { focus-window-down; }
 
-    // Workspaces
-    Super+1 { focus-workspace 1; }
-    Super+2 { focus-workspace 2; }
-    Super+3 { focus-workspace 3; }
-    Super+4 { focus-workspace 4; }
-    Super+5 { focus-workspace 5; }
-    Super+6 { focus-workspace 6; }
-    Super+7 { focus-workspace 7; }
-    Super+8 { focus-workspace 8; }
-    Super+9 { focus-workspace 9; }
+  // Move windows (vim-style with Alt+Shift)
+  Alt+Shift+H { move-column-left; }
+  Alt+Shift+L { move-column-right; }
+  Alt+Shift+K { move-window-up; }
+  Alt+Shift+J { move-window-down; }
 
-    // Move window to workspace
-    Super+Shift+1 { move-column-to-workspace 1; }
-    Super+Shift+2 { move-column-to-workspace 2; }
-    Super+Shift+3 { move-column-to-workspace 3; }
-    Super+Shift+4 { move-column-to-workspace 4; }
-    Super+Shift+5 { move-column-to-workspace 5; }
-    Super+Shift+6 { move-column-to-workspace 6; }
-    Super+Shift+7 { move-column-to-workspace 7; }
-    Super+Shift+8 { move-column-to-workspace 8; }
-    Super+Shift+9 { move-column-to-workspace 9; }
+  // Workspaces
+  Super+1 { focus-workspace 1; }
+  Super+2 { focus-workspace 2; }
+  Super+3 { focus-workspace 3; }
+  Super+4 { focus-workspace 4; }
+  Super+5 { focus-workspace 5; }
+  Super+6 { focus-workspace 6; }
+  Super+7 { focus-workspace 7; }
+  Super+8 { focus-workspace 8; }
+  Super+9 { focus-workspace 9; }
 
-    // Scroll through workspaces
-    Super+Ctrl+Left { focus-workspace-up; }
-    Super+Ctrl+Right { focus-workspace-down; }
-    Super+WheelScrollDown { focus-workspace-down; }
-    Super+WheelScrollUp { focus-workspace-up; }
-    Super+WheelScrollLeft { focus-column-left; }
-    Super+WheelScrollRight { focus-column-right; }
+  // Move window to workspace
+  Super+Shift+1 { move-column-to-workspace 1; }
+  Super+Shift+2 { move-column-to-workspace 2; }
+  Super+Shift+3 { move-column-to-workspace 3; }
+  Super+Shift+4 { move-column-to-workspace 4; }
+  Super+Shift+5 { move-column-to-workspace 5; }
+  Super+Shift+6 { move-column-to-workspace 6; }
+  Super+Shift+7 { move-column-to-workspace 7; }
+  Super+Shift+8 { move-column-to-workspace 8; }
+  Super+Shift+9 { move-column-to-workspace 9; }
 
-    // Column width adjustmentsudo 
-    Super+Minus { set-column-width "-10%"; }
-    Super+Equal { set-column-width "+10%"; }
-    
-    Super+Ctrl+1 {set-column-width "100%"; }
-    Super+Ctrl+2 {set-column-width "50%"; }
-    Super+Ctrl+3 {set-column-width "33.333%"; }
-    Super+Ctrl+4 {set-column-width "25%"; }
+  // Scroll through workspaces
+  Super+Ctrl+Left { focus-workspace-up; }
+  Super+Ctrl+Right { focus-workspace-down; }
+  Super+WheelScrollDown { focus-workspace-down; }
+  Super+WheelScrollUp { focus-workspace-up; }
+  Super+WheelScrollLeft { focus-column-left; }
+  Super+WheelScrollRight { focus-column-right; }
 
-    // Consume/expel windows (niri-specific - merge windows into column)
-    Super+Comma { consume-window-into-column; }
-    Super+Period { expel-window-from-column; }
+  // Column width adjustmentsudo 
+  Super+Minus { set-column-width "-10%"; }
+  Super+Equal { set-column-width "+10%"; }
 
-    // Switch preset column widths
-    Super+R { switch-preset-column-width; }
+  Super+Ctrl+1 {set-column-width "100%"; }
+  Super+Ctrl+2 {set-column-width "50%"; }
+  Super+Ctrl+3 {set-column-width "33.333%"; }
+  Super+Ctrl+4 {set-column-width "25%"; }
 
-    // Volume
-    XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
-    XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
-    XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+  // Consume/expel windows (niri-specific - merge windows into column)
+  Super+Comma { consume-window-into-column; }
+  Super+Period { expel-window-from-column; }
+
+  // Switch preset column widths
+  Super+R { switch-preset-column-width; }
+
+  // Volume
+  XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
+  XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+  XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
 }
 
 include "./noctalia.kdl"
