@@ -167,7 +167,7 @@ keybinds clear-defaults=true {
         bind "Ctrl o" { SwitchToMode "session"; }
     }
     shared_except "locked" "scroll" "search" "tmux" {
-        bind "Ctrl b" { SwitchToMode "tmux"; }
+        bind "Ctrl a" { SwitchToMode "tmux"; }
     }
     shared_except "locked" "scroll" "search" {
         bind "Ctrl s" { SwitchToMode "scroll"; }
@@ -327,7 +327,7 @@ theme "catppuccin-mocha"
 // mouse_mode false
  
 // Toggle having pane frames around the panes
-// Options:
+// Options
 //   - true (default, enabled)
 //   - false
 // 
