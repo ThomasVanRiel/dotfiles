@@ -149,6 +149,7 @@ binds {
   Super+D { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "settings" "toggle"; }
   Super+F { maximize-column; }
   Super+Shift+F { fullscreen-window; }
+  Super+T { toggle-column-tabbed-display; }
   Super+X { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "sessionMenu" "toggle"; }
 
   // Toggle floating
