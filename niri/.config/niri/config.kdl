@@ -142,12 +142,13 @@ binds {
   Super+Q { close-window; }
   Super+Shift+E { quit; }
   Super+E { spawn "dolphin"; }
-  Super+B { spawn "firefox"; }
+  Super+B { spawn "zen-browser"; }
   //Super+Space { spawn "rofi" "-show" "drun"; }
   Super+Space { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
   Super+S { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "controlCenter" "toggle"; }
   Super+D { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "settings" "toggle"; }
   Super+F { maximize-column; }
+  Super+Up { maximize-column; }
   Super+Shift+F { fullscreen-window; }
   Super+T { toggle-column-tabbed-display; }
   Super+X { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "sessionMenu" "toggle"; }
@@ -167,10 +168,10 @@ binds {
   Print { screenshot-screen; }
 
   // Focus (arrow keys)
-  Super+Left { focus-column-left; }
-  Super+Right { focus-column-right; }
-  Super+Up { focus-window-up; }
-  Super+Down { focus-window-down; }
+  Super+Shift+Left { focus-column-left; }
+  Super+Shift+Right { focus-column-right; }
+  Super+Shift+Up { focus-window-up; }
+  Super+Shift+Down { focus-window-down; }
 
   // Focus (vim-style with Alt)
   // Alt+H { focus-column-left; }
