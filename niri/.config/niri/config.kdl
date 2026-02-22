@@ -165,6 +165,7 @@ binds {
 
   // Screenshots
   Super+Shift+S { screenshot; }
+  Super+Ctrl+Shift+S { spawn "sh" "-c" "~/.local/bin/screenrecord.sh"; } // Custom screen to mp4 script
   Print { screenshot-screen; }
 
   // Focus (arrow keys)
