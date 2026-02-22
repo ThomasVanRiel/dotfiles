@@ -161,7 +161,7 @@ binds {
 
   // Lock screen
   //Super+L { spawn "~/.config/scripts/lock-niri.sh"; }
-  Super+L { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
+  Super+Shift+L { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
 
   // Screenshots
   Super+Shift+S { screenshot; }
@@ -174,10 +174,10 @@ binds {
   Super+Shift+Down { focus-window-down; }
 
   // Focus (vim-style with Alt)
-  // Alt+H { focus-column-left; }
-  // Alt+L { focus-column-right; }
-  // Alt+K { focus-window-up; }
-  // Alt+J { focus-window-down; }
+  Super+H { focus-column-left; }
+  Super+L { focus-column-right; }
+  Super+K { focus-window-up; }
+  Super+J { focus-window-down; }
 
   // Move windows (vim-style with Alt+Shift)
   // Alt+Shift+H { move-column-left; }
