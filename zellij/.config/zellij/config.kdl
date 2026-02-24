@@ -1,8 +1,8 @@
 keybinds {
-    shared_except "locked" "scroll" "search" "tmux" {
-        unbind "Ctrl b"
-        bind "Ctrl a" { SwitchToMode "tmux"; }
-    }
+  shared_except "locked" "scroll" "search" "tmux" {
+    unbind "Ctrl b"
+    bind "Ctrl a" { SwitchToMode "tmux"; }
+  }
 }
 
 ui {
@@ -16,7 +16,7 @@ show_startup_tips false
 
 plugins {
 
-    zjstatus location="file:~/.local/share/zellij/plugins/zjstatus.wasm" {
+  zjstatus location="file:~/.local/share/zellij/plugins/zjstatus.wasm" {
     // -- Catppuccin Mocha --
     color_rosewater "#f5e0dc"
     color_flamingo "#f2cdcd"
@@ -45,94 +45,10 @@ plugins {
     color_mantle "#181825"
     color_crust "#11111b"
 
-    // -- Catppuccin Latte --
-    //color_rosewater "#dc8a78"
-    //color_flamingo "#dd7878"
-    //color_pink "#ea76cb"
-    //color_mauve "#8839ef"
-    //color_red "#d20f39"
-    //color_maroon "#e64553"
-    //color_peach "#fe640b"
-    //color_yellow "#df8e1d"
-    //color_green "#40a02b"
-    //color_teal "#179299"
-    //color_sky "#04a5e5"
-    //color_sapphire "#209fb5"
-    //color_blue "#1e66f5"
-    //color_lavender "#7287fd"
-    //color_text "#4c4f69"
-    //color_subtext1 "#5c5f77"
-    //color_subtext0 "#6c6f85"
-    //color_overlay2 "#7c7f93"
-    //color_overlay1 "#8c8fa1"
-    //color_overlay0 "#9ca0b0"
-    //color_surface2 "#acb0be"
-    //color_surface1 "#bcc0cc"
-    //color_surface0 "#ccd0da"
-    //color_base "#eff1f5"
-    //color_mantle "#e6e9ef"
-    //color_crust "#dce0e8"
-
-    // -- Catppuccin Frappé --
-    //color_rosewater "#f2d5cf"
-    //color_flamingo "#eebebe"
-    //color_pink "#f4b8e4"
-    //color_mauve "#ca9ee6"
-    //color_red "#e78284"
-    //color_maroon "#ea999c"
-    //color_peach "#ef9f76"
-    //color_yellow "#e5c890"
-    //color_green "#a6d189"
-    //color_teal "#81c8be"
-    //color_sky "#99d1db"
-    //color_sapphire "#85c1dc"
-    //color_blue "#8caaee"
-    //color_lavender "#babbf1"
-    //color_text "#c6d0f5"
-    //color_subtext1 "#b5bfe2"
-    //color_subtext0 "#a5adce"
-    //color_overlay2 "#949cbb"
-    //color_overlay1 "#838ba7"
-    //color_overlay0 "#737994"
-    //color_surface2 "#626880"
-    //color_surface1 "#51576d"
-    //color_surface0 "#414559"
-    //color_base "#303446"
-    //color_mantle "#292c3c"
-    //color_crust "#232634"
-
-    // -- Catppuccin Macchiato --
-    //color_rosewater "#f4dbd6"
-    //color_flamingo "#f0c6c6"
-    //color_pink "#f5bde6"
-    //color_mauve "#c6a0f6"
-    //color_red "#ed8796"
-    //color_maroon "#ee99a0"
-    //color_peach "#f5a97f"
-    //color_yellow "#eed49f"
-    //color_green "#a6da95"
-    //color_teal "#8bd5ca"
-    //color_sky "#91d7e3"
-    //color_sapphire "#7dc4e4"
-    //color_blue "#8aadf4"
-    //color_lavender "#b7bdf8"
-    //color_text "#cad3f5"
-    //color_subtext1 "#b8c0e0"
-    //color_subtext0 "#a5adcb"
-    //color_overlay2 "#939ab7"
-    //color_overlay1 "#8087a2"
-    //color_overlay0 "#6e738d"
-    //color_surface2 "#5b6078"
-    //color_surface1 "#494d64"
-    //color_surface0 "#363a4f"
-    //color_base "#24273a"
-    //color_mantle "#1e2030"
-    //color_crust "#181926"
-
-    format_left   "#[bg=$surface0,fg=$sapphire]#[bg=$sapphire,fg=$crust,bold] {session} #[bg=$surface0] {mode}#[bg=$surface0] {tabs}"
+    format_left   "#[bg=$base,fg=$sapphire]#[bg=$sapphire,fg=$crust,bold] {session} #[bg=$base] {mode}#[bg=$base] {tabs}"
     format_center "{notifications}"
-    format_right  "#[bg=$surface0,fg=$flamingo]#[fg=$crust,bg=$flamingo] #[bg=$surface1,fg=$flamingo,bold] {command_user}@{command_host}#[bg=$surface0,fg=$surface1]#[bg=$surface0,fg=$maroon]#[bg=$maroon,fg=$crust]󰃭 #[bg=$surface1,fg=$maroon,bold] {datetime}#[bg=$surface0,fg=$surface1]"
-    format_space  "#[bg=$surface0]"
+    format_right  "#[bg=$base,fg=$flamingo]#[fg=$crust,bg=$flamingo] #[bg=$surface1,fg=$flamingo,bold] {command_user}@{command_host}#[bg=$base,fg=$surface1] #[bg=$base,fg=$maroon]#[bg=$maroon,fg=$crust]󰃭 #[bg=$surface1,fg=$maroon,bold] {datetime}#[bg=$base,fg=$surface1]"
+    format_space  "#[bg=$base]"
     format_hide_on_overlength "true"
     format_precedence "lrc"
 
@@ -187,5 +103,5 @@ plugins {
     datetime          "{format}"
     datetime_format   "%Y-%m-%d 󰅐 %H:%M"
     datetime_timezone "Europe/Stockholm"
-}
+  }
 }
