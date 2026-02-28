@@ -3,6 +3,69 @@ keybinds {
     unbind "Ctrl b"
     bind "Ctrl a" { SwitchToMode "tmux"; }
   }
+  // Keybindings specific to 'Normal' mode.
+    normal {
+        // Intercept `Enter`.
+        bind "Enter" {
+            // Passthru `Enter`.
+            WriteChars "\u{000D}";
+            // Invoke autolock to immediately assess proper lock state.
+            // (This provides a snappier experience compared to
+            // solely relying on `reaction_seconds` to elapse.)
+            MessagePlugin "autolock" {};
+        }
+        //...
+    }
+    // Keybindings specific to 'Locked' mode.
+    locked {
+        bind "Alt z" {
+            // Re-enable the autolock plugin.
+            MessagePlugin "autolock" {payload "enable";};
+            // Unlock Zellij.
+            SwitchToMode "Normal";
+        }
+        //...
+    }
+    // Keybindings shared across all modes.
+    shared {
+        bind "Alt Shift z" {
+            // Enable the autolock plugin.
+            MessagePlugin "autolock" {payload "enable";};
+        }
+        //...
+    }
+    // Keybindings shared across all modes, except 'Locked'.
+    shared_except "locked" {
+        // Put keybindings here if they conflict with Vim or others.
+
+        bind "Alt z" {
+            // Disable the autolock plugin.
+            MessagePlugin "autolock" {payload "disable";};
+            // Lock Zellij.
+            SwitchToMode "Locked";
+        }
+
+        bind "Alt m" { SwitchToMode "Move"; }
+
+        bind "Ctrl h" {
+            MoveFocusOrTab "Left";
+        }
+        bind "Ctrl l" {
+            MoveFocusOrTab "Right";
+        }
+        bind "Ctrl j" {
+            MoveFocus "Down";
+        }
+        bind "Ctrl k" {
+            MoveFocus "Up";
+        }
+
+        // bind "Ctrl d" { HalfPageScrollDown; }
+        // bind "Ctrl u" { HalfPageScrollUp; }
+
+        // bind "Ctrl f" { PageScrollDown; }
+        // bind "Ctrl b" { PageScrollUp; }
+    }
 }
 
 ui {
@@ -104,4 +167,18 @@ plugins {
     datetime_format   "%Y-%m-%d 󰅐 %H:%M"
     datetime_timezone "Europe/Stockholm"
   }
+  autolock location="file:~/.local/share/zellij/plugins/zellij-autolock.wasm" {
+    // Enabled at start?
+    is_enabled true
+    // Lock when any open these programs open.
+    triggers "nvim|vim|git|fzf|zoxide|atuin"
+    // Reaction to input occurs after this many seconds. (default=0.3)
+    // (An existing scheduled reaction prevents additional reactions.)
+    reaction_seconds "0.5"
+    // Print to Zellij log? (default=false)
+    print_to_log true
+  }
+}
+load_plugins {
+    autolock
 }
