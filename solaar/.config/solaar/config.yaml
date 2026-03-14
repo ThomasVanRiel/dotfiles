@@ -15,7 +15,7 @@
   backlight_duration_hands_in: 30
   backlight_duration_hands_out: 30
   backlight_duration_powered: 300
-  backlight_level: 4
+  backlight_level: 0
   change-host: null
   disable-keyboard-keys: {1: false, 2: false, 4: false, 8: false, 16: false}
   divert-keys: {10: 0, 111: 0, 199: 0, 200: 0, 226: 0, 227: 0, 228: 0, 229: 0, 230: 0, 231: 0, 232: 0, 233: 0, 234: 0, 259: 0, 264: 0, 266: 0, 284: 0}
