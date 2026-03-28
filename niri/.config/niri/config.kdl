@@ -17,6 +17,7 @@ environment {
   XCURSOR_THEME "catppuccin-mocha-light-cursors"
   QT_QPA_PLATFORMTHEME "kde"
   XDG_SESSION_TYPE "wayland"
+  WAYLAND_DISPLAY "wayland-1"
   // NVIDIA
   LIBVA_DRIVER_NAME "nvidia"
   NVD_BACKEND "direct"
@@ -116,6 +117,14 @@ window-rule {
   draw-border-with-background true
 }
 
+window-rule {
+  match title="^Picture-in-Picture$"
+  open-floating true
+  draw-border-with-background false
+  default-column-width { fixed 720; }
+  default-window-height { fixed 405; }
+}
+
 debug {
   // Allows notification actions and window activation from Noctalia.
   honor-xdg-activation-with-invalid-serial
@@ -129,11 +138,11 @@ spawn-at-startup "qs" "-c" "noctalia-shell"
 //spawn-at-startup "dunst"
 spawn-at-startup "wl-paste" "--type" "text" "--watch" "cliphist" "store"
 spawn-at-startup "wl-paste" "--type" "image" "--watch" "cliphist" "store"
-spawn-at-startup "swaybg" "-i" "/home/thomas/Pictures/wallpaper"  // uncomment and set path
+// spawn-at-startup "swaybg" "-i" "/home/thomas/Pictures/wallpaper"  // uncomment and set path
 spawn-at-startup "solaar" "--window=hide"
 spawn-at-startup "xwayland-satellite"
 spawn-at-startup "swayidle" "-w" "timeout" "600" "niri msg action power-off-monitors" "resume" "niri msg action power-on-monitors"
-
+spawn-at-startup "systemctl" "--user" "import-environment" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP"
 // ========================================
 // KEYBINDS
 // ========================================
