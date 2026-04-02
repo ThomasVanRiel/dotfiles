@@ -1,6 +1,15 @@
 return {
   "snacks.nvim",
   opts = {
+    picker = {
+      win = {
+        list = {
+          keys = {
+            ["<C-h>"] = { function() vim.fn.system("zellij action move-focus-or-tab left") end, desc = "Zellij left", mode = "n" },
+          },
+        },
+      },
+    },
     dashboard = {
       preset = {
         pick = function(cmd, opts)
