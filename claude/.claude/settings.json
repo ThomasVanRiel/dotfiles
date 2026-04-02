@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e:*)"
+    ]
+  },
+  "model": "opus",
+  "statusLine": {
+    "type": "command",
+    "command": "npx ccburn collect | npx -y ccstatusline@latest",
+    "padding": 0
+  }
+}
