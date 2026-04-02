@@ -1,6 +1,9 @@
-# Thomas' awesome hyprland setup
+# Thomas' awesome niri setup
+
 Apply configuration using [GNU Stow](https://www.gnu.org/software/stow/)
+
 ## Usage
+
 ```bash
 cd ~/dotfiles
 
@@ -20,4 +23,19 @@ stow -D zsh
 
 # Restow (useful after editing)
 stow -R zsh
+```
+
+## Cheatsheet
+
+Keybind reference for niri, nvim, and tmux, plus tool usage for Quarto, ffmpeg, git, and Docker.
+
+```bash
+cd ~/dotfiles
+
+# HTML (interactive, tabbed)
+quarto render cheatsheet.qmd --to html
+xdg-open cheatsheet.html
+
+# PDF (for printing)
+quarto render cheatsheet.qmd --to typst
 ```
