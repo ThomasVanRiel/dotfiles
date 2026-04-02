@@ -7,10 +7,6 @@
         }
     ],
     "states": {
-        "assistant-panel": {
-            "enabled": false,
-            "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
-        }
     },
     "version": 2
 }
