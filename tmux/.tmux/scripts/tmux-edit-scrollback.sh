@@ -1,5 +1,5 @@
 #!/bin/bash
 
-file=$(mktemp).sh
-tmux capture-pane -pS -32768 >$file
-tmux new-window -n:mywindow "$EDITOR '+ normal G $' $file"
+file=$(mktemp).dump
+tmux capture-pane -pS -20000 >$file
+tmux new-window -n "tmp/scrollback" "$EDITOR '+ normal G $' $file"
