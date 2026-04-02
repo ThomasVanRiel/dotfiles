@@ -32,10 +32,9 @@ Keybind reference for niri, nvim, and tmux, plus tool usage for Quarto, ffmpeg, 
 ```bash
 cd ~/dotfiles
 
-# HTML (interactive, tabbed)
-quarto render cheatsheet.qmd --to html
-xdg-open cheatsheet.html
+# Render both HTML and PDF
+quarto render cheatsheet.qmd
 
-# PDF (for printing)
-quarto render cheatsheet.qmd --to typst
+xdg-open cheatsheet.html  # interactive, tabbed
+xdg-open cheatsheet.pdf   # for printing
 ```

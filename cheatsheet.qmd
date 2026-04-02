@@ -6,6 +6,8 @@ format:
     toc: false
     page-layout: full
     embed-resources: true
+  typst:
+    toc: false
 ---
 
 ::: {.panel-tabset}
@@ -94,6 +96,12 @@ Leader: `Space`
 | `sa` | Add surrounding |
 | `sd` | Delete surrounding |
 | `sr` | Replace surrounding |
+
+#### Command history
+| Key | Action |
+|-----|--------|
+| `q:` | Open command-line window (normal mode) |
+| `C-f` | Open command-line window (while in `:`) |
 
 #### Buffers & windows
 | Key | Action |
