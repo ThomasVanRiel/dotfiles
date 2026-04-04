@@ -21,6 +21,8 @@
 **/.config/rclone/rclone.conf
 **/.docker/config.json
 **/auth-token
+/claude/.claude/read-once/.last-cleanup
+/claude/.claude/read-once/*.jsonl
 
 *-lock*
 /.quarto/typst/packages/preview
