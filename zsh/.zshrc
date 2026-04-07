@@ -75,6 +75,8 @@ export FZF_BASE=/usr/bin/
 
 source $ZSH/oh-my-zsh.sh
 
+setopt globdots
+
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"

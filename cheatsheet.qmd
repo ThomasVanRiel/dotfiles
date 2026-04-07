@@ -263,6 +263,35 @@ ffmpeg -framerate 30 -pattern_type glob -i '*.png' -c:v libx264 output.mp4
 ffmpeg -f pipewire -i default output.mp4
 ```
 
+### WSL (access from Linux)
+
+WSL2 stores its Linux filesystem inside a VHDX virtual hard disk image on your Windows drive.
+
+```bash
+# Find the VHDX file on your mounted Windows partition
+find /mnt/windows/Users/*/AppData/Local/Packages/*buntu*/LocalState \
+  -name "ext4.vhdx" 2>/dev/null
+
+# Load the network block device kernel module
+sudo modprobe nbd
+
+# Connect the VHDX to a block device
+sudo qemu-nbd -c /dev/nbd0 /path/to/ext4.vhdx
+
+# Mount it
+sudo mkdir -p /mnt/wsl_rootfs
+sudo mount /dev/nbd0 /mnt/wsl_rootfs
+
+# Browse your WSL home folder
+ls /mnt/wsl_rootfs/home/<username>/
+
+# When done: unmount and disconnect
+sudo umount /mnt/wsl_rootfs
+sudo qemu-nbd -d /dev/nbd0
+```
+
+Requires: `qemu-img` (`sudo pacman -S qemu-img`)
+
 ### git
 
 ```bash
