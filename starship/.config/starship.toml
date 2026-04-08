@@ -74,12 +74,11 @@ truncation_length = 3
 truncate_to_repo = true
 truncation_symbol = "…/"
 
-[directory.substitutions]
-"Documents" = "󰈙"
-"Downloads" = ""
-"Music" = "󰝚"
-"Pictures" = ""
-"Developer" = "󰲋"
+# [directory.substitutions]
+# "Documents" = "󰈙"
+# "Downloads" = ""
+# "Music" = "󰝚"
+# "Pictures" = ""
 
 [git_branch]
 symbol = ""
@@ -137,7 +136,7 @@ ignore_base = false
 [time]
 disabled = false
 time_format = "%R"
-format = '[[  $time](fg:overlay0)]($style)'
+format = '[[  $time](fg:overlay2)]($style)'
 
 [line_break]
 disabled = true
