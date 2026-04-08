@@ -16,3 +16,6 @@
 
 [pull]
 	rebase = false
+[user]
+	email = thomas.van.riel@gmail.com
+	name = Thomas Van Riel
