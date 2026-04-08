@@ -6,5 +6,8 @@ return {
       "jmbuhr/otter.nvim",
       "nvim-treesitter/nvim-treesitter",
     },
+    init = function()
+      vim.treesitter.language.register("markdown", "quarto")
+    end,
   },
 }
