@@ -116,6 +116,12 @@ export VISUAL=nvim
 
 eval "$(starship init zsh)"
 
+# Emit user@host:path as terminal title when on SSH (used by tmux status bar)
+_ssh_terminal_title() {
+    [[ -n "$SSH_CONNECTION" ]] && print -Pn "\e]0;%n@%m:%~\a"
+}
+precmd_functions+=(_ssh_terminal_title)
+
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
