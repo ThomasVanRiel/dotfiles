@@ -3,10 +3,8 @@
 add_newline = false
 
 format = """
-$os\
 $username\
 $hostname\
-[❯](fg:red)\
 $directory\
 [❯](fg:peach)\
 $git_branch\
@@ -57,14 +55,14 @@ Redhat = "󱄛"
 RedHatEnterprise = "󱄛"
 
 [username]
-show_always = true
+show_always = false
 style_user = "fg:red"
 style_root = "fg:red"
-format = '[ $user ]($style)'
+format = '[ $user]($style)'
 
 [hostname]
 ssh_only = true
-format = '[@$hostname](fg:red)'
+format = '[@$hostname ❯](fg:red)'
 disabled = false
 
 [directory]
