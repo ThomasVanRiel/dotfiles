@@ -65,7 +65,7 @@ layout {
     proportion 0.66667
   }
 
-  default-column-width { proportion 0.33333; }
+  default-column-width { proportion 0.5; }
 
   focus-ring {
     width 2
@@ -81,7 +81,7 @@ layout {
     left 12
     right 12
     // top 0
-    // bottom 0
+    bottom 0
   }
 }
 
@@ -112,7 +112,7 @@ hotkey-overlay {
 // WINDOW RULES
 // ========================================
 window-rule {
-  geometry-corner-radius 5
+  geometry-corner-radius 2
   clip-to-geometry true
   draw-border-with-background true
 }
@@ -138,7 +138,6 @@ spawn-at-startup "qs" "-c" "noctalia-shell"
 //spawn-at-startup "dunst"
 spawn-at-startup "wl-paste" "--type" "text" "--watch" "cliphist" "store"
 spawn-at-startup "wl-paste" "--type" "image" "--watch" "cliphist" "store"
-// spawn-at-startup "swaybg" "-i" "/home/thomas/Pictures/wallpaper"  // uncomment and set path
 spawn-at-startup "solaar" "--window=hide"
 spawn-at-startup "xwayland-satellite"
 spawn-at-startup "swayidle" "-w" "timeout" "600" "niri msg action power-off-monitors" "resume" "niri msg action power-on-monitors"
@@ -171,7 +170,7 @@ binds {
 
   // Lock screen
   //Super+L { spawn "~/.config/scripts/lock-niri.sh"; }
-  Super+Shift+L { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
+  Super+Shift+L { spawn "bash" "-c" "~/.config/scripts/lock.sh"; }
 
   // Screenshots
   Super+Shift+S { screenshot; }

@@ -46,7 +46,7 @@
         "autoHideDelay": 500,
         "autoShowDelay": 150,
         "backgroundOpacity": 1,
-        "barType": "simple",
+        "barType": "floating",
         "capsuleColorKey": "none",
         "capsuleOpacity": 1,
         "contentPadding": 2,
@@ -86,7 +86,7 @@
                     "colorizeIcons": false,
                     "emptyColor": "onSurface",
                     "enableScrollWheel": true,
-                    "focusedColor": "secondary",
+                    "focusedColor": "primary",
                     "followFocusedScreen": false,
                     "fontWeight": "bold",
                     "groupedBorderOpacity": 1,
@@ -148,13 +148,13 @@
                     "hideMode": "hidden",
                     "hideWhenIdle": false,
                     "id": "MediaMini",
-                    "maxWidth": 400,
+                    "maxWidth": 1000,
                     "panelShowAlbumArt": true,
-                    "scrollingMode": "hover",
-                    "showAlbumArt": true,
+                    "scrollingMode": "always",
+                    "showAlbumArt": false,
                     "showArtistFirst": true,
                     "showProgressRing": true,
-                    "showVisualizer": false,
+                    "showVisualizer": true,
                     "textColor": "none",
                     "useFixedWidth": false,
                     "visualizerType": "linear"
@@ -171,12 +171,12 @@
                     ]
                 },
                 {
-                    "hideWhenZero": false,
-                    "hideWhenZeroUnread": false,
+                    "hideWhenZero": true,
+                    "hideWhenZeroUnread": true,
                     "iconColor": "none",
                     "id": "NotificationHistory",
                     "showUnreadBadge": true,
-                    "unreadBadgeColor": "primary"
+                    "unreadBadgeColor": "none"
                 },
                 {
                     "displayMode": "alwaysShow",
@@ -186,7 +186,7 @@
                     "textColor": "none"
                 },
                 {
-                    "clockColor": "none",
+                    "clockColor": "primary",
                     "customFont": "",
                     "formatHorizontal": "dddd, MMM dd - HH:mm",
                     "formatVertical": "dddd HH mm - dd MM",
@@ -196,9 +196,9 @@
                 },
                 {
                     "colorizeDistroLogo": false,
-                    "colorizeSystemIcon": "none",
+                    "colorizeSystemIcon": "error",
                     "customIconPath": "",
-                    "enableColorization": false,
+                    "enableColorization": true,
                     "icon": "user-screen",
                     "id": "ControlCenter",
                     "useDistroLogo": false
@@ -295,22 +295,107 @@
         }
     },
     "desktopWidgets": {
-        "enabled": false,
-        "gridSnap": false,
-        "gridSnapScale": false,
+        "enabled": true,
+        "gridSnap": true,
+        "gridSnapScale": true,
         "monitorWidgets": [
             {
                 "name": "DP-5",
                 "widgets": [
                     {
-                        "clockStyle": "digital",
+                        "clockColor": "none",
+                        "clockStyle": "analog",
+                        "customFont": "",
                         "format": "HH:mm\\nd MMMM yyyy",
                         "id": "Clock",
+                        "roundedCorners": true,
+                        "scale": 2.7000370375450977,
                         "showBackground": true,
                         "useCustomFont": false,
                         "usePrimaryColor": false,
-                        "x": 50,
-                        "y": 50
+                        "x": 1530,
+                        "y": 225
+                    },
+                    {
+                        "hideMode": "visible",
+                        "id": "MediaPlayer",
+                        "roundedCorners": true,
+                        "scale": 1.0125,
+                        "showAlbumArt": true,
+                        "showBackground": true,
+                        "showButtons": true,
+                        "showVisualizer": false,
+                        "visualizerType": "linear",
+                        "x": 1530,
+                        "y": 675
+                    },
+                    {
+                        "diskPath": "/",
+                        "id": "SystemStat",
+                        "layout": "bottom",
+                        "roundedCorners": true,
+                        "scale": 0.9375,
+                        "showBackground": true,
+                        "statType": "GPU",
+                        "x": 1350,
+                        "y": 45
+                    },
+                    {
+                        "colorName": "primary",
+                        "height": 144,
+                        "hideWhenIdle": false,
+                        "id": "AudioVisualizer",
+                        "roundedCorners": true,
+                        "scale": 4.07957052770199,
+                        "showBackground": true,
+                        "visualizerType": "linear",
+                        "width": 320,
+                        "x": 1080,
+                        "y": 810
+                    },
+                    {
+                        "diskPath": "/",
+                        "id": "SystemStat",
+                        "layout": "bottom",
+                        "roundedCorners": true,
+                        "scale": 0.9375,
+                        "showBackground": true,
+                        "statType": "CPU",
+                        "x": 1080,
+                        "y": 45
+                    },
+                    {
+                        "diskPath": "/",
+                        "id": "SystemStat",
+                        "layout": "bottom",
+                        "roundedCorners": true,
+                        "scale": 0.9375,
+                        "showBackground": true,
+                        "statType": "Memory",
+                        "x": 1620,
+                        "y": 45
+                    },
+                    {
+                        "diskPath": "/",
+                        "id": "SystemStat",
+                        "layout": "bottom",
+                        "roundedCorners": true,
+                        "scale": 0.9375,
+                        "showBackground": true,
+                        "statType": "Network",
+                        "x": 1890,
+                        "y": 45
+                    },
+                    {
+                        "diskPath": "/",
+                        "id": "SystemStat",
+                        "layout": "bottom",
+                        "roundedCorners": true,
+                        "scale": 0.9375,
+                        "showBackground": true,
+                        "statType": "Disk",
+                        "x": 2160,
+                        "y": 45
                     }
                 ]
             }
@@ -401,7 +486,7 @@
         ],
         "lockScreenTint": 0,
         "passwordChars": false,
-        "radiusRatio": 1,
+        "radiusRatio": 0.4,
         "reverseScroll": false,
         "scaleRatio": 1,
         "screenRadiusRatio": 0,
@@ -418,11 +503,11 @@
     "hooks": {
         "colorGeneration": "",
         "darkModeChange": "",
-        "enabled": false,
+        "enabled": true,
         "performanceModeDisabled": "",
         "performanceModeEnabled": "",
         "screenLock": "",
-        "screenUnlock": "",
+        "screenUnlock": "qs -c noctalia-shell ipc call wallpaper set /home/thomas/Pictures/wallpaper \"\"",
         "session": "",
         "startup": "",
         "wallpaperChange": ""
@@ -658,7 +743,7 @@
     "ui": {
         "boxBorderEnabled": false,
         "fontDefault": "JetBrainsMono NF",
-        "fontDefaultScale": 1.2,
+        "fontDefaultScale": 1.1,
         "fontFixed": "JetBrainsMono NF",
         "fontFixedScale": 1,
         "panelBackgroundOpacity": 1,
@@ -689,18 +774,17 @@
         "randomIntervalSec": 300,
         "setWallpaperOnAllMonitors": true,
         "showHiddenFiles": false,
-        "skipStartupTransition": true,
+        "skipStartupTransition": false,
         "solidColor": "#1a1a2e",
-        "sortOrder": "date_desc",
+        "sortOrder": "name_desc",
         "transitionDuration": 1500,
         "transitionEdgeSmoothness": 0.05,
         "transitionType": [
-            "honeycomb"
         ],
         "useOriginalImages": false,
         "useSolidColor": false,
         "useWallhaven": false,
-        "viewMode": "single",
+        "viewMode": "browse",
         "wallhavenApiKey": "",
         "wallhavenCategories": "111",
         "wallhavenOrder": "desc",
