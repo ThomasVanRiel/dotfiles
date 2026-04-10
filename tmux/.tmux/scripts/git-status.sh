@@ -45,7 +45,7 @@ fi
 
 suffix="${status}${ahead_behind}"
 if [ -n "$suffix" ]; then
-  echo " $branch ${suffix}"
+  echo "󰊢 $branch ${suffix}"
 else
-  echo " $branch"
+  echo "󰊢 $branch"
 fi
