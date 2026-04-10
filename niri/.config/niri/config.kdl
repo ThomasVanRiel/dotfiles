@@ -170,7 +170,7 @@ binds {
 
   // Lock screen
   //Super+L { spawn "~/.config/scripts/lock-niri.sh"; }
-  Super+Shift+L { spawn "bash" "-c" "~/.config/scripts/lock.sh"; }
+  Super+Shift+L { spawn "bash" "/home/thomas/.config/scripts/lock.sh"; }
 
   // Screenshots
   Super+Shift+S { screenshot; }
