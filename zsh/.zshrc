@@ -122,7 +122,8 @@ _ssh_terminal_title() {
 }
 precmd_functions+=(_ssh_terminal_title)
 
-# Write active Python venv / conda env to a per-pane file for tmux status bar
+# Report active Python venv / conda env to tmux as a per-pane option (@venv).
+# Read in status bar via #{@venv}; auto-cleared when the pane closes.
 _tmux_active_env() {
     [[ -z "$TMUX_PANE" ]] && return
     local env_info=""
@@ -131,7 +132,8 @@ _tmux_active_env() {
     elif [[ -n "$CONDA_DEFAULT_ENV" && "$CONDA_DEFAULT_ENV" != "base" ]]; then
         env_info="(${CONDA_DEFAULT_ENV})"
     fi
-    printf '%s' "$env_info" > "${HOME}/.tmux/env-${TMUX_PANE}"
+    tmux set-option -p -t "$TMUX_PANE" @venv "$env_info"
+    tmux refresh-client -S
 }
 precmd_functions+=(_tmux_active_env)
 

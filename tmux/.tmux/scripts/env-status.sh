@@ -1,15 +1,16 @@
 #!/bin/bash
 # Mirrors starship's rust/nodejs/python modules for the tmux status bar.
 # Outputs only raw icons + versions — no colors, no separators.
-# Colors and separators are applied in tmux.conf.
+# Colors and separators are applied in tmux.conf via #{?#{@env_has_content},...}.
 # Args: $1 = pane_id, $2 = pane_current_path, $3 = pane_current_command
+#       $4 = active_venv (#{@venv}, set per-pane by the shell's precmd hook)
 
 pane_id="$1"
 dir="$2"
 cmd="$3"
-sentinel="/tmp/tmux-env-sentinel-${pane_id}"
+active_venv="$4"
 
-skip() { rm -f "$sentinel"; exit; }
+skip() { tmux set-option -p -t "$pane_id" @env_has_content ""; exit; }
 
 [ "$cmd" = "ssh" ] && skip
 [ -d "$dir" ]      || skip
@@ -41,9 +42,9 @@ if has_file "package.json"; then
     ver=$(node --version 2>/dev/null | sed 's/^v//')
     out="${out}  ${ver}"
 fi
-if has_file "pyproject.toml" "requirements.txt" "setup.py" || has_glob "*.py"; then
+if has_file "pyproject.toml" "requirements.txt" "setup.py" || has_glob "*.py" || [ -n "$active_venv" ]; then
     ver=$(python3 --version 2>/dev/null | awk '{print $2}')
-    out="${out}  ${ver}"
+    out="${out}  ${ver}${active_venv:+ ${active_venv}}"
 fi
 # if has_file "go.mod"; then
 #     ver=$(go version 2>/dev/null | awk '{print $3}' | sed 's/^go//')
@@ -54,12 +55,9 @@ fi
 #     out="${out}  ${ver}"
 # fi
 
-venv=$(cat "${HOME}/.tmux/env-${pane_id}" 2>/dev/null)
-out="${out}${venv}"
-
 if [ -n "$out" ]; then
-    touch "$sentinel"
+    tmux set-option -p -t "$pane_id" @env_has_content "1"
     echo "${out# }"
 else
-    rm -f "$sentinel"
+    tmux set-option -p -t "$pane_id" @env_has_content ""
 fi
