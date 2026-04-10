@@ -1,6 +1,7 @@
 alias ta="tmux a"
 alias claudecommit='claude --model haiku "/commit"'
 alias dps='docker ps -a --format "table {{.Names}}\t{{.Status}}"'
-alias e='eza -a --long --links --group --color=auto --git --git-repos' 
+alias e='eza --long --links --group --color=auto --git --git-repos' 
+alias ea='e -a'
 alias etree='e --tree --level=2'
 alias gdt='git difftool'
