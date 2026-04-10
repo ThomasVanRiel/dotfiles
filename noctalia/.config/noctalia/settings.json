@@ -22,7 +22,7 @@
             "firefox",
             "zen"
         ],
-        "position": "center",
+        "position": "follow_bar",
         "screenshotAnnotationTool": "",
         "showCategories": true,
         "showIconBackground": false,
@@ -59,12 +59,12 @@
         "hideOnOverview": false,
         "marginHorizontal": 4,
         "marginVertical": 4,
-        "middleClickAction": "none",
+        "middleClickAction": "settings",
         "middleClickCommand": "",
-        "middleClickFollowMouse": false,
+        "middleClickFollowMouse": true,
         "monitors": [
         ],
-        "mouseWheelAction": "none",
+        "mouseWheelAction": "workspace",
         "mouseWheelWrap": true,
         "outerCorners": false,
         "position": "top",
@@ -78,7 +78,7 @@
         "showOnWorkspaceSwitch": true,
         "showOutline": false,
         "useSeparateOpacity": false,
-        "widgetSpacing": 6,
+        "widgetSpacing": 12,
         "widgets": {
             "center": [
                 {
@@ -86,14 +86,14 @@
                     "colorizeIcons": false,
                     "emptyColor": "onSurface",
                     "enableScrollWheel": true,
-                    "focusedColor": "primary",
+                    "focusedColor": "secondary",
                     "followFocusedScreen": false,
                     "fontWeight": "bold",
                     "groupedBorderOpacity": 1,
                     "hideUnoccupied": false,
                     "iconScale": 0.8,
                     "id": "Workspace",
-                    "labelMode": "index",
+                    "labelMode": "index+name",
                     "occupiedColor": "onSurface",
                     "pillSize": 0.6,
                     "showApplications": false,
@@ -104,28 +104,6 @@
                 }
             ],
             "left": [
-                {
-                    "colorizeSystemIcon": "none",
-                    "customIconPath": "",
-                    "enableColorization": false,
-                    "icon": "rocket",
-                    "iconColor": "none",
-                    "id": "Launcher",
-                    "useDistroLogo": false
-                },
-                {
-                    "clockColor": "none",
-                    "customFont": "",
-                    "formatHorizontal": "HH:mm dddd, MMM dd",
-                    "formatVertical": "HH mm - dd MM",
-                    "id": "Clock",
-                    "tooltipFormat": "HH:mm ddd, MMM dd",
-                    "useCustomFont": false
-                },
-                {
-                    "id": "Spacer",
-                    "width": 20
-                },
                 {
                     "compactMode": false,
                     "diskPath": "/",
@@ -138,11 +116,11 @@
                     "showDiskAvailable": false,
                     "showDiskUsage": true,
                     "showDiskUsageAsPercent": false,
-                    "showGpuTemp": false,
-                    "showLoadAverage": true,
-                    "showMemoryAsPercent": true,
+                    "showGpuTemp": true,
+                    "showLoadAverage": false,
+                    "showMemoryAsPercent": false,
                     "showMemoryUsage": true,
-                    "showNetworkStats": false,
+                    "showNetworkStats": true,
                     "showSwapUsage": false,
                     "textColor": "none",
                     "useMonospaceFont": true,
@@ -161,7 +139,7 @@
                     "showIcon": false,
                     "showText": true,
                     "textColor": "none",
-                    "useFixedWidth": true
+                    "useFixedWidth": false
                 }
             ],
             "right": [
@@ -206,6 +184,15 @@
                     "id": "Volume",
                     "middleClickCommand": "pwvucontrol || pavucontrol",
                     "textColor": "none"
+                },
+                {
+                    "clockColor": "none",
+                    "customFont": "",
+                    "formatHorizontal": "dddd, MMM dd - HH:mm",
+                    "formatVertical": "dddd HH mm - dd MM",
+                    "id": "Clock",
+                    "tooltipFormat": "",
+                    "useCustomFont": false
                 },
                 {
                     "colorizeDistroLogo": false,
@@ -337,7 +324,7 @@
         "deadOpacity": 0.6,
         "displayMode": "auto_hide",
         "dockType": "floating",
-        "enabled": true,
+        "enabled": false,
         "floatingRatio": 1,
         "groupApps": false,
         "groupClickAction": "cycle",
@@ -456,6 +443,7 @@
     },
     "location": {
         "analogClockInCalendar": false,
+        "autoLocate": false,
         "firstDayOfWeek": 1,
         "hideWeatherCityName": false,
         "hideWeatherTimezone": false,
@@ -466,7 +454,8 @@
         "use12hourFormat": false,
         "useFahrenheit": false,
         "weatherEnabled": true,
-        "weatherShowEffects": true
+        "weatherShowEffects": true,
+        "weatherTaliaMascotAlways": false
     },
     "network": {
         "bluetoothAutoConnect": true,
@@ -590,6 +579,20 @@
                 "countdownEnabled": true,
                 "enabled": true,
                 "keybind": "6"
+            },
+            {
+                "action": "userspaceReboot",
+                "command": "",
+                "countdownEnabled": true,
+                "enabled": false,
+                "keybind": ""
+            },
+            {
+                "action": "rebootToUefi",
+                "command": "",
+                "countdownEnabled": true,
+                "enabled": true,
+                "keybind": "7"
             }
         ],
         "showHeader": true,
@@ -606,7 +609,7 @@
         "diskAvailWarningThreshold": 20,
         "diskCriticalThreshold": 90,
         "diskWarningThreshold": 80,
-        "enableDgpuMonitoring": false,
+        "enableDgpuMonitoring": true,
         "externalMonitor": "resources || missioncenter || jdsystemmonitor || corestats || system-monitoring-center || gnome-system-monitor || plasma-systemmonitor || mate-system-monitor || ukui-system-monitor || deepin-system-monitor || pantheon-system-monitor",
         "gpuCriticalThreshold": 90,
         "gpuWarningThreshold": 80,
@@ -654,7 +657,7 @@
     },
     "ui": {
         "boxBorderEnabled": false,
-        "fontDefault": "Fira Sans",
+        "fontDefault": "JetBrainsMono NF",
         "fontDefaultScale": 1.2,
         "fontFixed": "JetBrainsMono NF",
         "fontFixedScale": 1,
@@ -664,7 +667,7 @@
         "settingsPanelMode": "attached",
         "settingsPanelSideBarCardStyle": false,
         "tooltipsEnabled": true,
-        "translucentWidgets": false
+        "translucentWidgets": true
     },
     "wallpaper": {
         "automationEnabled": false,
