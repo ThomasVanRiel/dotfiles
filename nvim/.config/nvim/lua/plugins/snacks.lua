@@ -3,6 +3,10 @@ return {
   opts = {
     image = { enabled = true },
     picker = {
+      sources = {
+        files = { hidden = true },
+        grep = { hidden = true },
+      },
       win = {
         list = {
           keys = {
