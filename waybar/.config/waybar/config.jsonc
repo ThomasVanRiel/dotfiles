@@ -12,11 +12,11 @@
         "hyprland/window"
     ],
     "modules-center": [
-        "tray",
-        "custom/power"
+        "tray"
     ],
     "modules-right": [
-        "clock"
+        "clock",
+        "custom/power"
     ],
 
     "hyprland/workspaces": {

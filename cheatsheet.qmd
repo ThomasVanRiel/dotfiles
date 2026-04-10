@@ -16,7 +16,7 @@ format:
 
 :::: {.columns}
 
-::: {.column width="30%"}
+::: {.column width="22%"}
 
 ### niri
 
@@ -27,12 +27,13 @@ format:
 | `Super+Space` | Launcher |
 | `Super+B` | Browser (zen) |
 | `Super+E` | Files (dolphin) |
-| `Super+Tab` | Overview |
+| `Super+V` | Toggle floating |
+| `Super+Shift+L` | Lock screen |
 | `Super+H/J/K/L` | Focus column/window |
 | `Super+F` | Maximize column |
 | `Super+Shift+F` | Fullscreen |
+| `Super+Tab` | Overview |
 | `Super+T` | Toggle tabbed column |
-| `Super+V` | Toggle floating |
 | `Super+R` | Cycle preset column widths |
 | `Super+Ctrl+1-4` | Set column width 100/50/33/25% |
 | `Super+-` / `Super+=` | Shrink / grow column |
@@ -41,16 +42,45 @@ format:
 | `Super+Shift+1-9` | Move window to workspace |
 | `Super+Ctrl+Left/Right` | Previous / next workspace |
 | `Super+Shift+S` | Screenshot (region) |
+| `Super+Ctrl+Shift+S` | Screen record |
 | `Print` | Screenshot (screen) |
-| `Super+Shift+L` | Lock screen |
 | `Super+X` | Session menu |
 
 :::
 
-::: {.column width="5%"}
+::: {.column width="2%"}
 :::
 
-::: {.column width="30%"}
+::: {.column width="22%"}
+
+### Hyprland
+
+| Key | Action |
+|-----|--------|
+| `Super+Return` | Terminal (kitty) |
+| `Super+Q` | Close window |
+| `Super+Space` | Launcher |
+| `Super+B` | Browser (zen) |
+| `Super+E` | Files (dolphin) |
+| `Super+V` | Toggle floating |
+| `Super+Shift+L` | Lock screen |
+| `Super+H/J/K/L` | Focus window |
+| `Super+Shift+H/J/K/L` | Move window |
+| `Super+F` | Fullscreen |
+| `Super+M` | Promote to master |
+| `Super+1-9` | Switch workspace |
+| `Super+Shift+1-9` | Move window to workspace |
+| `Super+Ctrl+Left/Right` | Previous / next workspace |
+| `Super+Shift+S` | Screenshot (region) |
+| `Super+Ctrl+Shift+S` | Screen record |
+| `Print` | Screenshot (screen) |
+
+:::
+
+::: {.column width="2%"}
+:::
+
+::: {.column width="24%"}
 
 ### nvim (LazyVim)
 
@@ -114,10 +144,10 @@ Leader: `Space`
 
 :::
 
-::: {.column width="5%"}
+::: {.column width="2%"}
 :::
 
-::: {.column width="30%"}
+::: {.column width="24%"}
 
 ### tmux
 
