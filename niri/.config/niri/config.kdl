@@ -184,7 +184,7 @@ binds {
   Super+Shift+Up { focus-window-up; }
   Super+Shift+Down { focus-window-down; }
 
-  // Focus (vim-style with Alt)
+  // Focus (vim-style)
   Super+H { focus-column-left; }
   Super+L { focus-column-right; }
   Super+K { focus-window-up; }
@@ -226,7 +226,7 @@ binds {
   Super+WheelScrollLeft { focus-column-left; }
   Super+WheelScrollRight { focus-column-right; }
 
-  // Column width adjustmentsudo 
+  // Column width adjustments
   Super+Minus { set-column-width "-10%"; }
   Super+Equal { set-column-width "+10%"; }
 
