@@ -122,6 +122,19 @@ _ssh_terminal_title() {
 }
 precmd_functions+=(_ssh_terminal_title)
 
+# Write active Python venv / conda env to a per-pane file for tmux status bar
+_tmux_active_env() {
+    [[ -z "$TMUX_PANE" ]] && return
+    local env_info=""
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        env_info="($(basename $VIRTUAL_ENV))"
+    elif [[ -n "$CONDA_DEFAULT_ENV" && "$CONDA_DEFAULT_ENV" != "base" ]]; then
+        env_info="(${CONDA_DEFAULT_ENV})"
+    fi
+    printf '%s' "$env_info" > "${HOME}/.tmux/env-${TMUX_PANE}"
+}
+precmd_functions+=(_tmux_active_env)
+
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
