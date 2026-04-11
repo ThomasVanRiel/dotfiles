@@ -54,7 +54,6 @@ input {
 // LAYOUT
 // ========================================
 layout {
-  gaps 4
 
   always-center-single-column
   center-focused-column "never"
@@ -76,12 +75,22 @@ layout {
   border {
     off
   }
+  gaps 8
 
   struts {
-    left 12
-    right 12
-    // top 0
-    bottom 0
+    left 6
+    right 6
+    top -2
+    bottom -6
+  }
+
+  shadow {
+    on
+    softness 20
+    spread 8
+    offset x=0 y=0
+    draw-behind-window true
+    color "#000000FF"
   }
 }
 
@@ -109,12 +118,54 @@ hotkey-overlay {
 
 
 // ========================================
+// WORKSPACES
+// ========================================
+workspace "browser"
+workspace "dev"
+workspace "games"
+
+// ========================================
 // WINDOW RULES
 // ========================================
 window-rule {
   geometry-corner-radius 2
   clip-to-geometry true
   draw-border-with-background true
+}
+
+// Open initial terminal window fullscreen on workspace 2
+window-rule {
+  match app-id="kitty" at-startup=true
+  open-fullscreen true
+  open-on-workspace "dev"
+}
+
+// Open initial browser window on workspace 1
+window-rule {
+  match app-id="zen-browser" at-startup=true
+  open-fullscreen false
+  open-on-workspace "browser"
+}
+
+// Game launchers
+window-rule {
+  match app-id="^steam$"
+  match app-id="^steam_app_.*"
+  match app-id="^heroic$"
+  match app-id="^lutris$"
+  match app-id="^bottles$"
+  match app-id="^net.davidotek.pupgui2$"
+  match app-id="^com.usebottles.bottles$"
+  match app-id="^prismlauncher$"
+  match app-id="^r2modman$"
+  open-on-workspace "games"
+}
+
+// Games
+window-rule {
+  match app-id="^factorio$"
+  open-on-workspace "games"
+  open-focused true
 }
 
 window-rule {
@@ -125,6 +176,7 @@ window-rule {
   default-window-height { fixed 405; }
 }
 
+
 debug {
   // Allows notification actions and window activation from Noctalia.
   honor-xdg-activation-with-invalid-serial
@@ -133,15 +185,16 @@ debug {
 // ========================================
 // STARTUP
 // ========================================
-//spawn-at-startup "waybar"
 spawn-at-startup "qs" "-c" "noctalia-shell"
-//spawn-at-startup "dunst"
 spawn-at-startup "wl-paste" "--type" "text" "--watch" "cliphist" "store"
 spawn-at-startup "wl-paste" "--type" "image" "--watch" "cliphist" "store"
 spawn-at-startup "solaar" "--window=hide"
 spawn-at-startup "xwayland-satellite"
 spawn-at-startup "swayidle" "-w" "timeout" "600" "niri msg action power-off-monitors" "resume" "niri msg action power-on-monitors"
 spawn-at-startup "systemctl" "--user" "import-environment" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP"
+spawn-at-startup "kitty"
+spawn-at-startup "zen-browser"
+
 // ========================================
 // KEYBINDS
 // ========================================

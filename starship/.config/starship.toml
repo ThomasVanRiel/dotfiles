@@ -21,9 +21,9 @@ $haskell\
 $python\
 [❯](fg:green)\
 $time\
-[ ](fg:lavender)\
 $cmd_duration\
 $line_break\
+[ ](fg:lavender)\
 $character"""
 
 palette = 'catppuccin_mocha'
@@ -79,7 +79,7 @@ truncation_symbol = "…/"
 # "Pictures" = ""
 
 [git_branch]
-symbol = ""
+symbol = "󰊢"
 format = '[[ $symbol $branch ](fg:yellow)]($style)'
 
 [git_status]
@@ -150,11 +150,11 @@ vimcmd_visual_symbol = '[❮](bold fg:yellow)'
 
 [cmd_duration]
 show_milliseconds = false
-format = " in $duration "
+format = '[[ took $duration](fg:overlay0)]($style)'
 style = "bg:lavender"
-disabled = true
+disabled = false
 show_notifications = true
-min_time_to_notify = 45000
+min_time_to_notify = 1000
 
 [palettes.catppuccin_mocha]
 rosewater = "#f5e0dc"
