@@ -153,8 +153,9 @@ show_milliseconds = false
 format = '[[ took $duration](fg:overlay0)]($style)'
 style = "bg:lavender"
 disabled = false
+min_time = 2000
 show_notifications = true
-min_time_to_notify = 1000
+min_time_to_notify = 60000
 
 [palettes.catppuccin_mocha]
 rosewater = "#f5e0dc"
