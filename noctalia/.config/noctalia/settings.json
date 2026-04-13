@@ -742,7 +742,7 @@
     },
     "ui": {
         "boxBorderEnabled": false,
-        "fontDefault": "JetBrainsMono NF",
+        "fontDefault": "Fira Sans Medium",
         "fontDefaultScale": 1.1,
         "fontFixed": "JetBrainsMono NF",
         "fontFixedScale": 1,

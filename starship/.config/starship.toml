@@ -2,6 +2,7 @@
 
 add_newline = false
 
+# environments and versions in an optional block to handle optional space between ❯❯ (no space when no environments in dir)
 format = """
 $username\
 $hostname\
@@ -10,15 +11,7 @@ $directory\
 $git_branch\
 $git_status\
 [❯](fg:yellow)\
-$c\
-$rust\
-$golang\
-$nodejs\
-$php\
-$java\
-$kotlin\
-$haskell\
-$python\
+($c$rust$golang$nodejs$php$java$kotlin$haskell$python )\
 [❯](fg:green)\
 $time\
 $cmd_duration\
@@ -87,39 +80,39 @@ format = '[[($all_status$ahead_behind )](fg:yellow)]($style)'
 
 [nodejs]
 symbol = ""
-format = '[[ $symbol( $version) ](fg:green)]($style)'
+format = '[[ $symbol( $version)](fg:green)]($style)'
 
 [c]
 symbol = " "
-format = '[[ $symbol( $version) ](fg:green)]($style)'
+format = '[[ $symbol( $version)](fg:green)]($style)'
 
 [rust]
 symbol = ""
-format = '[[ $symbol( $version) ](fg:green)]($style)'
+format = '[[ $symbol( $version)](fg:green)]($style)'
 
 [golang]
 symbol = ""
-format = '[[ $symbol( $version) ](fg:green)]($style)'
+format = '[[ $symbol( $version)](fg:green)]($style)'
 
 [php]
 symbol = ""
-format = '[[ $symbol( $version) ](fg:green)]($style)'
+format = '[[ $symbol( $version)](fg:green)]($style)'
 
 [java]
 symbol = " "
-format = '[[ $symbol( $version) ](fg:green)]($style)'
+format = '[[ $symbol( $version)](fg:green)]($style)'
 
 [kotlin]
 symbol = ""
-format = '[[ $symbol( $version) ](fg:green)]($style)'
+format = '[[ $symbol( $version)](fg:green)]($style)'
 
 [haskell]
 symbol = ""
-format = '[[ $symbol( $version) ](fg:green)]($style)'
+format = '[[ $symbol( $version)](fg:green)]($style)'
 
 [python]
 symbol = ""
-format = '[[ $symbol( $version) (\($virtualenv\)) ](fg:green)]($style)'
+format = '[[ $symbol( $version)( \($virtualenv\))](fg:green)]($style)'
 
 [docker_context]
 symbol = ""
