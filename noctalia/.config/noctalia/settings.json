@@ -53,7 +53,7 @@
         "density": "comfortable",
         "displayMode": "always_visible",
         "enableExclusionZoneInset": true,
-        "fontScale": 1,
+        "fontScale": 1.2,
         "frameRadius": 12,
         "frameThickness": 8,
         "hideOnOverview": true,
@@ -105,7 +105,7 @@
             ],
             "left": [
                 {
-                    "compactMode": false,
+                    "compactMode": true,
                     "diskPath": "/",
                     "iconColor": "none",
                     "id": "SystemMonitor",
@@ -235,7 +235,7 @@
         "manualSunrise": "06:30",
         "manualSunset": "18:30",
         "monitorForColors": "",
-        "predefinedScheme": "Catppuccin",
+        "predefinedScheme": "Catppuccin Blue",
         "schedulingMode": "off",
         "syncGsettings": true,
         "useWallpaperColors": false
