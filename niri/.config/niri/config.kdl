@@ -169,6 +169,11 @@ window-rule {
 }
 
 window-rule {
+  match app-id="^swayimg$"
+  open-floating true
+}
+
+window-rule {
   match title="^Picture-in-Picture$"
   open-floating true
   draw-border-with-background false

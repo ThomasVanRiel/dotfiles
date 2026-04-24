@@ -16,7 +16,7 @@
         "enableWindowsSearch": true,
         "iconMode": "tabler",
         "ignoreMouseInput": false,
-        "overviewLayer": false,
+        "overviewLayer": true,
         "pinnedApps": [
             "factorio",
             "firefox",
@@ -144,22 +144,6 @@
             ],
             "right": [
                 {
-                    "compactMode": false,
-                    "hideMode": "hidden",
-                    "hideWhenIdle": false,
-                    "id": "MediaMini",
-                    "maxWidth": 1000,
-                    "panelShowAlbumArt": true,
-                    "scrollingMode": "hover",
-                    "showAlbumArt": false,
-                    "showArtistFirst": true,
-                    "showProgressRing": true,
-                    "showVisualizer": true,
-                    "textColor": "none",
-                    "useFixedWidth": false,
-                    "visualizerType": "linear"
-                },
-                {
                     "blacklist": [
                     ],
                     "chevronColor": "none",
@@ -197,6 +181,7 @@
                 {
                     "colorizeDistroLogo": false,
                     "colorizeSystemIcon": "error",
+                    "colorizeSystemText": "none",
                     "customIconPath": "",
                     "enableColorization": true,
                     "icon": "user-screen",
@@ -743,7 +728,7 @@
     "ui": {
         "boxBorderEnabled": false,
         "fontDefault": "Fira Sans Medium",
-        "fontDefaultScale": 1.1,
+        "fontDefaultScale": 1,
         "fontFixed": "JetBrainsMono NF",
         "fontFixedScale": 1,
         "panelBackgroundOpacity": 1,
