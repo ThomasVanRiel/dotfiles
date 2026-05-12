@@ -12,3 +12,24 @@ venv() {
     source .venv/bin/activate
   fi
 }
+
+pacup() {
+  local updates
+  updates=$(checkupdates)
+  if [[ -z "$updates" ]]; then
+    echo "No updates available."
+    return 0
+  fi
+  print -r -- "$updates" | awk '
+    function strip(v,   r) { r=v; sub(/^[0-9]+:/,"",r); sub(/-[^-]*$/,"",r); return r }
+    BEGIN { RED="\033[1;31m"; ORANGE="\033[38;5;208m"; GREEN="\033[32m"; RST="\033[0m" }
+    {
+      split(strip($2), o, /[.+_]/); split(strip($4), n, /[.+_]/)
+      if      (o[1] != n[1]) { c=RED;    l="MAJOR" }
+      else if (o[2] != n[2]) { c=ORANGE; l="minor" }
+      else                   { c=GREEN;  l="patch" }
+      printf "%s%-6s%s  %s\n", c, l, RST, $0
+    }'
+  echo
+  read -q "?Proceed with pacman -Syu? [y/N] " && echo && sudo pacman -Syu
+}
