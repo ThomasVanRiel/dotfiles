@@ -33,3 +33,8 @@ pacup() {
   echo
   read -q "?Proceed with pacman -Syu? [y/N] " && echo && sudo pacman -Syu
 }
+alias pipi="pip"
+alias wgup="sudo WG_QUICK_USERSPACE_IMPLEMENTATION=wireguard-go wg-quick up surfshark"
+alias wgdown="sudo WG_QUICK_USERSPACE_IMPLEMENTATION=wireguard-go wg-quick down surfshark"
+alias wgstat="sudo wg show"
+
