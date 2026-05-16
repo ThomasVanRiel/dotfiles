@@ -11,6 +11,8 @@
 # Usage:
 #   ingest <event-name> [options]
 #   ingest -i [options]
+#   ingest --rebuild-index           # scan library, rebuild content index
+#   ingest --update-index            # add only files missing from the index
 #
 # Examples:
 #   ingest chickens
@@ -19,6 +21,8 @@
 #   ingest -i --gap 6              # interactive, 6h gap
 #   ingest chickens --dry-run
 #   ingest chickens --darktable    # also import into darktable library
+#   ingest --rebuild-index         # backfill index for existing library
+#   ingest --update-index          # incremental: only hash uncatalogued files
 #
 # Requirements: bash, exiftool, rsync, coreutils, udisks2 (for auto-mount)
 # Optional:     gphoto2 (for USB/PTP), darktable (only if --darktable used)
@@ -82,6 +86,7 @@ DRY_RUN=0
 DARKTABLE_IMPORT=0
 INTERACTIVE=0
 GAP_HOURS="$DEFAULT_GAP_HOURS"
+INDEX_MODE=""  # empty | rebuild | update
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -91,6 +96,8 @@ while [[ $# -gt 0 ]]; do
         --gap)             GAP_HOURS="$2"; shift 2 ;;
         --dry-run)         DRY_RUN=1; shift ;;
         --darktable)       DARKTABLE_IMPORT=1; shift ;;
+        --rebuild-index)   INDEX_MODE="rebuild"; shift ;;
+        --update-index)    INDEX_MODE="update"; shift ;;
         -*)                die "unknown option: $1" ;;
         *)
             if [[ -z "$EVENT" ]]; then
@@ -103,7 +110,11 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-if [[ $INTERACTIVE -eq 0 && -z "$EVENT" ]]; then
+# Index-only modes don't need an event or source
+if [[ -n "$INDEX_MODE" ]]; then
+    [[ -n "$EVENT" ]] && die "$INDEX_MODE mode doesn't take an event name"
+    [[ $INTERACTIVE -eq 1 ]] && die "$INDEX_MODE mode is incompatible with -i"
+elif [[ $INTERACTIVE -eq 0 && -z "$EVENT" ]]; then
     die "must supply an event name, or use -i for interactive clustering. See --help."
 fi
 if [[ $INTERACTIVE -eq 1 && -n "$EVENT" ]]; then
@@ -127,6 +138,111 @@ require rsync rsync
 
 mkdir -p "$LOG_DIR"
 log "=== ingest started: interactive=$INTERACTIVE, event='${DEFAULT_EVENT_SLUG:-<prompted>}', dry_run=$DRY_RUN ==="
+
+# ---------- content index (cross-folder dedup) ----------
+# Tab-separated: <size>\t<sha256>\t<path_in_library>
+# Lookups use size as the key, so we partition the file into one bash assoc
+# array (SEEN_HASHES) keyed by "<size>:<sha256>" for O(1) lookup.
+INDEX_FILE="$LOG_DIR/content-index.tsv"
+declare -A SEEN_HASHES         # key "size:sha256" -> library path
+declare -A SEEN_SIZES          # key "size"        -> "1" (does any file of this size exist?)
+
+if [[ -f "$INDEX_FILE" ]]; then
+    while IFS=$'\t' read -r idx_size idx_sum idx_path; do
+        [[ -n "$idx_size" && -n "$idx_sum" ]] || continue
+        SEEN_HASHES["${idx_size}:${idx_sum}"]="$idx_path"
+        SEEN_SIZES["$idx_size"]=1
+    done < "$INDEX_FILE"
+    log "loaded ${#SEEN_HASHES[@]} entries from content index"
+fi
+
+# Append a new entry to the index (in memory and on disk)
+index_add() {
+    local size="$1" sum="$2" path="$3"
+    SEEN_HASHES["${size}:${sum}"]="$path"
+    SEEN_SIZES["$size"]=1
+    [[ $DRY_RUN -eq 0 ]] && printf '%s\t%s\t%s\n' "$size" "$sum" "$path" >> "$INDEX_FILE"
+}
+
+# ---------- rebuild / update index modes ----------
+if [[ -n "$INDEX_MODE" ]]; then
+    [[ -d "$LIBRARY_ROOT" ]] || die "library does not exist: $LIBRARY_ROOT"
+
+    # Find all media files in the library (same extension list as ingest)
+    ALL_LIB_EXTS=("${RAW_EXTS[@]}" "${JPG_EXTS[@]}" "${VIDEO_EXTS[@]}")
+    find_args=()
+    for ext in "${ALL_LIB_EXTS[@]}"; do
+        find_args+=(-iname "*.$ext" -o)
+    done
+    unset 'find_args[${#find_args[@]}-1]'
+
+    log "scanning $LIBRARY_ROOT for media files..."
+    mapfile -d '' -t LIB_FILES < <(find "$LIBRARY_ROOT" -type f \( "${find_args[@]}" \) -print0)
+    log "found ${#LIB_FILES[@]} file(s) in library"
+
+    if [[ "$INDEX_MODE" == "rebuild" ]]; then
+        # Verify before destroying: write to a new file and atomic-rename at the end
+        NEW_INDEX_FILE="${INDEX_FILE}.new"
+        : > "$NEW_INDEX_FILE"
+        # Reset in-memory state to match what we're building
+        unset SEEN_HASHES SEEN_SIZES
+        declare -A SEEN_HASHES SEEN_SIZES
+        # Override index_add to write to the new file
+        index_add() {
+            local size="$1" sum="$2" path="$3"
+            SEEN_HASHES["${size}:${sum}"]="$path"
+            SEEN_SIZES["$size"]=1
+            [[ $DRY_RUN -eq 0 ]] && printf '%s\t%s\t%s\n' "$size" "$sum" "$path" >> "$NEW_INDEX_FILE"
+        }
+    fi
+
+    ADDED=0
+    SKIPPED_EXISTING=0
+    PROGRESS_EVERY=50
+    i=0
+    for path in "${LIB_FILES[@]}"; do
+        i=$((i+1))
+        size=$(stat -c %s "$path")
+
+        # Update mode: skip if this exact path is already in the index
+        # (we approximate by checking size; a hash collision is unlikely
+        # but for full correctness we'd need a path index — skip the
+        # hashing if any entry with this size points at this exact path)
+        if [[ "$INDEX_MODE" == "update" ]]; then
+            already=0
+            for key in "${!SEEN_HASHES[@]}"; do
+                [[ "${key%%:*}" == "$size" ]] || continue
+                [[ "${SEEN_HASHES[$key]}" == "$path" ]] && { already=1; break; }
+            done
+            if [[ $already -eq 1 ]]; then
+                SKIPPED_EXISTING=$((SKIPPED_EXISTING+1))
+                continue
+            fi
+        fi
+
+        sum=$(sha256sum "$path" | awk '{print $1}')
+        index_add "$size" "$sum" "$path"
+        ADDED=$((ADDED+1))
+
+        if (( i % PROGRESS_EVERY == 0 )); then
+            log "  progress: $i / ${#LIB_FILES[@]} scanned, $ADDED indexed"
+        fi
+    done
+
+    if [[ "$INDEX_MODE" == "rebuild" && $DRY_RUN -eq 0 ]]; then
+        mv "$NEW_INDEX_FILE" "$INDEX_FILE"
+        log "wrote $ADDED entries to $INDEX_FILE (replaced old index)"
+    elif [[ "$INDEX_MODE" == "update" ]]; then
+        log "added $ADDED new entries, skipped $SKIPPED_EXISTING already indexed"
+    else
+        # rebuild in dry-run
+        rm -f "$NEW_INDEX_FILE"
+        log "(dry-run) would have written $ADDED entries"
+    fi
+
+    log "=== index $INDEX_MODE complete ==="
+    exit 0
+fi
 
 # ---------- source detection ----------
 detect_unmounted_card() {
@@ -435,21 +551,53 @@ for f in "${SORTED_FILES[@]}"; do
     dest_dir="$LIBRARY_ROOT/$year/$month/$day-$slug/$subdir"
     dest_file="$dest_dir/$(basename "$f")"
 
-    # Dedup by checksum
-    if [[ -f "$dest_file" ]]; then
+    # Compute source size once; we'll need it for the index either way
+    src_size=$(stat -c %s "$f")
+    src_sum=""  # computed lazily, only if size matches something
+
+    # ---- Cross-library dedup (index lookup) ----
+    # Cheap pre-check: if no file of this size exists anywhere in the library,
+    # the index can't possibly have it. Skip the hash entirely.
+    if [[ -n "${SEEN_SIZES[$src_size]:-}" ]]; then
         src_sum=$(sha256sum "$f" | awk '{print $1}')
-        dst_sum=$(sha256sum "$dest_file" | awk '{print $1}')
-        if [[ "$src_sum" == "$dst_sum" ]]; then
+        existing="${SEEN_HASHES[${src_size}:${src_sum}]:-}"
+        if [[ -n "$existing" && -f "$existing" ]]; then
+            log "already in library at $existing — skipping $(basename "$f")"
             SKIPPED=$((SKIPPED+1))
             continue
-        else
-            log "warn: $dest_file exists with different content; renaming new copy"
-            base="${dest_file%.*}"
-            ext="${dest_file##*.}"
-            i=1
-            while [[ -f "${base}_${i}.${ext}" ]]; do i=$((i+1)); done
-            dest_file="${base}_${i}.${ext}"
         fi
+    fi
+
+    # ---- Per-folder dedup (cheap stat check first) ----
+    if [[ -f "$dest_file" ]]; then
+        dst_size=$(stat -c %s "$dest_file")
+        if [[ "$src_size" == "$dst_size" ]]; then
+            src_mtime=$(stat -c %Y "$f")
+            dst_mtime=$(stat -c %Y "$dest_file")
+            if [[ "$src_mtime" == "$dst_mtime" ]]; then
+                # Same size, same mtime — overwhelmingly likely to be the same file
+                # Index it if not already there (heals an out-of-date index)
+                [[ -z "$src_sum" ]] && src_sum=$(sha256sum "$f" | awk '{print $1}')
+                [[ -z "${SEEN_HASHES[${src_size}:${src_sum}]:-}" ]] && index_add "$src_size" "$src_sum" "$dest_file"
+                SKIPPED=$((SKIPPED+1))
+                continue
+            fi
+            # Size matches but mtime differs — verify with checksum
+            [[ -z "$src_sum" ]] && src_sum=$(sha256sum "$f" | awk '{print $1}')
+            dst_sum=$(sha256sum "$dest_file" | awk '{print $1}')
+            if [[ "$src_sum" == "$dst_sum" ]]; then
+                [[ -z "${SEEN_HASHES[${src_size}:${src_sum}]:-}" ]] && index_add "$src_size" "$src_sum" "$dest_file"
+                SKIPPED=$((SKIPPED+1))
+                continue
+            fi
+        fi
+        # Different size or different checksum — keep both with a suffix
+        log "warn: $dest_file exists with different content; renaming new copy"
+        base="${dest_file%.*}"
+        ext="${dest_file##*.}"
+        i=1
+        while [[ -f "${base}_${i}.${ext}" ]]; do i=$((i+1)); done
+        dest_file="${base}_${i}.${ext}"
     fi
 
     DEST_DIRS_TOUCHED["$LIBRARY_ROOT/$year/$month/$day-$slug"]=1
@@ -460,6 +608,10 @@ for f in "${SORTED_FILES[@]}"; do
         mkdir -p "$dest_dir"
         rsync -t --partial "$f" "$dest_file"
         log "copied $(basename "$f") -> $year/$month/$day-$slug/$subdir/"
+        # Record in the content index for future cross-library dedup.
+        # We may not have computed the hash yet (the file was new); do so now.
+        [[ -z "$src_sum" ]] && src_sum=$(sha256sum "$dest_file" | awk '{print $1}')
+        index_add "$src_size" "$src_sum" "$dest_file"
     fi
     COPIED=$((COPIED+1))
 done
