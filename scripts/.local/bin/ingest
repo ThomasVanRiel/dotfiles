@@ -1,0 +1,486 @@
+#!/usr/bin/env bash
+# ingest — pull photos from camera card or USB into a date-organized library
+#
+# Default behavior: one event per day. Pass an event name on the command line
+# and every file gets sorted into $LIBRARY/YYYY/MM/DD-event/{raw,jpg,video}/
+#
+# Interactive mode (-i): scans the source, clusters shots by time gaps,
+# and prompts for one event name per cluster — all up front, so you can
+# walk away while it copies.
+#
+# Usage:
+#   ingest <event-name> [options]
+#   ingest -i [options]
+#
+# Examples:
+#   ingest chickens
+#   ingest chickens --source /run/media/$USER/EOS_DIGITAL
+#   ingest -i                      # interactive, default 4h gap
+#   ingest -i --gap 6              # interactive, 6h gap
+#   ingest chickens --dry-run
+#   ingest chickens --darktable    # also import into darktable library
+#
+# Requirements: bash, exiftool, rsync, coreutils, udisks2 (for auto-mount)
+# Optional:     gphoto2 (for USB/PTP), darktable (only if --darktable used)
+
+set -euo pipefail
+
+# ---------- configuration ----------
+LIBRARY_ROOT="${PHOTO_LIBRARY:-$HOME/Pictures/library}"
+LOG_DIR="$HOME/.local/share/photo-ingest"
+LOG_FILE="$LOG_DIR/ingest.log"
+# File extensions classified by type
+RAW_EXTS=(cr3 cr2 nef arw raf orf rw2 dng)
+JPG_EXTS=(jpg jpeg heic heif)
+VIDEO_EXTS=(mp4 mov mxf)
+SIDECAR_EXTS=(xmp)
+# Default time gap (hours) between shots to consider a new cluster (interactive mode)
+DEFAULT_GAP_HOURS=4
+# Camera card layout
+CARD_DCIM_PATH="DCIM"
+# ------------------------------------
+
+# ---------- helpers ----------
+log() {
+    local msg="[$(date '+%Y-%m-%d %H:%M:%S')] $*"
+    echo "$msg" | tee -a "$LOG_FILE" >&2
+}
+
+die() {
+    log "ERROR: $*"
+    exit 1
+}
+
+usage() {
+    sed -n '2,25p' "$0" | sed 's/^# \?//'
+    exit "${1:-0}"
+}
+
+require() {
+    command -v "$1" >/dev/null 2>&1 || die "missing required tool: $1 (install with: sudo pacman -S $2)"
+}
+
+slugify() {
+    echo "$1" | tr '[:upper:] ' '[:lower:]-' | tr -cd 'a-z0-9-' | sed 's/--*/-/g; s/^-//; s/-$//'
+}
+
+# Classify a file by extension: prints raw|jpg|video|sidecar|other
+classify() {
+    local ext="${1##*.}"
+    ext="${ext,,}"
+    for e in "${RAW_EXTS[@]}";     do [[ "$ext" == "$e" ]] && { echo raw; return; }; done
+    for e in "${JPG_EXTS[@]}";     do [[ "$ext" == "$e" ]] && { echo jpg; return; }; done
+    for e in "${VIDEO_EXTS[@]}";   do [[ "$ext" == "$e" ]] && { echo video; return; }; done
+    for e in "${SIDECAR_EXTS[@]}"; do [[ "$ext" == "$e" ]] && { echo sidecar; return; }; done
+    echo other
+}
+
+# ---------- argument parsing ----------
+EVENT=""
+SOURCE=""
+DRY_RUN=0
+DARKTABLE_IMPORT=0
+INTERACTIVE=0
+GAP_HOURS="$DEFAULT_GAP_HOURS"
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -h|--help)         usage 0 ;;
+        -i|--interactive)  INTERACTIVE=1; shift ;;
+        --source)          SOURCE="$2"; shift 2 ;;
+        --gap)             GAP_HOURS="$2"; shift 2 ;;
+        --dry-run)         DRY_RUN=1; shift ;;
+        --darktable)       DARKTABLE_IMPORT=1; shift ;;
+        -*)                die "unknown option: $1" ;;
+        *)
+            if [[ -z "$EVENT" ]]; then
+                EVENT="$1"
+            else
+                die "unexpected argument: $1 (event already set to '$EVENT')"
+            fi
+            shift
+            ;;
+    esac
+done
+
+if [[ $INTERACTIVE -eq 0 && -z "$EVENT" ]]; then
+    die "must supply an event name, or use -i for interactive clustering. See --help."
+fi
+if [[ $INTERACTIVE -eq 1 && -n "$EVENT" ]]; then
+    die "don't pass an event name with -i (you'll be prompted per cluster)"
+fi
+
+# Validate gap
+if ! [[ "$GAP_HOURS" =~ ^[0-9]+$ ]] || [[ "$GAP_HOURS" -lt 1 ]]; then
+    die "--gap must be a positive integer (hours), got: $GAP_HOURS"
+fi
+
+DEFAULT_EVENT_SLUG=""
+if [[ -n "$EVENT" ]]; then
+    DEFAULT_EVENT_SLUG=$(slugify "$EVENT")
+    [[ -z "$DEFAULT_EVENT_SLUG" ]] && die "event name produced empty slug after sanitization: '$EVENT'"
+fi
+
+# ---------- dependency checks ----------
+require exiftool perl-image-exiftool
+require rsync rsync
+
+mkdir -p "$LOG_DIR"
+log "=== ingest started: interactive=$INTERACTIVE, event='${DEFAULT_EVENT_SLUG:-<prompted>}', dry_run=$DRY_RUN ==="
+
+# ---------- source detection ----------
+detect_unmounted_card() {
+    command -v lsblk >/dev/null 2>&1 || return 1
+    command -v udisksctl >/dev/null 2>&1 || return 1
+
+    local line dev fstype label mountpoint rm
+    while IFS= read -r line; do
+        # Extract each KEY="value" using bash regex (no sed quirks, no eval)
+        dev=""; fstype=""; label=""; mountpoint=""; rm=""
+        [[ $line =~ NAME=\"([^\"]*)\" ]]       && dev="${BASH_REMATCH[1]}"
+        [[ $line =~ FSTYPE=\"([^\"]*)\" ]]     && fstype="${BASH_REMATCH[1]}"
+        [[ $line =~ LABEL=\"([^\"]*)\" ]]      && label="${BASH_REMATCH[1]}"
+        [[ $line =~ MOUNTPOINT=\"([^\"]*)\" ]] && mountpoint="${BASH_REMATCH[1]}"
+        [[ $line =~ RM=\"([^\"]*)\" ]]         && rm="${BASH_REMATCH[1]}"
+
+        # Skip if not removable
+        [[ "$rm" == "1" ]] || continue
+        # Skip if already mounted
+        [[ -z "$mountpoint" ]] || continue
+        # Only FAT/exFAT (what Canon writes)
+        case "$fstype" in
+            vfat|exfat|fat32) ;;
+            *) continue ;;
+        esac
+
+        log "found unmounted removable device: $dev (label='$label', fs=$fstype)"
+        local mount_output
+        mount_output=$(udisksctl mount -b "$dev" --no-user-interaction 2>&1) || {
+            log "warn: failed to mount $dev: $mount_output"
+            continue
+        }
+        local mount_path
+        mount_path=$(echo "$mount_output" | grep -oP '(?<= at )/.*$' | sed 's/\.$//')
+        if [[ -d "$mount_path/$CARD_DCIM_PATH" ]]; then
+            MOUNTED_BY_US="$dev"
+            echo "$mount_path/$CARD_DCIM_PATH"
+            return 0
+        else
+            log "$mount_path has no DCIM folder; unmounting again"
+            udisksctl unmount -b "$dev" --no-user-interaction >/dev/null 2>&1 || true
+        fi
+    done < <(lsblk -pP -o NAME,FSTYPE,LABEL,MOUNTPOINT,RM)
+
+    return 1
+}
+
+detect_card() {
+    local mount_roots=(
+        "/run/media/$USER"
+        "/media/$USER"
+        "/mnt"
+    )
+    for root in "${mount_roots[@]}"; do
+        [[ -d "$root" ]] || continue
+        while IFS= read -r -d '' candidate; do
+            echo "$candidate"
+            return 0
+        done < <(find "$root" -maxdepth 2 -type d -name "$CARD_DCIM_PATH" -print0 2>/dev/null)
+    done
+    detect_unmounted_card
+}
+
+detect_camera_usb() {
+    command -v gphoto2 >/dev/null 2>&1 || return 1
+    gphoto2 --auto-detect 2>/dev/null | grep -qE 'Canon|EOS' || return 1
+    echo "gphoto2"
+}
+
+MOUNTED_BY_US=""
+STAGING_DIR=""
+cleanup() {
+    [[ -n "$STAGING_DIR" && -d "$STAGING_DIR" ]] && rm -rf "$STAGING_DIR"
+    if [[ -n "$MOUNTED_BY_US" ]]; then
+        log "unmounting $MOUNTED_BY_US (we mounted it, we unmount it)"
+        udisksctl unmount -b "$MOUNTED_BY_US" --no-user-interaction >/dev/null 2>&1 || true
+    fi
+}
+trap cleanup EXIT
+
+if [[ -z "$SOURCE" ]]; then
+    log "auto-detecting source..."
+    if SOURCE=$(detect_card); then
+        log "source: $SOURCE"
+        SOURCE_TYPE="card"
+    elif SOURCE=$(detect_camera_usb); then
+        log "source: USB (gphoto2)"
+        SOURCE_TYPE="usb"
+    else
+        die "no card or USB camera detected. Plug in your card reader/camera or pass --source PATH"
+    fi
+else
+    if [[ -d "$SOURCE" ]]; then
+        SOURCE_TYPE="card"
+        [[ -d "$SOURCE/$CARD_DCIM_PATH" ]] && SOURCE="$SOURCE/$CARD_DCIM_PATH"
+    else
+        die "source path does not exist: $SOURCE"
+    fi
+fi
+
+# Stage USB transfers to a temp dir, then treat like card ingest
+if [[ "$SOURCE_TYPE" == "usb" ]]; then
+    STAGING_DIR=$(mktemp -d -t photo-ingest-XXXXXX)
+    log "staging USB transfer to: $STAGING_DIR"
+    if [[ $DRY_RUN -eq 1 ]]; then
+        log "(dry-run) would gphoto2 --get-all-files into $STAGING_DIR"
+    else
+        ( cd "$STAGING_DIR" && gphoto2 --get-all-files --skip-existing 2>&1 | tail -5 )
+    fi
+    SOURCE="$STAGING_DIR"
+fi
+
+# ---------- scan ----------
+log "scanning $SOURCE..."
+
+# Build the find expression: all known extensions
+ALL_EXTS=("${RAW_EXTS[@]}" "${JPG_EXTS[@]}" "${VIDEO_EXTS[@]}" "${SIDECAR_EXTS[@]}")
+find_args=()
+for ext in "${ALL_EXTS[@]}"; do
+    find_args+=(-iname "*.$ext" -o)
+done
+unset 'find_args[${#find_args[@]}-1]'
+
+mapfile -d '' -t FILES < <(find "$SOURCE" -type f \( "${find_args[@]}" \) -print0 | sort -z)
+
+if [[ ${#FILES[@]} -eq 0 ]]; then
+    log "no media files found. nothing to do."
+    exit 0
+fi
+
+log "found ${#FILES[@]} candidate file(s); reading EXIF timestamps..."
+
+# Extract timestamps in one exiftool call for speed
+# Output: filepath<TAB>YYYY-MM-DD HH:MM:SS
+TIMESTAMP_FILE=$(mktemp)
+trap 'rm -f "$TIMESTAMP_FILE"; cleanup' EXIT
+
+exiftool -q -q -fast2 -p '$Directory/$FileName	${DateTimeOriginal#;DateFmt("%Y-%m-%d %H:%M:%S")}' \
+    "${FILES[@]}" 2>/dev/null > "$TIMESTAMP_FILE" || true
+
+# Fall back to mtime for files exiftool couldn't read
+declare -A FILE_EPOCH
+declare -A FILE_DATE
+while IFS=$'\t' read -r path ts; do
+    [[ -z "$path" || -z "$ts" ]] && continue
+    FILE_EPOCH["$path"]=$(date -d "$ts" +%s 2>/dev/null || echo 0)
+    FILE_DATE["$path"]=${ts%% *}
+done < "$TIMESTAMP_FILE"
+
+for f in "${FILES[@]}"; do
+    if [[ -z "${FILE_EPOCH[$f]:-}" || "${FILE_EPOCH[$f]}" == "0" ]]; then
+        FILE_EPOCH["$f"]=$(stat -c %Y "$f")
+        FILE_DATE["$f"]=$(date -d "@${FILE_EPOCH[$f]}" +%Y-%m-%d)
+    fi
+done
+
+# ---------- plan: assign each file to a (date, event-slug) bucket ----------
+# We build two parallel arrays sorted by epoch:
+#   SORTED_FILES[i] -> file path
+#   SORTED_EPOCHS[i] -> capture epoch
+mapfile -t SORTED_FILES < <(
+    for f in "${FILES[@]}"; do
+        printf '%s\t%s\n' "${FILE_EPOCH[$f]}" "$f"
+    done | sort -n | cut -f2-
+)
+
+declare -A FILE_SLUG  # path -> event slug
+
+if [[ $INTERACTIVE -eq 0 ]]; then
+    # Default: every file uses the same event slug under its capture date
+    for f in "${SORTED_FILES[@]}"; do
+        FILE_SLUG["$f"]="$DEFAULT_EVENT_SLUG"
+    done
+
+    # Show summary of dates we'll create
+    declare -A DATE_COUNTS
+    for f in "${SORTED_FILES[@]}"; do
+        DATE_COUNTS["${FILE_DATE[$f]}"]=$(( ${DATE_COUNTS["${FILE_DATE[$f]}"]:-0} + 1 ))
+    done
+    echo
+    echo "Plan:"
+    for d in $(echo "${!DATE_COUNTS[@]}" | tr ' ' '\n' | sort); do
+        printf "  %s/%s-%s   %d file(s)\n" "${d//-//}" "$(date -d "$d" +%d)" "$DEFAULT_EVENT_SLUG" "${DATE_COUNTS[$d]}"
+    done
+    echo
+
+else
+    # Interactive: cluster by time gap, prompt for each cluster
+    GAP_SEC=$((GAP_HOURS * 3600))
+
+    # Build clusters
+    CLUSTERS=()       # parallel arrays: each entry is "first_epoch|last_epoch|count"
+    CLUSTER_FILES=()  # newline-separated file lists, one string per cluster
+    current_files=""
+    current_first=""
+    current_last=""
+    current_count=0
+    prev_epoch=0
+
+    for f in "${SORTED_FILES[@]}"; do
+        epoch=${FILE_EPOCH[$f]}
+        if [[ $current_count -eq 0 ]]; then
+            current_first=$epoch
+            current_files="$f"
+            current_count=1
+        elif (( epoch - prev_epoch > GAP_SEC )); then
+            # Close current cluster
+            CLUSTERS+=("$current_first|$prev_epoch|$current_count")
+            CLUSTER_FILES+=("$current_files")
+            # Start new
+            current_first=$epoch
+            current_files="$f"
+            current_count=1
+        else
+            current_files="$current_files"$'\n'"$f"
+            current_count=$((current_count + 1))
+        fi
+        prev_epoch=$epoch
+        current_last=$epoch
+    done
+    # Flush the last cluster
+    if [[ $current_count -gt 0 ]]; then
+        CLUSTERS+=("$current_first|$current_last|$current_count")
+        CLUSTER_FILES+=("$current_files")
+    fi
+
+    echo
+    echo "Detected ${#CLUSTERS[@]} cluster(s) using a ${GAP_HOURS}h gap threshold."
+    echo "You'll be asked for an event name for each cluster."
+    echo "Empty answer = bucket into 'general' (nothing is ever skipped)."
+    echo
+
+    # Prompt for each cluster up front
+    declare -a CLUSTER_SLUGS=()
+    for i in "${!CLUSTERS[@]}"; do
+        IFS='|' read -r first last count <<< "${CLUSTERS[$i]}"
+        first_human=$(date -d "@$first" '+%a %Y-%m-%d %H:%M')
+        last_human=$(date -d "@$last" '+%H:%M')
+        if [[ "$(date -d "@$first" +%Y-%m-%d)" != "$(date -d "@$last" +%Y-%m-%d)" ]]; then
+            last_human=$(date -d "@$last" '+%a %Y-%m-%d %H:%M')
+        fi
+        printf "  [%d/%d] %s → %s   %d file(s)\n" \
+            "$((i+1))" "${#CLUSTERS[@]}" "$first_human" "$last_human" "$count"
+
+        # Prompt; prefer /dev/tty so this works even with redirected stdin,
+        # but fall back to stdin if no controlling terminal (e.g. cron, ssh -T)
+        printf "       event name (empty = general): "
+        if { true >/dev/tty; } 2>/dev/null; then
+            read -r answer < /dev/tty || answer=""
+        else
+            read -r answer || answer=""
+        fi
+        slug=$(slugify "$answer")
+        if [[ -z "$slug" ]]; then
+            slug="general"
+            echo "       → general"
+        else
+            echo "       → $slug"
+        fi
+        CLUSTER_SLUGS+=("$slug")
+        echo
+    done
+
+    # Apply slugs back to FILE_SLUG (every cluster gets a slug now)
+    for i in "${!CLUSTER_FILES[@]}"; do
+        slug="${CLUSTER_SLUGS[$i]}"
+        while IFS= read -r f; do
+            [[ -n "$f" ]] && FILE_SLUG["$f"]="$slug"
+        done <<< "${CLUSTER_FILES[$i]}"
+    done
+
+    echo "Planning complete — starting copy. You can walk away now."
+    echo
+fi
+
+# ---------- copy ----------
+COPIED=0
+SKIPPED=0
+declare -A DEST_DIRS_TOUCHED
+
+for f in "${SORTED_FILES[@]}"; do
+    slug="${FILE_SLUG[$f]:-general}"  # safety fallback (shouldn't trigger)
+
+    date_taken="${FILE_DATE[$f]}"
+    year=${date_taken%%-*}
+    month=${date_taken:5:2}
+    day=${date_taken:8:2}
+
+    category=$(classify "$f")
+    case "$category" in
+        raw|jpg|video) subdir="$category" ;;
+        sidecar)       subdir="raw" ;;  # XMPs live next to their RAWs
+        *)             subdir="other" ;;
+    esac
+
+    dest_dir="$LIBRARY_ROOT/$year/$month/$day-$slug/$subdir"
+    dest_file="$dest_dir/$(basename "$f")"
+
+    # Dedup by checksum
+    if [[ -f "$dest_file" ]]; then
+        src_sum=$(sha256sum "$f" | awk '{print $1}')
+        dst_sum=$(sha256sum "$dest_file" | awk '{print $1}')
+        if [[ "$src_sum" == "$dst_sum" ]]; then
+            SKIPPED=$((SKIPPED+1))
+            continue
+        else
+            log "warn: $dest_file exists with different content; renaming new copy"
+            base="${dest_file%.*}"
+            ext="${dest_file##*.}"
+            i=1
+            while [[ -f "${base}_${i}.${ext}" ]]; do i=$((i+1)); done
+            dest_file="${base}_${i}.${ext}"
+        fi
+    fi
+
+    DEST_DIRS_TOUCHED["$LIBRARY_ROOT/$year/$month/$day-$slug"]=1
+
+    if [[ $DRY_RUN -eq 1 ]]; then
+        log "(dry-run) $(basename "$f") -> $year/$month/$day-$slug/$subdir/"
+    else
+        mkdir -p "$dest_dir"
+        rsync -t --partial "$f" "$dest_file"
+        log "copied $(basename "$f") -> $year/$month/$day-$slug/$subdir/"
+    fi
+    COPIED=$((COPIED+1))
+done
+
+log "=== summary: $COPIED copied, $SKIPPED already in library ==="
+
+# ---------- darktable auto-import (opt-in) ----------
+if [[ $DARKTABLE_IMPORT -eq 1 ]] && [[ $DRY_RUN -eq 0 ]] && [[ $COPIED -gt 0 ]]; then
+    if command -v darktable >/dev/null 2>&1; then
+        if pgrep -x darktable >/dev/null; then
+            log "darktable is running; skipping CLI import (it'll see new files on next refresh)"
+        else
+            log "importing into darktable library..."
+            for dir in "${!DEST_DIRS_TOUCHED[@]}"; do
+                # Import the RAW subdir specifically; darktable will pick up sidecars
+                target="$dir/raw"
+                [[ -d "$target" ]] || target="$dir"
+                darktable --library "$HOME/.config/darktable/library.db" \
+                          --import "$target" \
+                          --configdir "$HOME/.config/darktable" \
+                          >/dev/null 2>&1 &
+                IMPORT_PID=$!
+                sleep 2
+                kill "$IMPORT_PID" 2>/dev/null || true
+                wait "$IMPORT_PID" 2>/dev/null || true
+            done
+            log "darktable import dispatched for ${#DEST_DIRS_TOUCHED[@]} folder(s)"
+        fi
+    else
+        log "darktable not installed; skipping library import"
+    fi
+fi
+
+log "=== ingest complete ==="
