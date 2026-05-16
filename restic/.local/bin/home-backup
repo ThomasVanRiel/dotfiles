@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# shellcheck source=/dev/null
+source "$HOME/.config/restic/env"
+
+restic backup "$HOME" \
+    --exclude-file="$HOME/.config/restic/excludes" \
+    --exclude-caches \
+    --one-file-system \
+    --tag daily \
+    --tag "$(hostname)"
+
+restic forget \
+    --keep-daily 7 \
+    --keep-weekly 4 \
+    --keep-monthly 6 \
+    --prune

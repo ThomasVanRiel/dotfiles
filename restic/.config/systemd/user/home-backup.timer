@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily restic backup of $HOME
+
+[Timer]
+OnStartupSec=15min
+OnUnitActiveSec=24h
+Persistent=true
+Unit=home-backup.service
+
+[Install]
+WantedBy=timers.target
