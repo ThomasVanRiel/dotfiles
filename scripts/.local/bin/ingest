@@ -162,7 +162,11 @@ detect_unmounted_card() {
         local mount_path
         mount_path=$(echo "$mount_output" | grep -oP '(?<= at )/.*$' | sed 's/\.$//')
         if [[ -d "$mount_path/$CARD_DCIM_PATH" ]]; then
-            MOUNTED_BY_US="$dev"
+            # Record what WE mounted so the parent shell can unmount on exit.
+            # We can't use a regular variable because this function runs in a
+            # subshell (called via command substitution), so writes to a state
+            # file that the parent reads.
+            echo "$dev" > "$MOUNT_STATE_FILE"
             echo "$mount_path/$CARD_DCIM_PATH"
             return 0
         else
@@ -196,13 +200,20 @@ detect_camera_usb() {
     echo "gphoto2"
 }
 
-MOUNTED_BY_US=""
+MOUNT_STATE_FILE=$(mktemp -t ingest-mount-XXXXXX)
 STAGING_DIR=""
+TIMESTAMP_FILE=""
 cleanup() {
     [[ -n "$STAGING_DIR" && -d "$STAGING_DIR" ]] && rm -rf "$STAGING_DIR"
-    if [[ -n "$MOUNTED_BY_US" ]]; then
-        log "unmounting $MOUNTED_BY_US (we mounted it, we unmount it)"
-        udisksctl unmount -b "$MOUNTED_BY_US" --no-user-interaction >/dev/null 2>&1 || true
+    [[ -n "$TIMESTAMP_FILE" && -f "$TIMESTAMP_FILE" ]] && rm -f "$TIMESTAMP_FILE"
+    if [[ -f "$MOUNT_STATE_FILE" ]]; then
+        local mounted_dev
+        mounted_dev=$(cat "$MOUNT_STATE_FILE" 2>/dev/null)
+        if [[ -n "$mounted_dev" ]]; then
+            log "unmounting $mounted_dev (we mounted it, we unmount it)"
+            udisksctl unmount -b "$mounted_dev" --no-user-interaction >/dev/null 2>&1 || true
+        fi
+        rm -f "$MOUNT_STATE_FILE"
     fi
 }
 trap cleanup EXIT
@@ -261,8 +272,7 @@ log "found ${#FILES[@]} candidate file(s); reading EXIF timestamps..."
 
 # Extract timestamps in one exiftool call for speed
 # Output: filepath<TAB>YYYY-MM-DD HH:MM:SS
-TIMESTAMP_FILE=$(mktemp)
-trap 'rm -f "$TIMESTAMP_FILE"; cleanup' EXIT
+TIMESTAMP_FILE=$(mktemp -t ingest-timestamps-XXXXXX)
 
 exiftool -q -q -fast2 -p '$Directory/$FileName	${DateTimeOriginal#;DateFmt("%Y-%m-%d %H:%M:%S")}' \
     "${FILES[@]}" 2>/dev/null > "$TIMESTAMP_FILE" || true
