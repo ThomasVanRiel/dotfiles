@@ -5,7 +5,6 @@
   "permissions": {
     "allow": []
   },
-  "model": "sonnet",
   "hooks": {
     "PreToolUse": [
       {
@@ -34,5 +33,9 @@
     "type": "command",
     "command": "npx ccburn collect | npx -y ccstatusline@latest",
     "padding": 0
-  }
+  },
+  "enabledPlugins": {
+    "rust-analyzer-lsp@claude-plugins-official": true
+  },
+  "model": "opus"
 }
