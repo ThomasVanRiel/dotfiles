@@ -36,7 +36,7 @@ input {
     xkb {
       layout "us"
       variant "altgr-intl"
-      options "caps:escape"
+      // options "caps:escape"
     }
     numlock
   }
@@ -199,6 +199,7 @@ spawn-at-startup "swayidle" "-w" "timeout" "600" "niri msg action power-off-moni
 spawn-at-startup "systemctl" "--user" "import-environment" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP"
 spawn-at-startup "kitty"
 spawn-at-startup "zen-browser"
+// spawn-at-startup "udiskie"
 
 // ========================================
 // KEYBINDS

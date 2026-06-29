@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $# -ne 2 ]]; then
+    echo "Usage: $(basename "$0") <source_dir/first_file> <target_dir>" >&2
+    exit 1
+fi
+
+start_path=$1
+target=$2
+
+src_dir=$(dirname "$start_path")
+start_file=$(basename "$start_path")
+
+if [[ ! -d "$src_dir" ]]; then
+    echo "Source directory not found: $src_dir" >&2
+    exit 1
+fi
+
+if [[ ! -e "$start_path" ]]; then
+    echo "Start file not found: $start_path" >&2
+    exit 1
+fi
+
+mkdir -p "$target"
+
+shopt -s nullglob
+found=0
+for f in $(printf '%s\n' "$src_dir"/* | LC_ALL=C sort); do
+    name=$(basename "$f")
+    if [[ $found -eq 0 && "$name" != "$start_file" ]]; then
+        continue
+    fi
+    found=1
+    [[ -f "$f" ]] || continue
+    cp -v -- "$f" "$target/"
+done
+
+if [[ $found -eq 0 ]]; then
+    echo "Start file not found in sorted listing." >&2
+    exit 1
+fi
