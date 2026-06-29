@@ -4,7 +4,7 @@
 
 -- Copy paths to the system clipboard
 vim.keymap.set("n", "<leader>fy", function()
-  local path = vim.fn.expand("%:p")
+  local path = vim.fn.expand("%:.")
   vim.fn.setreg("+", path)
   vim.notify("Copied file path: " .. path)
 end, { desc = "Copy file path" })
