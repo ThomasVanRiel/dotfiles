@@ -144,4 +144,7 @@ export NVM_DIR="$HOME/.nvm"
 . "$HOME/.cargo/env"
 
 # Load restic backup environment
-source ~/.config/restic/env
+[ -f "$HOME/.config/restic/env" ] && source "$HOME/.config/restic/env"
+
+# Local secrets (API keys etc.) — kept out of the dotfiles repo.
+[ -f "$HOME/.zsh_secrets" ] && source "$HOME/.zsh_secrets"
