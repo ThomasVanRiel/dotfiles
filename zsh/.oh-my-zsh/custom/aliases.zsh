@@ -8,9 +8,25 @@ alias gdt='git difftool'
 venv() {
   if [[ -n "$VIRTUAL_ENV" ]]; then
     deactivate
-  else
-    source .venv/bin/activate
+    return
   fi
+
+  local dir="$PWD"
+  local names=(.venv venv .env env)
+  while true; do
+    for name in "${names[@]}"; do
+      if [[ -f "$dir/$name/bin/activate" ]]; then
+        source "$dir/$name/bin/activate"
+        echo "Activated venv at $dir/$name"
+        return
+      fi
+    done
+    [[ "$dir" == "/" ]] && break
+    dir="$(dirname "$dir")"
+  done
+
+  echo "No virtualenv found in current or parent directories." >&2
+  return 1
 }
 
 pacup() {
