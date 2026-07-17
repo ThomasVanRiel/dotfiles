@@ -28,3 +28,7 @@
 /.quarto/typst/packages/preview
 /cheatsheet.html
 /cheatsheet.pdf
+
+# tmux runtime/plugin data (managed by TPM, machine-local)
+/tmux/.tmux/plugins/
+/tmux/.tmux/resurrect/
