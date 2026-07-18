@@ -121,6 +121,7 @@ hotkey-overlay {
 // WORKSPACES
 // ========================================
 workspace "browser"
+workspace "general"
 workspace "dev"
 workspace "games"
 
@@ -163,7 +164,7 @@ window-rule {
 
 // Games
 window-rule {
-  match app-id="^factorio$"
+  match app-id="^(com\\.factorio\\.)?[Ff]actorio$"
   open-on-workspace "games"
   open-focused true
 }
@@ -197,7 +198,7 @@ spawn-at-startup "solaar" "--window=hide"
 spawn-at-startup "xwayland-satellite"
 spawn-at-startup "swayidle" "-w" "timeout" "600" "niri msg action power-off-monitors" "resume" "niri msg action power-on-monitors"
 spawn-at-startup "systemctl" "--user" "import-environment" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP"
-spawn-at-startup "kitty"
+spawn-at-startup "kitty" "-e" "sh" "-c" "tmux attach || tmux"
 spawn-at-startup "zen-browser"
 // spawn-at-startup "udiskie"
 
