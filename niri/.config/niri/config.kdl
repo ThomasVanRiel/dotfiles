@@ -44,7 +44,10 @@ input {
     accel-speed 0.0
   }
   touchpad {
+    tap
+    tap-button-map "left-right-middle"
     natural-scroll
+    scroll-factor 0.75
   }
   focus-follows-mouse
   warp-mouse-to-focus
@@ -305,6 +308,20 @@ binds {
   XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
   XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
   XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+
+  // Screen brightness
+  XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "set" "5%+"; }
+  XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "-n75" "set" "5%-"; }
+
+  // Media controls (requires playerctl)
+  XF86AudioPlay allow-when-locked=true { spawn "playerctl" "play-pause"; }
+  XF86AudioPause allow-when-locked=true { spawn "playerctl" "play-pause"; }
+  XF86AudioNext allow-when-locked=true { spawn "playerctl" "next"; }
+  XF86AudioPrev allow-when-locked=true { spawn "playerctl" "previous"; }
+  XF86AudioStop allow-when-locked=true { spawn "playerctl" "stop"; }
+
+  // Search key opens the launcher
+  XF86Search { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
 }
 
 include "./noctalia.kdl"
