@@ -115,14 +115,9 @@ from, so the paths land at the cursor without a clipboard round-trip:
 
 - `prefix + f`: insert the selection as `@path` references, for Claude Code.
 - `prefix + F`: insert the bare paths, for anything else.
-
-## Fuzzy selection for Claude Code `@` references
-
-`prefix + f` opens an fzf popup over the current pane's directory and types the
-selected files back into that pane as `@path` references:
-
 - `Tab` marks several files; `Enter` sends them all, space-separated.
 - Paths are relative to the pane's working directory, which is what Claude Code
   resolves `@` against, so run Claude from the project root.
+- `fd` skips anything in `.gitignore`, so ignored secrets never show up.
 - Inside Claude Code itself, `Ctrl-G` opens the prompt in `$EDITOR` if a
   selection is easier to assemble there.
