@@ -110,11 +110,11 @@ The fzf integration adds fuzzy selection directly to the command line:
 
 ## Fuzzy selection into a tmux pane
 
-Two popups pick files with fzf and type them straight into the pane you came
+`prefix + f` picks files with fzf and types them straight into the pane you came
 from, so the paths land at the cursor without a clipboard round-trip:
 
-- `prefix + f`: insert the selection as `@path` references, for Claude Code.
-- `prefix + F`: insert the bare paths, for anything else.
+- The pane's process tree decides the format: `@path` references if it is
+  running Claude Code, bare paths anywhere else.
 - `Tab` marks several files; `Enter` sends them all, space-separated.
 - Paths are relative to the pane's working directory, which is what Claude Code
   resolves `@` against, so run Claude from the project root.
