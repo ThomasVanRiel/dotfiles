@@ -5,6 +5,7 @@
   "permissions": {
     "allow": []
   },
+  "model": "opus",
   "hooks": {
     "PreToolUse": [
       {
@@ -37,5 +38,6 @@
   "enabledPlugins": {
     "rust-analyzer-lsp@claude-plugins-official": true
   },
-  "model": "opus"
+  "effortLevel": "medium",
+  "agentPushNotifEnabled": true
 }
