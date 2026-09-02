@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+# ~/.local/bin/agentbox   — usage: agentbox claude   /   agentbox codex
+
+# Resolve bash via PATH instead of hardcoding /bin/bash, so this works on
+# systems where bash lives elsewhere (nix, homebrew, *BSD).
+
+# -e   abort on any command that fails
+# -u   abort on use of an unset variable (catches typo'd path vars before
+#      they turn into a bind of the wrong directory)
+# -o pipefail  a pipeline fails if *any* stage fails, not just the last
+set -euo pipefail
+
+# Capture the working directory now. This is the one project directory the
+# agent will be able to see, and --chdir below returns us to it inside the box.
+PROJECT="$PWD"
+
+# The fake home. ${VAR:-default} substitutes the default when AGENTBOX_HOME is
+# unset or empty — and this form is safe under `set -u`, unlike a bare $VAR.
+BOX_HOME="${AGENTBOX_HOME:-$HOME/.local/share/agentbox}"
+
+# bwrap refuses to start if a bind source is missing, so create it up front.
+mkdir -p "$BOX_HOME"
+
+# Arguments go in an array so each one can carry a comment. Order is
+# significant: bwrap applies these operations sequentially, so a later mount
+# on an overlapping path wins over an earlier one.
+args=(
+  # New user, mount, PID, IPC, UTS, cgroup *and* network namespaces.
+  --unshare-all
+  # ...then hand the network back, since both agents need to reach their APIs.
+  --share-net
+
+  # Sets PR_SET_PDEATHSIG: if this terminal or script dies, the sandbox and
+  # everything in it dies too. Prevents orphaned agents lingering in the background.
+  --die-with-parent
+
+  # Empty the environment completely. Without this, every GITHUB_TOKEN,
+  # AWS_SECRET_ACCESS_KEY and SSH_AUTH_SOCK in your shell is inherited by the
+  # agent. Everything the agent legitimately needs is re-added explicitly below.
+  --clearenv
+
+  # Same path string as the host, but it now resolves to $BOX_HOME (see the
+  # bind further down). Keeping the string identical avoids confusing tools
+  # that compare $HOME against paths they find on disk.
+  --setenv HOME "$HOME"
+  # Explicit PATH — with --clearenv there is no inherited one, and execvp
+  # would fall back to a minimal default that misses ~/.local/bin.
+  --setenv PATH "$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin"
+  # Both agents are TUIs; without TERM they render as dumb terminals.
+  --setenv TERM "${TERM:-xterm-256color}"
+  # Without a UTF-8 locale, box-drawing characters and emoji come out as mojibake.
+  --setenv LANG "${LANG:-C.UTF-8}"
+  # git and some tooling read USER for authorship and cache paths.
+  --setenv USER "$USER"
+
+  # A *fresh* procfs instance, not a view of the host's. Combined with the PID
+  # namespace from --unshare-all it shows only processes inside the sandbox.
+  --proc /proc
+  # A small tmpfs with ~10 hand-built device nodes (null, zero, urandom, tty,
+  # the std* symlinks, a private devpts). No block devices, no /dev/mem.
+  --dev /dev
+  # Scratch space that lives in RAM and vanishes when the sandbox exits.
+  --tmpfs /tmp
+
+  # System binaries and libraries, read-only. This is what makes the agent's
+  # own interpreter (node, python) and its subprocesses runnable at all.
+  --ro-bind /usr /usr
+  # Needed for /etc/passwd, /etc/ssl/certs (TLS!), /etc/resolv.conf (DNS).
+  --ro-bind /etc /etc
+
+  # -try variants: bind if the source exists, silently skip if not. Lets one
+  # script run across distros without editing.
+  --ro-bind-try /opt /opt
+  # Nix stores every binary's dependencies here; without it a nix-installed
+  # agent finds no libraries.
+  --ro-bind-try /nix /nix
+  # On systemd-resolved hosts /etc/resolv.conf is a symlink into /run. Without
+  # this the symlink dangles and DNS fails in a way that looks like a dead network.
+  --ro-bind-try /run/systemd/resolve /run/systemd/resolve
+
+  # Merged-/usr compatibility shims. The sandbox root is a fresh tmpfs, so
+  # these paths don't exist until we create them. Targets are relative
+  # ("usr/lib", no leading slash) because the link itself sits at /.
+  --symlink usr/lib /lib
+  --symlink usr/lib64 /lib64
+  --symlink usr/bin /bin
+  --symlink usr/sbin /sbin
+
+  # THE important line. Mounting the fake home over $HOME means ~/.ssh,
+  # ~/.aws, ~/.gnupg, browser profiles and every unrelated project simply do
+  # not exist inside the sandbox. Everything below re-adds specific paths on
+  # top of it, which only works because it comes *after* this line.
+  --bind "$BOX_HOME" "$HOME"
+
+  # The agent binaries themselves. Read-only, so the agent cannot rewrite its
+  # own installer — a writable one is an obvious persistence target.
+  --ro-bind-try "$HOME/.local/bin" "$HOME/.local/bin"
+  --ro-bind-try "$HOME/.local/share/claude" "$HOME/.local/share/claude"
+
+  # Writable: credentials, session history and per-project settings. These
+  # need to survive across runs, which is why they're bound rather than left
+  # to the fake home.
+  --bind-try "$HOME/.claude" "$HOME/.claude"
+  --bind-try "$HOME/.claude.json" "$HOME/.claude.json"
+  --bind-try "$HOME/.codex" "$HOME/.codex"
+
+  # Read-only so the agent commits under your name but can't rewrite git
+  # config — which can set core.pager, core.sshCommand and other hooks that
+  # execute arbitrary commands.
+  --ro-bind-try "$HOME/.gitconfig" "$HOME/.gitconfig"
+
+  # The one project the agent may read and write. Same path inside and out,
+  # so error messages and file references stay meaningful to you.
+  --bind "$PROJECT" "$PROJECT"
+  # Namespace setup leaves the cwd undefined; land back in the project.
+  --chdir "$PROJECT"
+)
+
+# exec replaces this shell rather than forking, so there's no leftover parent
+# process and signals plus the exit status pass straight through.
+# "${args[@]}" expands to one shell word per element — the [@] and the quotes
+# are both required, or paths containing spaces will be split.
+# "$@" appends the command you invoked agentbox with.
+exec bwrap "${args[@]}" "$@"
