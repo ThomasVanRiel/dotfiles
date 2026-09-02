@@ -92,6 +92,8 @@ The `e` alias expands to
 - `-s <field>`, `--sort=<field>`: sort by `name`, `date`, `size`, `type`, etc.
 - `-r`, `--reverse`: reverse the sort order.
 - `-D`, `--only-dirs`: list directories only; `-f` lists files only.
+- `--total-size`: calculate each directory's size from its contents; slower on
+  large directory trees.
 - `--git-ignore`: hide files ignored by Git.
 - `-I '<globs>'`, `--ignore-glob='<globs>'`: hide pipe-separated globs.
 
@@ -105,3 +107,16 @@ The fzf integration adds fuzzy selection directly to the command line:
 - `Ctrl-T`: select files or directories and paste their paths at the cursor.
 - `Ctrl-R`: search shell history and paste the selected command.
 - `Alt-C`: select a directory and change to it.
+
+## Fuzzy selection into a tmux pane
+
+Two popups pick files with fzf and type them straight into the pane you came
+from, so the paths land at the cursor without a clipboard round-trip:
+
+- `prefix + f`: insert the selection as `@path` references, for Claude Code.
+- `prefix + F`: insert the bare paths, for anything else.
+- `Tab` marks several files; `Enter` sends them all, space-separated.
+- Paths are relative to the pane's working directory, which is what Claude Code
+  resolves `@` against, so run Claude from the project root.
+- Inside Claude Code itself, `Ctrl-G` opens the prompt in `$EDITOR` if a
+  selection is easier to assemble there.
