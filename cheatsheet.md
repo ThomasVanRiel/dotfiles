@@ -92,6 +92,8 @@ The `e` alias expands to
 - `-s <field>`, `--sort=<field>`: sort by `name`, `date`, `size`, `type`, etc.
 - `-r`, `--reverse`: reverse the sort order.
 - `-D`, `--only-dirs`: list directories only; `-f` lists files only.
+- `--total-size`: calculate each directory's size from its contents; slower on
+  large directory trees.
 - `--git-ignore`: hide files ignored by Git.
 - `-I '<globs>'`, `--ignore-glob='<globs>'`: hide pipe-separated globs.
 
@@ -105,3 +107,14 @@ The fzf integration adds fuzzy selection directly to the command line:
 - `Ctrl-T`: select files or directories and paste their paths at the cursor.
 - `Ctrl-R`: search shell history and paste the selected command.
 - `Alt-C`: select a directory and change to it.
+
+## Fuzzy selection for Claude Code `@` references
+
+`prefix + f` opens an fzf popup over the current pane's directory and types the
+selected files back into that pane as `@path` references:
+
+- `Tab` marks several files; `Enter` sends them all, space-separated.
+- Paths are relative to the pane's working directory, which is what Claude Code
+  resolves `@` against, so run Claude from the project root.
+- Inside Claude Code itself, `Ctrl-G` opens the prompt in `$EDITOR` if a
+  selection is easier to assemble there.
