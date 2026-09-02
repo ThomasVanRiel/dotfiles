@@ -148,3 +148,7 @@ export NVM_DIR="$HOME/.nvm"
 
 # Local secrets (API keys etc.) — kept out of the dotfiles repo.
 [ -f "$HOME/.zsh_secrets" ] && source "$HOME/.zsh_secrets"
+
+# >>> Codex installer >>>
+export PATH="/home/thomas/.local/bin:$PATH"
+# <<< Codex installer <<<

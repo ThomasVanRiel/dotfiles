@@ -15,7 +15,7 @@ vim.keymap.set("n", "<leader>fY", function()
   vim.notify("Copied cwd: " .. dir)
 end, { desc = "Copy working directory" })
 
-vim.keymap.set({ "n", "x" }, "<leader>fl", function()
+vim.keymap.set("x", "<leader>fy", function()
   local path = vim.fn.expand("%:.")
   local ref
   if vim.fn.mode():match("[vV\22]") then

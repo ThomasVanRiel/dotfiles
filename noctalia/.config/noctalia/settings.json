@@ -20,7 +20,8 @@
         "pinnedApps": [
             "factorio",
             "firefox",
-            "zen"
+            "zen",
+            "org.darktable.darktable"
         ],
         "position": "follow_bar",
         "screenshotAnnotationTool": "",
@@ -106,7 +107,7 @@
             "left": [
                 {
                     "compactMode": true,
-                    "diskPath": "/",
+                    "diskPath": "/home",
                     "iconColor": "none",
                     "id": "SystemMonitor",
                     "showCpuCores": false,
