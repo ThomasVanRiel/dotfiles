@@ -94,3 +94,14 @@ The `e` alias expands to
 - `-D`, `--only-dirs`: list directories only; `-f` lists files only.
 - `--git-ignore`: hide files ignored by Git.
 - `-I '<globs>'`, `--ignore-glob='<globs>'`: hide pipe-separated globs.
+
+## Fuzzy selection in Zsh
+
+The fzf integration adds fuzzy selection directly to the command line:
+
+- `**<Tab>`: complete whatever the command expects, such as files with
+  `nvim **<Tab>`, directories with `cd **<Tab>`, hosts with `ssh **<Tab>`, or
+  processes with `kill **<Tab>`.
+- `Ctrl-T`: select files or directories and paste their paths at the cursor.
+- `Ctrl-R`: search shell history and paste the selected command.
+- `Alt-C`: select a directory and change to it.
