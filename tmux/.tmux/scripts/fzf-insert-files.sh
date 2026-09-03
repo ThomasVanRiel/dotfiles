@@ -33,8 +33,20 @@ esac
 if [ -n "${run:-}" ]; then
   [ -n "${FIF_SSH:-}" ] || exec "${run[@]}"
   eval "ssh=($FIF_SSH)"
-  exec "${ssh[@]}" -o BatchMode=yes \
-    sh -c 'cd "$1" && shift && exec "$@"' sh "$FIF_DIR" "${run[@]}"
+  # Two things about the remote end. ssh joins its command arguments into one
+  # string for the remote shell to re-parse, so the command has to arrive
+  # already quoted — argv boundaries do not survive the trip. And it runs a
+  # non-interactive, non-login shell, so ~/.local/bin and ~/.cargo/bin are
+  # usually off PATH: fd and bat cannot be assumed.
+  cmd="$(printf '%q ' "${run[@]}")"
+  case ${run[0]} in
+  fd) cmd="command -v fd >/dev/null 2>&1 && exec $cmd
+find . -type f -not -path './.git/*' | sed 's|^\./||'" ;;
+  bat) cmd="command -v bat >/dev/null 2>&1 && exec $cmd
+exec head -n 200 -- $(printf '%q' "$2")" ;;
+  esac
+  exec "${ssh[@]}" "cd $(printf '%q' "$FIF_DIR") || exit 1
+$cmd"
 fi
 
 PANE="${1:?target pane id required}"
@@ -84,7 +96,7 @@ if [ "$PANE_CMD" = "ssh" ]; then
   case $title in *@*:*) title=${title#*:} ;; *) title="" ;; esac
 
   set +e
-  out="$("${SSH[@]}" sh -s -- "$title" <<'REMOTE'
+  out="$("${SSH[@]}" sh -s -- "$(printf '%q' "$title")" <<'REMOTE'
 d=$1
 case $d in "~") d=$HOME ;; "~/"*) d=$HOME/${d#"~/"} ;; esac
 cwds=$(for p in $(pgrep -x claude 2>/dev/null); do readlink /proc/$p/cwd; done | sort -u)
@@ -109,7 +121,7 @@ REMOTE
   esac
 
   export FIF_DIR="$(sed -n 1p <<<"$out")"
-  export FIF_SSH="$(printf '%q ' "${SSH[@]}")"
+  export FIF_SSH="$(printf '%q ' "${SSH[0]}" -o BatchMode=yes "${SSH[@]:1}")"
   [ "$(sed -n 2p <<<"$out")" = 1 ] && PREFIX="@" || PREFIX=""
   LABEL="${SSH[-1]}:$(sed -n 3p <<<"$out")"
 else
@@ -122,8 +134,15 @@ else
 fi
 
 self="$(printf '%q' "$SELF")"
+# Stream into fzf rather than buffering the listing: on a large tree the popup
+# has to come up at once and fill in, not sit blank while the remote indexes.
+# stderr is held aside so a listing that fails is still reported, rather than
+# looking like an empty directory.
+err="$(mktemp)"
+trap 'rm -f "$err"' EXIT
+
 selection="$(
-  "$SELF" --list |
+  "$SELF" --list 2>"$err" |
     fzf --multi \
       --prompt="${PREFIX:-> } " \
       --height=100% \
@@ -135,9 +154,12 @@ selection="$(
       --bind="ctrl-g:reload($self --list --no-ignore)+change-header(gitignored included)" \
       --preview="$self --preview {}" \
       --preview-window='right:60%'
-)" || exit 0
+)" || true
 
-[ -n "$selection" ] || exit 0
+if [ -z "$selection" ]; then
+  if [ -s "$err" ]; then die "$(head -2 "$err" | tr '\n' ' ')"; fi
+  exit 0
+fi
 
 text=""
 while IFS= read -r file; do
