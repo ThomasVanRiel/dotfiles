@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
-# Pick files with fzf and type them into another pane. If that pane is running
-# Claude Code the paths are prefixed with @, so they land as file references;
-# anywhere else they are inserted bare.
+# Pick files with fzf and type them at the cursor of another pane. Paths go in
+# bare by default; a pane whose foreground process is known to want a different
+# format gets a prefix instead (currently: Claude Code, which takes @path as a
+# file reference).
 #
 # Meant to run inside a tmux popup started from the target pane's directory,
 # so the paths stay relative to that pane's cwd.
 #
 # Usage: fzf-insert-files.sh <target-pane-id> [pane-command]
-#        pane-command decides the format; queried from tmux if omitted.
+#        pane-command picks the prefix; queried from tmux if omitted.
 #
 # Bound in ~/.tmux.conf as prefix + f, with tmux expanding both formats:
 #   tmux display-popup -d "#{pane_current_path}" -E \
@@ -16,11 +17,10 @@ set -euo pipefail
 
 PANE="${1:?target pane id required}"
 
-# The pane's foreground process decides the format. Claude Code runs itself in a
-# bubblewrap sandbox, so a Claude pane reports "bwrap" and the claude process is
-# a child of it; a pane started straight from the ~/.local/bin/claude symlink
-# reports "claude". Keying off the foreground process is deliberate: with Claude
-# suspended (C-z) the pane is a shell, and bare paths are what you want.
+# Claude Code usually runs itself in a bubblewrap sandbox, so such a pane reports
+# "bwrap" and the claude process hangs below it; started straight from the
+# ~/.local/bin/claude symlink the pane reports "claude" directly. Only "bwrap"
+# needs the walk, since plenty of other things run sandboxed too.
 sandbox_runs_claude() {
   local pids next
   pids="$(tmux display-message -p -t "$PANE" '#{pane_pid}')" || return 1
@@ -36,16 +36,24 @@ sandbox_runs_claude() {
 
 PANE_CMD="${2:-$(tmux display-message -p -t "$PANE" '#{pane_current_command}')}"
 
+# Keying off the *foreground* process is deliberate: a pane running a shell —
+# including one where Claude is suspended with C-z — wants plain paths. Add a
+# case here for any other program with its own path syntax.
 case "$PANE_CMD" in
 claude) PREFIX="@" ;;
 bwrap) sandbox_runs_claude && PREFIX="@" || PREFIX="" ;;
 *) PREFIX="" ;;
 esac
 
-# --strip-cwd-prefix keeps paths relative (no leading ./), which is what
-# Claude Code's @ syntax and most shell commands both want.
+# --strip-cwd-prefix keeps paths relative (no leading ./), which is what shell
+# commands and editors both want.
+#
+# --no-ignore-vcs because fd applies .gitignore rules only inside a git repo:
+# without it the same file is listed in a plain directory and silently missing
+# once that directory is a repo. Build output, .env files and vendored deps are
+# all things worth being able to insert. .fdignore/.ignore still apply.
 selection="$(
-  fd --type f --hidden --exclude .git --strip-cwd-prefix |
+  fd --type f --hidden --no-ignore-vcs --exclude .git --strip-cwd-prefix |
     fzf --multi \
       --prompt="${PREFIX:-> } " \
       --height=100% \
