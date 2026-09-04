@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Pick files with fzf and type them into another pane. If that pane is running
-# Claude Code the paths are prefixed with @, so they land as file references;
-# anywhere else they are inserted bare. Handles both
+# Pick files with fzf and type them at the cursor of another pane. Paths go in
+# bare by default; a pane whose foreground process is known to want a different
+# format gets a prefix instead (currently: Claude Code, which takes @path as a
+# file reference). Handles both
 #   local   pane -> [bwrap ->] claude          files listed with local fd
 #   remote  pane -> ssh -> [bwrap ->] claude   files listed over ssh
 #
@@ -9,7 +10,7 @@
 # so the paths stay relative to that pane's cwd.
 #
 # Usage: fzf-insert-files.sh <target-pane-id> [pane-command] [border-colour]
-#        pane-command decides the format; queried from tmux if omitted.
+#        pane-command picks the prefix; queried from tmux if omitted.
 #
 # Bound in ~/.tmux.conf as prefix + f. The popup is created with -B (no border)
 # because fzf draws its own, labelled with the directory being browsed — which
@@ -56,11 +57,8 @@ SELF="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
 
 die() { tmux display-message "files: $*"; exit 1; }
 
-# Descendants of the pane's process, a few levels deep. Claude Code runs itself
-# in a bubblewrap sandbox, so a Claude pane reports "bwrap" with claude beneath
-# it; an ssh pane has the ssh client beneath the shell. Keying off the pane's
-# foreground process is deliberate: with Claude suspended (C-z) the pane is a
-# shell, and bare paths are what you want.
+# Walk descendants of the pane's process a few levels deep. This locates either
+# the ssh client beneath a remote pane or Claude beneath bubblewrap locally.
 descendant() {
   local pids next
   pids="$(tmux display-message -p -t "$PANE" '#{pane_pid}')"
@@ -125,6 +123,9 @@ REMOTE
   [ "$(sed -n 2p <<<"$out")" = 1 ] && PREFIX="@" || PREFIX=""
   LABEL="${SSH[-1]}:$(sed -n 3p <<<"$out")"
 else
+  # Keying off the *foreground* process is deliberate: a pane running a shell —
+  # including one where Claude is suspended with C-z — wants plain paths. Add a
+  # case here for any other program with its own path syntax.
   case "$PANE_CMD" in
   claude) PREFIX="@" ;;
   bwrap) descendant claude >/dev/null && PREFIX="@" || PREFIX="" ;;
