@@ -186,6 +186,14 @@ window-rule {
 }
 
 
+// yazi as the file picker, via xdg-desktop-portal-termfilechooser
+window-rule {
+  match app-id="^termfilechooser$"
+  open-floating true
+  default-column-width { proportion 0.5; }
+  default-window-height { proportion 0.6; }
+}
+
 debug {
   // Allows notification actions and window activation from Noctalia.
   honor-xdg-activation-with-invalid-serial

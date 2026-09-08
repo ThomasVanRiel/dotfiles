@@ -1,0 +1,14 @@
+# yazi as the XDG file picker.
+# man 5 xdg-desktop-portal-termfilechooser
+#
+# cmd is resolved against the wrapper dirs shipped by the package
+# (/usr/share/xdg-desktop-portal-termfilechooser/) and ~/.config/...
+# Modes: suggested (start where the app asks) | default (default_dir) | last.
+
+[filechooser]
+cmd=yazi-wrapper.sh
+default_dir=$HOME/Downloads
+env=TERMCMD='kitty --class=termfilechooser --title=termfilechooser'
+open_mode=suggested
+save_mode=suggested
+create_help_file=1
