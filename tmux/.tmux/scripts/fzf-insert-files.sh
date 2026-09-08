@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-# Pick files with fzf and type them at the cursor of another pane. Paths go in
+# Pick files and directories with fzf and type them at the cursor of another
+# pane. Directories come out with a trailing slash. Paths go in
 # bare by default; a pane whose foreground process is known to want a different
 # format gets a prefix instead (currently: Claude Code, which takes @path as a
 # file reference). Handles both
-#   local   pane -> [bwrap ->] claude          files listed with local fd
-#   remote  pane -> ssh -> [bwrap ->] claude   files listed over ssh
+#   local   pane -> [bwrap ->] claude          listed with local fd
+#   remote  pane -> ssh -> [bwrap ->] claude   listed over ssh
 #
 # Meant to run inside a tmux popup started from the target pane's directory,
 # so the paths stay relative to that pane's cwd.
@@ -24,30 +25,51 @@ set -euo pipefail
 #   fd hides .gitignored files; ctrl-g reloads with --no-ignore to show them.
 case "${1:-}" in
 --list)
-  run=(fd --type f --hidden --exclude .git --strip-cwd-prefix ${2:+--no-ignore})
+  run=(fd --type f --type d --hidden --exclude .git --strip-cwd-prefix ${2:+--no-ignore})
   ;;
 --preview)
   [ -n "${2:-}" ] || exit 0
-  run=(bat --style=numbers --color=always --line-range=:200 -- "$2")
+  # The trailing slash fd puts on a directory (and the find fallback below
+  # reproduces) is the only clue available here: a remote path cannot be
+  # stat'ed from this side.
+  case "$2" in
+  */) run=(eza --tree --level=2 --all --ignore-glob=.git --color=always -- "$2") ;;
+  *) run=(bat --style=numbers --color=always --line-range=:200 -- "$2") ;;
+  esac
   ;;
 esac
 if [ -n "${run:-}" ]; then
-  [ -n "${FIF_SSH:-}" ] || exec "${run[@]}"
-  eval "ssh=($FIF_SSH)"
-  # Two things about the remote end. ssh joins its command arguments into one
-  # string for the remote shell to re-parse, so the command has to arrive
-  # already quoted — argv boundaries do not survive the trip. And it runs a
-  # non-interactive, non-login shell, so ~/.local/bin and ~/.cargo/bin are
-  # usually off PATH: fd and bat cannot be assumed.
-  cmd="$(printf '%q ' "${run[@]}")"
-  case ${run[0]} in
-  fd) cmd="command -v fd >/dev/null 2>&1 && exec $cmd
-find . -type f -not -path './.git/*' | sed 's|^\./||'" ;;
-  bat) cmd="command -v bat >/dev/null 2>&1 && exec $cmd
+  if [ -n "${FIF_SSH:-}" ]; then
+    eval "ssh=($FIF_SSH)"
+    # Two things about the remote end. ssh joins its command arguments into one
+    # string for the remote shell to re-parse, so the command has to arrive
+    # already quoted — argv boundaries do not survive the trip. And it runs a
+    # non-interactive, non-login shell, so ~/.local/bin and ~/.cargo/bin are
+    # usually off PATH: fd, bat and eza cannot be assumed.
+    cmd="$(printf '%q ' "${run[@]}")"
+    case ${run[0]} in
+    fd) cmd="command -v fd >/dev/null 2>&1 && exec $cmd
+find . -mindepth 1 -name .git -prune -o -print | while IFS= read -r p; do
+  [ -d \"\$p\" ] && p=\"\$p/\"
+  printf '%s\n' \"\${p#./}\"
+done" ;;
+    bat) cmd="command -v bat >/dev/null 2>&1 && exec $cmd
 exec head -n 200 -- $(printf '%q' "$2")" ;;
+    eza) cmd="command -v eza >/dev/null 2>&1 && exec $cmd
+exec ls -lA -- $(printf '%q' "$2")" ;;
+    esac
+    run=("${ssh[@]}" "cd $(printf '%q' "$FIF_DIR") || exit 1
+$cmd")
+  fi
+  # A directory preview has no natural size limit the way bat's --line-range
+  # gives one, and fzf only ever shows a screenful. The cap is a pipeline, which
+  # cannot be exec'd away, so leave explicitly rather than falling through into
+  # the picker below.
+  case "$1" in
+  --preview) "${run[@]}" | head -n 200 || exit 0 ;;
+  *) exec "${run[@]}" ;;
   esac
-  exec "${ssh[@]}" "cd $(printf '%q' "$FIF_DIR") || exit 1
-$cmd"
+  exit 0
 fi
 
 PANE="${1:?target pane id required}"
@@ -148,7 +170,7 @@ selection="$(
       --prompt="${PREFIX:-> } " \
       --height=100% \
       --border=rounded \
-      --border-label="  Files  $LABEL " \
+      --border-label="  Files & dirs  $LABEL " \
       --border-label-pos=3 \
       --color="border:$COLOUR,label:$COLOUR" \
       --header='ctrl-g: include gitignored' \
