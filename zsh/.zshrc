@@ -77,6 +77,15 @@ source $ZSH/oh-my-zsh.sh
 
 setopt globdots
 
+# Source for bare `fzf` calls -- notably yazi's `z`, whose built-in walker lists
+# files only and so can never jump into a subdir. Same flags as the tmux
+# fzf-insert popup. Deliberately not FZF_DEFAULT_OPTS: that string is appended
+# after each widget's own options, so a --walker there would override Alt+C's
+# dir-only listing. The widgets blank FZF_DEFAULT_COMMAND, so this misses them.
+# Mirrored in ~/.config/xdg-desktop-portal-termfilechooser/config, since the
+# file dialog spawns yazi straight from kitty and never reads this file.
+export FZF_DEFAULT_COMMAND='fd --type f --type d --hidden --exclude .git --strip-cwd-prefix'
+
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"

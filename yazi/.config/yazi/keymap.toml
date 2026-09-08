@@ -1,0 +1,14 @@
+# Prepended to yazi's defaults, so every built-in key still works.
+#
+# `z` runs the bundled fzf plugin, which lists whatever $FZF_DEFAULT_COMMAND
+# gives it -- files and dirs both, since ~/.zshrc sets `fd --type f --type d`.
+# It reveals a file, or cds into a directory.
+#
+# `gz` is the dirs-only variant: no files in the way when you just want to jump.
+# yazi's `shell` cannot change the directory itself, hence `ya emit cd`, which
+# talks back to this instance through $YAZI_ID.
+
+[[mgr.prepend_keymap]]
+on = [ "g", "z" ]
+run = '''shell --block -- dir="$(fd --type d --hidden --follow --exclude .git --strip-cwd-prefix | fzf)" && [ -n "$dir" ] && ya emit cd "$(realpath -- "$dir")"'''
+desc = "Jump to a subdirectory via fzf"

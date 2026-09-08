@@ -9,6 +9,9 @@
 cmd=yazi-wrapper.sh
 default_dir=$HOME/Downloads
 env=TERMCMD='kitty --class=termfilechooser --title=termfilechooser'
+# keep in sync with ~/.zshrc: no shell runs here, so exports never reach yazi.
+# Lets yazi's `z` fzf into subdirectories, not just files.
+env=FZF_DEFAULT_COMMAND='fd --type f --type d --hidden --exclude .git --strip-cwd-prefix'
 open_mode=suggested
 save_mode=suggested
 create_help_file=1
