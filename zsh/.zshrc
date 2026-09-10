@@ -161,3 +161,8 @@ export NVM_DIR="$HOME/.nvm"
 # >>> Codex installer >>>
 export PATH="/home/thomas/.local/bin:$PATH"
 # <<< Codex installer <<<
+
+# Keep Oh My Zsh's `z` command, but build a zoxide database for `Z` in Yazi.
+if (( $+commands[zoxide] )); then
+  eval "$(zoxide init zsh --no-cmd)"
+fi
