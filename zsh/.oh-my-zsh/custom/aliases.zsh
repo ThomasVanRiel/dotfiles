@@ -8,13 +8,13 @@ alias gdt='git difftool'
 alias y='yazi'
 toserver() {
   if (( $# < 1 || $# > 2 )); then
-    print -u2 'usage: toserver <source-directory> [remote-name]'
+    print -u2 'usage: toserver <source> [remote-name]'
     return 2
   fi
 
   local source="${1:A}"
-  if [[ ! -d "$source" ]]; then
-    print -u2 -- "toserver: not a directory: $1"
+  if [[ ! -e "$source" ]]; then
+    print -u2 -- "toserver: no such file or directory: $1"
     return 1
   fi
 
@@ -26,8 +26,13 @@ toserver() {
       ;;
   esac
 
-  rsync -avz --delete --chmod=D755,F644 -- \
-    "$source/" "nauvis:/var/www/docs/$name/"
+  if [[ -d "$source" ]]; then
+    rsync -avz --delete --chmod=D755,F644 -- \
+      "$source/" "nauvis:/var/www/docs/$name/"
+  else
+    rsync -avz --chmod=F644 -- \
+      "$source" "nauvis:/var/www/docs/$name"
+  fi
 }
 venv() {
   if [[ -n "$VIRTUAL_ENV" ]]; then
