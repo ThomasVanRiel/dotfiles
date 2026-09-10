@@ -5,6 +5,30 @@ alias e='eza --long --links --group --color=auto --git --git-repos'
 alias ea='e -a'
 alias etree='e --tree --level=2'
 alias gdt='git difftool'
+alias y='yazi'
+toserver() {
+  if (( $# < 1 || $# > 2 )); then
+    print -u2 'usage: toserver <source-directory> [remote-name]'
+    return 2
+  fi
+
+  local source="${1:A}"
+  if [[ ! -d "$source" ]]; then
+    print -u2 -- "toserver: not a directory: $1"
+    return 1
+  fi
+
+  local name="${2:-${source:t}}"
+  case "$name" in
+    '' | '.' | '..' | *[!A-Za-z0-9._-]*)
+      print -u2 -- 'toserver: remote name may only contain letters, numbers, ., _, and -'
+      return 2
+      ;;
+  esac
+
+  rsync -avz --delete --chmod=D755,F644 -- \
+    "$source/" "nauvis:/var/www/docs/$name/"
+}
 venv() {
   if [[ -n "$VIRTUAL_ENV" ]]; then
     deactivate
@@ -53,4 +77,3 @@ alias pipi="pip"
 alias wgup="sudo WG_QUICK_USERSPACE_IMPLEMENTATION=wireguard-go wg-quick up surfshark"
 alias wgdown="sudo WG_QUICK_USERSPACE_IMPLEMENTATION=wireguard-go wg-quick down surfshark"
 alias wgstat="sudo wg show"
-
