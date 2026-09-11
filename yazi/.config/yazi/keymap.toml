@@ -18,3 +18,16 @@ on = "!"
 for = "unix"
 run = 'shell "$SHELL" --block'
 desc = "Open $SHELL here"
+
+# Swap yazi's quit keys: by default `q` writes --cwd-file (the shell wrapper
+# then cds there) and `Q` skips it. Reversed here so plain `q` leaves the
+# shell where it was, and `Q` is the deliberate "take me there" exit.
+[[mgr.prepend_keymap]]
+on = "q"
+run = "quit --no-cwd-file"
+desc = "Quit, staying in the original directory"
+
+[[mgr.prepend_keymap]]
+on = "Q"
+run = "quit"
+desc = "Quit, cd'ing to the current directory"

@@ -5,7 +5,18 @@ alias e='eza --long --links --group --color=auto --git --git-repos'
 alias ea='e -a'
 alias etree='e --tree --level=2'
 alias gdt='git difftool'
-alias y='yazi'
+# yazi: `Q` exits *and* cds to the last browsed dir, `q` exits where you started.
+# (Swapped from yazi's defaults via keymap.toml.)
+y() {
+  local cwd_file
+  cwd_file="$(mktemp -t yazi-cwd.XXXXXX)"
+  yazi --cwd-file="$cwd_file" "$@"
+  local cwd
+  if cwd="$(<"$cwd_file")" && [[ -n "$cwd" && "$cwd" != "$PWD" ]]; then
+    builtin cd -- "$cwd"
+  fi
+  rm -f -- "$cwd_file"
+}
 toserver() {
   if (( $# < 1 || $# > 2 )); then
     print -u2 'usage: toserver <source> [remote-name]'
