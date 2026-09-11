@@ -9,6 +9,12 @@
 # talks back to this instance through $YAZI_ID.
 
 [[mgr.prepend_keymap]]
-on = [ "g", "z" ]
+on = ["g", "z"]
 run = '''shell --block -- dir="$(fd --type d --hidden --follow --exclude .git --strip-cwd-prefix | fzf)" && [ -n "$dir" ] && ya emit cd "$(realpath -- "$dir")"'''
 desc = "Jump to a subdirectory via fzf"
+
+[[mgr.prepend_keymap]]
+on = "!"
+for = "unix"
+run = 'shell "$SHELL" --block'
+desc = "Open $SHELL here"
