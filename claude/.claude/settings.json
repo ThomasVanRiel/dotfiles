@@ -32,7 +32,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "npx ccburn collect | npx -y ccstatusline@latest",
+    "command": "npx -y ccstatusline@latest",
     "padding": 0
   },
   "enabledPlugins": {
@@ -42,7 +42,7 @@
   },
   "modelSettings": {
     "claude-opus-5": {
-      "effortLevel": "medium"
+      "effortLevel": "xhigh"
     }
   },
   "agentPushNotifEnabled": true

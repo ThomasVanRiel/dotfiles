@@ -127,6 +127,7 @@ workspace "browser"
 workspace "general"
 workspace "dev"
 workspace "games"
+workspace "windows"
 
 // ========================================
 // WINDOW RULES
@@ -170,6 +171,13 @@ window-rule {
   match app-id="^(com\\.factorio\\.)?[Ff]actorio$"
   open-on-workspace "games"
   open-focused true
+}
+
+// Windows remote desktop. Matches every FreeRDP 3 client: xfreerdp3 reports
+// "xfreerdp", sdl-freerdp3 and wlfreerdp3 report their own names.
+window-rule {
+  match app-id="(?i)freerdp"
+  open-on-workspace "windows"
 }
 
 window-rule {
