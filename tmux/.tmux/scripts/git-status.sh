@@ -11,7 +11,9 @@ branch=$(git branch --show-current 2>/dev/null)
 [ -z "$branch" ] && exit
 
 status=""
-porcelain=$(git status --porcelain 2>/dev/null)
+# --no-optional-locks: don't take index.lock, so this 5s poll can't collide
+# with a commit/rebase running in the pane at the same moment
+porcelain=$(git --no-optional-locks status --porcelain 2>/dev/null)
 
 # Conflicted (UU, AA, DD)
 [ "$(echo "$porcelain" | grep -cE "^(UU|AA|DD)")" -gt 0 ] && status="${status}="
