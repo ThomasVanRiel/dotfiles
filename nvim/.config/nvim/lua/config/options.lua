@@ -3,3 +3,6 @@
 -- Add any additional options here
 --
 vim.opt.sidescroll = 2
+
+-- Load project-local .nvim.lua (Neovim asks to :trust each file first)
+vim.o.exrc = true
