@@ -18,6 +18,9 @@ environment {
   QT_QPA_PLATFORMTHEME "kde"
   XDG_SESSION_TYPE "wayland"
   WAYLAND_DISPLAY "wayland-1"
+  // Route native GTK file dialogs (e.g. PrusaSlicer) through xdg-desktop-portal
+  // instead of GTK's built-in chooser, so they use termfilechooser/yazi too.
+  GTK_USE_PORTAL "1"
   // NVIDIA
   LIBVA_DRIVER_NAME "nvidia"
   NVD_BACKEND "direct"
@@ -67,7 +70,7 @@ layout {
     proportion 0.66667
   }
 
-  default-column-width { proportion 0.5; }
+  default-column-width { proportion 0.8; }
 
   focus-ring {
     width 2
