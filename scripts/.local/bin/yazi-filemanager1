@@ -1,0 +1,108 @@
+#!/usr/bin/env python3
+"""org.freedesktop.FileManager1 implemented on top of yazi in kitty.
+
+Firefox/Zen's "show in folder" (nsLocalFile::Reveal) does NOT go through
+mimeapps.list or xdg-open. It calls the org.freedesktop.FileManager1 D-Bus
+interface, whose name is claimed by three packages on this system
+(dolphin, nautilus, thunar) -- so whichever service file dbus-daemon picks
+wins, regardless of the inode/directory default.
+
+~/.local/share/dbus-1/services takes priority over /usr/share, so the
+accompanying org.freedesktop.FileManager1.service pins activation here.
+
+ShowItems/ShowItemProperties get a file URI and are expected to reveal it in
+its parent directory; yazi does exactly that when passed the file path.
+"""
+
+import os
+import subprocess
+import sys
+from urllib.parse import unquote, urlparse
+
+import gi
+
+gi.require_version("Gio", "2.0")
+from gi.repository import Gio, GLib  # noqa: E402
+
+BUS_NAME = "org.freedesktop.FileManager1"
+OBJECT_PATH = "/org/freedesktop/FileManager1"
+
+INTROSPECTION = """
+<node>
+  <interface name='org.freedesktop.FileManager1'>
+    <method name='ShowFolders'>
+      <arg type='as' name='URIs' direction='in'/>
+      <arg type='s' name='StartupId' direction='in'/>
+    </method>
+    <method name='ShowItems'>
+      <arg type='as' name='URIs' direction='in'/>
+      <arg type='s' name='StartupId' direction='in'/>
+    </method>
+    <method name='ShowItemProperties'>
+      <arg type='as' name='URIs' direction='in'/>
+      <arg type='s' name='StartupId' direction='in'/>
+    </method>
+  </interface>
+</node>
+"""
+
+# Exit once idle so we do not linger as a stray process; dbus reactivates us.
+IDLE_TIMEOUT_SECONDS = 30
+
+
+def uri_to_path(uri):
+    if not uri.startswith("file://"):
+        return None
+    return unquote(urlparse(uri).path)
+
+
+def spawn_yazi(paths):
+    targets = [p for p in (uri_to_path(u) for u in paths) if p and os.path.exists(p)]
+    if not targets:
+        return
+    # yazi opens the parent directory with the entry selected when given a file.
+    subprocess.Popen(
+        ["kitty", "--class=yazi", "--title=yazi", "yazi", targets[0]],
+        start_new_session=True,
+    )
+
+
+def on_call(_conn, _sender, _path, _iface, method, params, invocation):
+    if method in ("ShowFolders", "ShowItems", "ShowItemProperties"):
+        spawn_yazi(params[0])
+        invocation.return_value(None)
+    else:
+        invocation.return_error_literal(
+            Gio.dbus_error_quark(), Gio.DBusError.UNKNOWN_METHOD, method
+        )
+
+
+def main():
+    loop = GLib.MainLoop()
+    node = Gio.DBusNodeInfo.new_for_xml(INTROSPECTION)
+
+    def on_bus_acquired(conn, _name):
+        # register_object() is deprecated and warns on every activation;
+        # the *_with_closures2 variant is the supported spelling.
+        register = getattr(conn, "register_object_with_closures2", None)
+        if register is None:
+            register = conn.register_object
+        register(OBJECT_PATH, node.interfaces[0], on_call, None, None)
+
+    def on_name_lost(_conn, _name):
+        sys.exit(1)
+
+    Gio.bus_own_name(
+        Gio.BusType.SESSION,
+        BUS_NAME,
+        Gio.BusNameOwnerFlags.NONE,
+        on_bus_acquired,
+        None,
+        on_name_lost,
+    )
+    GLib.timeout_add_seconds(IDLE_TIMEOUT_SECONDS, lambda: (loop.quit(), False)[1])
+    loop.run()
+
+
+if __name__ == "__main__":
+    main()

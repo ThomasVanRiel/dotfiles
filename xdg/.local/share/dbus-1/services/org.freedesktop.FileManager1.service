@@ -1,0 +1,6 @@
+[D-BUS Service]
+# Overrides the three /usr/share/dbus-1/services files that all claim this name
+# (dolphin, nautilus, thunar). ~/.local/share wins over /usr/share, so this is
+# what Firefox/Zen's "show in folder" activates.
+Name=org.freedesktop.FileManager1
+Exec=/home/thomas/.local/bin/yazi-filemanager1

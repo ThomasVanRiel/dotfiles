@@ -1,0 +1,130 @@
+# Default application per MIME type.
+#
+# [Default Applications] is what xdg-open / gio / the portals consult; the
+# desktop file names resolve against ~/.local/share/applications first, then
+# /usr/share/applications. [Added Associations] only widens the "Open with"
+# list, it does not pick a default.
+#
+# WARNING: apps rewrite this file (Zen's "make default" button, GNOME's
+# Settings). GIO saves by writing a temp file and renaming over the target,
+# which REPLACES the stow symlink with a regular file. After any such prompt,
+# check `ls -l ~/.config/mimeapps.list` and re-run `stow -R xdg`.
+#
+# Inspect with: xdg-mime query default inode/directory
+
+[Added Associations]
+application/pdf=zen-browser-2.desktop;zen-browser.desktop;/home/thomas/.local/share/applications/firefox-2.desktop;
+application/x-extension-htm=zen.desktop;
+application/x-extension-html=zen.desktop;
+application/x-extension-shtml=zen.desktop;
+application/x-extension-xht=zen.desktop;
+application/x-extension-xhtml=zen.desktop;
+application/xhtml+xml=zen.desktop;
+image/jpeg=xnviewmp-3.desktop;xnviewmp-2.desktop;
+image/png=XnView.desktop
+text/html=zen.desktop;
+x-scheme-handler/chrome=zen.desktop;
+x-scheme-handler/http=zen.desktop;
+x-scheme-handler/https=zen.desktop;
+
+[Default Applications]
+# Firefox/Zen's download panel falls back to "show in folder" when it cannot
+# launch a file, so an unset or KDE default here is why Dolphin kept appearing.
+inode/directory=yazi-kitty.desktop
+
+# No archive manager is installed, so GIO fell through mimeinfo.cache to
+# Nautilus (its only claimant), which cannot open an archive either and
+# bounced to the containing folder -- i.e. to inode/directory.
+application/zip=yazi-kitty.desktop
+application/gzip=yazi-kitty.desktop
+application/bzip2=yazi-kitty.desktop
+application/zstd=yazi-kitty.desktop
+application/vnd.rar=yazi-kitty.desktop
+application/x-7z-compressed=yazi-kitty.desktop
+application/x-7z-compressed-tar=yazi-kitty.desktop
+application/x-bzip=yazi-kitty.desktop
+application/x-bzip-compressed-tar=yazi-kitty.desktop
+application/x-bzip2-compressed-tar=yazi-kitty.desktop
+application/x-compress=yazi-kitty.desktop
+application/x-compressed-tar=yazi-kitty.desktop
+application/x-cpio=yazi-kitty.desktop
+application/x-gzip=yazi-kitty.desktop
+application/x-lha=yazi-kitty.desktop
+application/x-lzip=yazi-kitty.desktop
+application/x-lzip-compressed-tar=yazi-kitty.desktop
+application/x-lzma=yazi-kitty.desktop
+application/x-lzma-compressed-tar=yazi-kitty.desktop
+application/x-tar=yazi-kitty.desktop
+application/x-tarz=yazi-kitty.desktop
+application/x-xar=yazi-kitty.desktop
+application/x-xz=yazi-kitty.desktop
+application/x-xz-compressed-tar=yazi-kitty.desktop
+application/x-zstd-compressed-tar=yazi-kitty.desktop
+
+application/pdf=zen.desktop
+application/x-extension-htm=zen.desktop
+application/x-extension-html=zen.desktop
+application/x-extension-shtml=zen.desktop
+application/x-extension-xht=zen.desktop
+application/x-extension-xhtml=zen.desktop
+application/xhtml+xml=zen.desktop
+text/html=zen.desktop
+
+image/jpeg=XnView.desktop
+image/png=XnView.desktop
+
+x-scheme-handler/chrome=zen.desktop
+x-scheme-handler/http=zen.desktop
+x-scheme-handler/https=zen.desktop
+x-scheme-handler/claude-cli=claude-code-url-handler.desktop
+x-scheme-handler/discord=vesktop.desktop
+x-scheme-handler/heroic=heroic.desktop
+
+# Media: mpv and vlc both claim these; pin mpv.
+video/mp4=mpv.desktop
+video/x-matroska=mpv.desktop
+video/webm=mpv.desktop
+video/quicktime=mpv.desktop
+video/x-msvideo=mpv.desktop
+video/mpeg=mpv.desktop
+video/x-flv=mpv.desktop
+video/3gpp=mpv.desktop
+video/ogg=mpv.desktop
+audio/mpeg=mpv.desktop
+audio/flac=mpv.desktop
+audio/x-wav=mpv.desktop
+audio/ogg=mpv.desktop
+audio/mp4=mpv.desktop
+audio/x-m4a=mpv.desktop
+audio/opus=mpv.desktop
+audio/x-vorbis+ogg=mpv.desktop
+audio/aac=mpv.desktop
+
+# Images: matches the jpeg/png defaults above.
+image/gif=XnView.desktop
+image/webp=XnView.desktop
+image/svg+xml=XnView.desktop
+image/tiff=XnView.desktop
+image/bmp=XnView.desktop
+image/avif=XnView.desktop
+image/heif=XnView.desktop
+image/x-icon=XnView.desktop
+
+# Text: opening a file from yazi or xdg-open lands in kitty+nvim.
+text/plain=nvim-kitty.desktop
+text/markdown=nvim-kitty.desktop
+text/csv=nvim-kitty.desktop
+application/json=nvim-kitty.desktop
+application/xml=nvim-kitty.desktop
+text/x-python=nvim-kitty.desktop
+application/x-shellscript=nvim-kitty.desktop
+
+# Office: single claimant each, pinned so cache order cannot change it.
+application/vnd.openxmlformats-officedocument.wordprocessingml.document=libreoffice-writer.desktop
+application/vnd.oasis.opendocument.text=libreoffice-writer.desktop
+application/rtf=libreoffice-writer.desktop
+text/rtf=libreoffice-writer.desktop
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet=libreoffice-calc.desktop
+application/vnd.oasis.opendocument.spreadsheet=libreoffice-calc.desktop
+application/vnd.openxmlformats-officedocument.presentationml.presentation=libreoffice-impress.desktop
+application/vnd.oasis.opendocument.presentation=libreoffice-impress.desktop

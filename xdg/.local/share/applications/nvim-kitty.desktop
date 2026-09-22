@@ -1,0 +1,14 @@
+[Desktop Entry]
+# nvim as the graphical text handler: the packaged nvim.desktop is Terminal=true,
+# which leaves the terminal choice to the DE. This pins it to kitty, matching
+# yazi-kitty.desktop.
+Type=Application
+Name=Neovim
+Comment=Edit text files in kitty
+Icon=nvim
+TryExec=nvim
+Exec=kitty --class=nvim --title=nvim nvim %F
+Terminal=false
+NoDisplay=true
+MimeType=text/plain;text/markdown;text/csv;application/json;application/xml;text/x-python;application/x-shellscript;
+Categories=Utility;TextEditor;
