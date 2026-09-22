@@ -21,6 +21,31 @@ BOX_HOME="${AGENTBOX_HOME:-$HOME/.local/share/agentbox}"
 # bwrap refuses to start if a bind source is missing, so create it up front.
 mkdir -p "$BOX_HOME"
 
+# Give the box a real nvim (Ctrl+G in Claude Code, git commit messages, etc.).
+# This is a *copy*, not a bind: ~/.config/nvim is arbitrary Lua that runs on
+# every nvim start, so a writable bind would let the agent edit code that
+# later executes outside the sandbox. lazy.nvim also needs to write
+# lazy-lock.json into its own config dir, which a --ro-bind would break.
+# Copying gives full fidelity inside and zero reach back out.
+#
+# --delete makes this a mirror, so changes made *inside* the box are
+# discarded on the next launch — treat the box's copy as disposable and edit
+# the real config on the host. Set AGENTBOX_NVIM_SYNC=0 to skip the sync and
+# keep whatever is already in the box home.
+# -L dereferences: the host path is a stow symlink into ~/dotfiles.
+# Plugins and state land in the fake home (~/.local/share/nvim,
+# ~/.local/state/nvim, ~/.cache/nvim) and persist across runs, so lazy.nvim
+# bootstraps once on the first launch and is instant afterwards.
+if [ "${AGENTBOX_NVIM_SYNC:-1}" = 1 ] && [ -d "$HOME/.config/nvim" ]; then
+  mkdir -p "$BOX_HOME/.config"
+  if command -v rsync >/dev/null; then
+    rsync -a -L --delete "$HOME/.config/nvim/" "$BOX_HOME/.config/nvim/"
+  else
+    rm -rf "$BOX_HOME/.config/nvim"
+    cp -aL "$HOME/.config/nvim" "$BOX_HOME/.config/nvim"
+  fi
+fi
+
 # Arguments go in an array so each one can carry a comment. Order is
 # significant: bwrap applies these operations sequentially, so a later mount
 # on an overlapping path wins over an earlier one.
@@ -52,6 +77,11 @@ args=(
   --setenv LANG "${LANG:-C.UTF-8}"
   # git and some tooling read USER for authorship and cache paths.
   --setenv USER "$USER"
+  # Claude Code's Ctrl+G (and git's commit editor) spawn $VISUAL/$EDITOR.
+  # --clearenv drops them, so without these the external editor silently
+  # does nothing. The config it opens with is the copy synced above.
+  --setenv EDITOR "${EDITOR:-nvim}"
+  --setenv VISUAL "${VISUAL:-${EDITOR:-nvim}}"
 
   # A *fresh* procfs instance, not a view of the host's. Combined with the PID
   # namespace from --unshare-all it shows only processes inside the sandbox.
