@@ -29,7 +29,7 @@ return {
         opts.highlights = function()
           local C = require("catppuccin.palettes").get_palette()
           local h = get_theme()
-          -- Replace crust (fill) and mantle (inactive) with base for a
+          -- Flatten crust (fill) to mantle (inactive) for a
           -- uniform background that matches lualine and the tmux bar
           for _, entry in pairs(h) do
             if entry.bg == C.crust or entry.bg == C.mantle then

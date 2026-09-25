@@ -5,7 +5,6 @@ Refer to the [documentation](https://lazyvim.github.io/installation) to get star
 
 ## 📚 Configuration Documentation
 
-- **[Full Configuration Overview](readme.md)** - Complete plugin list and usage guide
 - **[Customization Guide](.claude/LAZYVIM-CUSTOMIZATION.md)** - Advanced customization and troubleshooting
 
 ## Quick Links

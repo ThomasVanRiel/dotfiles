@@ -94,13 +94,6 @@ rg "plugin-name" ~/.local/share/nvim/lazy/LazyVim/lua/lazyvim/plugins/
 
 | Key | Action | Mode | Context |
 |-----|--------|------|---------|
-| `<leader>nl` | List notes | n | nvim-notediscovery |
-| `<leader>ns` | Search notes | n | nvim-notediscovery |
-| `<leader>nn` | New note | n | nvim-notediscovery |
-| `<leader>no` | Open note | n | nvim-notediscovery |
-| `<leader>nr` | Reload last note | n | nvim-notediscovery |
-| `<leader>nq` | Quick note from selection | v | nvim-notediscovery |
-| `<leader>ni` | Toggle images | n | nvim-notediscovery |
 | `<leader>na` | Swap next parameter | n | treesitter (code files) |
 | `<leader>nm` | Swap next function | n | treesitter (code files) |
 | `<leader>pa` | Swap previous parameter | n | treesitter (code files) |
@@ -111,7 +104,6 @@ rg "plugin-name" ~/.local/share/nvim/lazy/LazyVim/lua/lazyvim/plugins/
 ## Configuration Files
 
 - `lua/plugins/treesitter.lua` - Treesitter config with swap
-- `lua/plugins/nvim-notediscovery.lua` - Note-taking integration
 - `lua/config/keymaps.lua` - Custom global keymaps
 - `lua/config/options.lua` - Custom vim options
 - `lua/config/autocmds.lua` - Custom autocommands

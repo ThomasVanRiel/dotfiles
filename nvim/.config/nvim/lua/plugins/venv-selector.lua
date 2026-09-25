@@ -1,8 +1,9 @@
+-- Spec comes from the python extra; only pin the picker to snacks
 return {
   "linux-cultist/venv-selector.nvim",
-  ft = "python",
-  keys = { { "<leader>cv", "<cmd>VenvSelect<cr>", desc = "Select VirtualEnv" } },
   opts = {
-    picker = "snacks",
+    options = {
+      picker = "snacks",
+    },
   },
 }
