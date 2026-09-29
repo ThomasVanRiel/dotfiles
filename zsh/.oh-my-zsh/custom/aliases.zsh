@@ -3,7 +3,10 @@ alias claudecommit='claude --model haiku "/commit"'
 alias dps='docker ps -a --format "table {{.Names}}\t{{.Status}}"'
 alias e='eza --long --links --group --color=auto --git --git-repos' 
 alias ea='e -a'
-alias etree='eza --tree --level=4 --icons'
+alias et='eza --tree --level=4 --icons --ignore-glob=.git'
+# et, but colored and paged (color is forced, so only for viewing)
+# LESSUTFCHARDEF: treat the Nerd Font private-use ranges as printable so less shows the icons
+etl() { eza --tree --level=4 --icons=always --color=always --ignore-glob=.git "$@" | LESSUTFCHARDEF=E000-F8FF:p,F0000-FFFFD:p less -R; }
 alias gdt='git difftool'
 # yazi: `Q` exits *and* cds to the last browsed dir, `q` exits where you started.
 # (Swapped from yazi's defaults via keymap.toml.)

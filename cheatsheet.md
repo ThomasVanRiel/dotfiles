@@ -69,7 +69,8 @@ grep -rlF '<text>' <path>
 ```sh
 e <path>                         # detailed view with Git information
 ea <path>                        # include hidden files
-etree <path>                     # tree, two levels deep
+et <path>                        # tree, four levels deep, with icons, without .git
+etl <path>                       # et, colored and paged through less
 e --tree --level=<depth> <path>  # tree with a custom depth
 e --sort=size --reverse <path>   # largest entries first
 e --only-dirs <path>             # directories only
@@ -87,7 +88,7 @@ The `e` alias expands to
 - `-g`, `--group`: show each file's group.
 - `--git`: show per-file Git status.
 - `--git-repos`: show Git repository status for directories.
-- `-T`, `--tree`: display a tree; used by `etree` with `--level=2`.
+- `-T`, `--tree`: display a tree; used by `et` and `etl` with `--level=4`.
 - `-L <depth>`, `--level=<depth>`: limit recursion depth.
 - `-s <field>`, `--sort=<field>`: sort by `name`, `date`, `size`, `type`, etc.
 - `-r`, `--reverse`: reverse the sort order.
