@@ -188,6 +188,7 @@ text=""
 while IFS= read -r file; do
   [ -n "$file" ] && text+="$PREFIX$file "
 done <<<"$selection"
+text="${text% }"
 
 # -l sends the string literally instead of interpreting it as key names
 tmux send-keys -t "$PANE" -l "$text"
