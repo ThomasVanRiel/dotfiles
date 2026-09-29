@@ -46,6 +46,15 @@ if [ "${AGENTBOX_NVIM_SYNC:-1}" = 1 ] && [ -d "$HOME/.config/nvim" ]; then
   fi
 fi
 
+# Claude Code's status line runs inside the box, so ccstatusline needs its
+# config here too, or it writes out its defaults. Copied rather than bound
+# for the same reason as nvim: custom-command widgets run shell commands, so
+# a writable bind would let the agent plant code the host later executes.
+if [ -f "$HOME/.config/ccstatusline/settings.json" ]; then
+  mkdir -p "$BOX_HOME/.config/ccstatusline"
+  cp -L "$HOME/.config/ccstatusline/settings.json" "$BOX_HOME/.config/ccstatusline/settings.json"
+fi
+
 # Arguments go in an array so each one can carry a comment. Order is
 # significant: bwrap applies these operations sequentially, so a later mount
 # on an overlapping path wins over an earlier one.
