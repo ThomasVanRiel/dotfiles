@@ -155,6 +155,18 @@ args=(
   --chdir "$PROJECT"
 )
 
+# Entries in ~/.claude that are stow symlinks (settings.json, skills, ...)
+# point into ~/dotfiles, which only exists in the box when it is the project.
+# Everywhere else they dangle and Claude silently starts without the global
+# settings: no status line, model, hooks or plugins. Bind each target at its
+# own path so the links resolve. Writable, like ~/.claude itself, since
+# Claude saves settings changes through the link.
+for link in "$HOME"/.claude/* "$HOME"/.claude/.[!.]*; do
+  [ -L "$link" ] || continue
+  target="$(readlink -f "$link")" || continue
+  if [ -e "$target" ]; then args+=(--bind "$target" "$target"); fi
+done
+
 # exec replaces this shell rather than forking, so there's no leftover parent
 # process and signals plus the exit status pass straight through.
 # "${args[@]}" expands to one shell word per element — the [@] and the quotes
