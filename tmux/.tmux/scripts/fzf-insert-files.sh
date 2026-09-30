@@ -76,44 +76,16 @@ PANE="${1:?target pane id required}"
 PANE_CMD="${2:-$(tmux display-message -p -t "$PANE" '#{pane_current_command}')}"
 COLOUR="${3:-blue}"
 SELF="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
+. "$(dirname "$SELF")/ssh-pane.sh"
 
 die() { tmux display-message "files: $*"; exit 1; }
 
-# Walk descendants of the pane's process a few levels deep. This locates either
-# the ssh client beneath a remote pane or Claude beneath bubblewrap locally.
-descendant() {
-  local pids next
-  pids="$(tmux display-message -p -t "$PANE" '#{pane_pid}')"
-  for _ in 1 2 3; do
-    pgrep -P "${pids// /,}" -x "$1" 2>/dev/null && return 0
-    next="$(pgrep -P "${pids// /,}" 2>/dev/null | tr '\n' ' ')" || true
-    [ -n "$next" ] || return 1
-    pids="$next"
-  done
-  return 1
-}
-
 if [ "$PANE_CMD" = "ssh" ]; then
-  # Reuse the running client's argv, so ports, identities and jump hosts carry
-  # over as typed: everything up to the destination, minus any remote command.
-  pid="$(descendant ssh | head -1)" || die "no ssh client under this pane"
-  mapfile -d '' -t argv <"/proc/$pid/cmdline"
-  SSH=("${argv[0]}" -o ControlMaster=auto -o ControlPersist=30 \
-    -o ControlPath="${TMPDIR:-/tmp}/.tmux-fzf-%r@%h:%p")
-  for ((i = 1; i < ${#argv[@]}; i++)); do
-    SSH+=("${argv[i]}")
-    case ${argv[i]} in
-    -[bcDEeFIiJLlmOopQRSWw]) SSH+=("${argv[++i]}") ;; # option takes an argument
-    -*) ;;
-    *) break ;;                                      # destination
-    esac
-  done
+  pane_ssh || die "no ssh client under this pane"
 
-  # The remote shell's prompt sets the pane title to user@host:path — the same
-  # convention trunc-path.sh reads. One round trip turns that into a real
-  # directory, decides the prefix, and formats it for the border label.
-  title="$(tmux display-message -p -t "$PANE" '#{pane_title}')"
-  case $title in *@*:*) title=${title#*:} ;; *) title="" ;; esac
+  # One round trip turns the title's path into a real directory, decides the
+  # prefix, and formats it for the border label.
+  title="$(pane_remote_path)"
 
   set +e
   out="$("${SSH[@]}" sh -s -- "$(printf '%q' "$title")" <<'REMOTE'

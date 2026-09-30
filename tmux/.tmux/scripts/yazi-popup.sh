@@ -13,26 +13,82 @@
 # the buffer, so the buffer is stashed first and restored at the new prompt.
 # Only zsh has a buffer stack for this; see the second case below.
 #
+# An ssh pane is browsed on the far side: yazi runs remotely over the same
+# connection (it has to be installed there), and the cd typed afterwards is
+# meant for the remote shell. Whether that shell is at a prompt is read off
+# the pane title, which it sets to user@host:path while it is.
+#
 # Usage: yazi-popup.sh <target-pane-id>
 # Bound in ~/.tmux.conf as prefix + y.
 set -euo pipefail
 
 PANE="${1:?target pane id required}"
+. "$(dirname "$0")/ssh-pane.sh"
 
 pane_var() { tmux display-message -p -t "$PANE" "$1"; }
+die() { tmux display-message "yazi: $*"; exit 1; }
+# The remote login shell -- whichever it is -- parses every command ssh hands
+# it, so what goes over is plain single-quoted text: the scripts carry no
+# quotes or backslashes of their own, and the values travel as arguments.
+sq() { printf "'%s'" "${1//\'/\'\\\'\'}"; }
 
-cwd_file="$(mktemp -t yazi-cwd.XXXXXX)"
-trap 'rm -f -- "$cwd_file"' EXIT
+if [ "$(pane_var '#{pane_current_command}')" = ssh ]; then
+  pane_ssh || die "no ssh client under this pane"
+  dir="$(pane_remote_path)"
+  # Named here so the second round trip can find it again; remote mktemp
+  # output would have to come back through the tty yazi is drawing on.
+  name="yazi-cwd.$(date +%s).$$.$RANDOM"
 
-yazi --cwd-file="$cwd_file"
+  # The remote ssh command runs in a non-login, non-interactive shell, so
+  # ~/.local/bin and ~/.cargo/bin -- where yazi usually lives -- are added by
+  # hand, as tmux does for its own PATH.
+  read -r -d '' browse <<'REMOTE' || true
+d=$1 f=${TMPDIR:-/tmp}/$2
+case $d in "~") d=$HOME ;; "~/"*) d=$HOME/${d#"~/"} ;; esac
+cd "$d" 2>/dev/null || cd
+PATH=$HOME/.local/bin:$HOME/.cargo/bin:$PATH
+command -v yazi >/dev/null 2>&1 || exit 127
+exec yazi --cwd-file="$f"
+REMOTE
+  set +e
+  "${SSH[@]}" -t "sh -c $(sq "$browse") sh $(sq "$dir") $name"
+  rc=$?
+  set -e
+  case $rc in
+  0) ;;
+  127) die "not installed on ${SSH[-1]}" ;;
+  *) die "ssh failed (exit $rc)" ;;
+  esac
 
-cwd="$(cat -- "$cwd_file")"
-[ -n "$cwd" ] || exit 0
-[ "$cwd" != "$(pane_var '#{pane_current_path}')" ] || exit 0
+  # Collect and remove the cwd-file, dropping it when yazi ended where it
+  # started, and learn which shell the cd will be typed into.
+  out="$("${SSH[@]}" "sh -s -- $(sq "$dir") $name" <<'REMOTE'
+d=$1 f=${TMPDIR:-/tmp}/$2
+c=$(cat "$f" 2>/dev/null)
+rm -f "$f"
+case $d in "~") d=$HOME ;; "~/"*) d=$HOME/${d#"~/"} ;; esac
+[ -n "$c" ] && [ "$(cd "$c" 2>/dev/null && pwd -P)" = "$(cd "$d" 2>/dev/null && pwd -P)" ] && c=
+printf '%s\n%s\n' "$c" "${SHELL##*/}"
+REMOTE
+  )" || die "ssh failed reading back the directory"
+  cwd="$(sed -n 1p <<<"$out")"
+  [ -n "$cwd" ] || exit 0
+  [ -n "$dir" ] || die "remote pane is not at a shell prompt, staying put"
+  shell="$(sed -n 2p <<<"$out")"
+else
+  cwd_file="$(mktemp -t yazi-cwd.XXXXXX)"
+  trap 'rm -f -- "$cwd_file"' EXIT
+
+  yazi --cwd-file="$cwd_file"
+
+  cwd="$(cat -- "$cwd_file")"
+  [ -n "$cwd" ] || exit 0
+  [ "$cwd" != "$(pane_var '#{pane_current_path}')" ] || exit 0
+  shell="$(pane_var '#{pane_current_command}')"
+fi
 
 # Only a shell can be told to cd. Typing into nvim or claude would be worse
 # than doing nothing, so say why instead.
-shell="$(pane_var '#{pane_current_command}')"
 case "$shell" in
 bash | zsh | fish | sh | dash) ;;
 *)
