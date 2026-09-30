@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Neovim cheatsheet</title>
+  <style>
+    :root {
+      --ink: #17202a;
+      --muted: #59636e;
+      --line: #c9cfd6;
+      --panel: #f4f6f8;
+      --accent: #315a78;
+      --custom: #fff2bf;
+    }
+
+    * { box-sizing: border-box; }
+
+    @page {
+      size: A4 landscape;
+      margin: 8mm;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: white;
+      font: 8.5pt/1.17 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 2.2mm;
+      margin-bottom: 2.4mm;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20pt;
+      line-height: 1;
+      letter-spacing: -.03em;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 8pt;
+    }
+
+    .starter {
+      display: grid;
+      grid-template-columns: 19mm 1fr;
+      gap: 2mm;
+      align-items: center;
+      padding: 2mm 2.5mm;
+      margin-bottom: 2.5mm;
+      background: var(--panel);
+      border-left: 3px solid var(--accent);
+    }
+
+    .starter strong {
+      color: var(--accent);
+      font-size: 9pt;
+      line-height: 1.05;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .starter-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2mm 3.2mm;
+    }
+
+    .starter-item { white-space: nowrap; }
+
+    .columns {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3mm;
+      align-items: start;
+    }
+
+    .column {
+      display: grid;
+      gap: 2.3mm;
+    }
+
+    .card {
+      break-inside: avoid;
+      border-top: 1.5px solid var(--ink);
+      padding-top: 1mm;
+    }
+
+    h2 {
+      margin: 0 0 .8mm;
+      color: var(--accent);
+      font-size: 10pt;
+      line-height: 1.1;
+      letter-spacing: .015em;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    td {
+      padding: .46mm 0;
+      vertical-align: top;
+      border-bottom: .35px solid #e2e5e8;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    td:first-child {
+      width: 22mm;
+      padding-right: 1.2mm;
+      white-space: nowrap;
+    }
+
+    kbd {
+      display: inline-block;
+      min-width: 3.8mm;
+      padding: .12mm .7mm .18mm;
+      border: 1px solid #9aa3ad;
+      border-radius: 1mm;
+      background: white;
+      box-shadow: 0 .45mm 0 #c2c8ce;
+      color: #111820;
+      font: 700 7.5pt/1.05 ui-monospace, "SFMono-Regular", Consolas, monospace;
+      text-align: center;
+    }
+
+    .then {
+      padding: 0 .45mm;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .custom td { background: var(--custom); }
+    .custom td:first-child { padding-left: .7mm; }
+    .custom td:last-child { padding-right: .7mm; }
+
+    .note {
+      margin: .7mm 0 0;
+      color: var(--muted);
+      font-size: 7.3pt;
+      line-height: 1.2;
+    }
+
+    .workflow {
+      margin: 0;
+      padding-left: 4mm;
+    }
+
+    .workflow li { margin: 0 0 .8mm; }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 5mm;
+      margin-top: 2.3mm;
+      padding-top: 1.5mm;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 7pt;
+    }
+
+    footer span:last-child { text-align: right; }
+
+    @media screen {
+      body {
+        max-width: 297mm;
+        min-height: 210mm;
+        margin: 8mm auto;
+        padding: 0 8mm;
+      }
+    }
+
+    @media print {
+      .screen-only { display: none; }
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Neovim basics</h1>
+    <div class="subtitle">Core motions, search &amp; replace · keys are case-sensitive · press <kbd>Esc</kbd> to get back to normal mode</div>
+  </header>
+
+  <section class="starter" aria-label="Essential keys">
+    <strong>Learn these first</strong>
+    <div class="starter-items">
+      <span class="starter-item"><kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd> move</span>
+      <span class="starter-item"><kbd>i</kbd> insert</span>
+      <span class="starter-item"><kbd>Esc</kbd> normal mode</span>
+      <span class="starter-item"><kbd>w</kbd>/<kbd>b</kbd> word forward / back</span>
+      <span class="starter-item"><kbd>f</kbd> jump to char</span>
+      <span class="starter-item"><kbd>/</kbd> search</span>
+      <span class="starter-item"><kbd>n</kbd>/<kbd>N</kbd> next / previous</span>
+      <span class="starter-item"><kbd>*</kbd> search word under cursor</span>
+      <span class="starter-item"><kbd>d</kbd><kbd>d</kbd> delete line</span>
+      <span class="starter-item"><kbd>u</kbd> undo</span>
+      <span class="starter-item"><kbd>.</kbd> repeat</span>
+      <span class="starter-item"><kbd>:</kbd><kbd>w</kbd> save</span>
+      <span class="starter-item"><kbd>:</kbd><kbd>q</kbd> quit</span>
+    </div>
+  </section>
+
+  <main class="columns">
+    <div class="column">
+      <section class="card">
+        <h2>Move around</h2>
+        <table>
+          <tr><td><kbd>h</kbd> / <kbd>l</kbd></td><td>Left / right one character</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td>Down / up one line</td></tr>
+          <tr><td><kbd>w</kbd> / <kbd>b</kbd></td><td>Start of next / previous word</td></tr>
+          <tr><td><kbd>e</kbd></td><td>End of word</td></tr>
+          <tr><td><kbd>0</kbd> / <kbd>^</kbd> / <kbd>$</kbd></td><td>Line start / first text / line end</td></tr>
+          <tr><td><kbd>{</kbd> / <kbd>}</kbd></td><td>Previous / next paragraph</td></tr>
+          <tr><td><kbd>g</kbd><span class="then">then</span><kbd>g</kbd></td><td>Top of file</td></tr>
+          <tr><td><kbd>G</kbd></td><td>Bottom of file</td></tr>
+          <tr><td><kbd>42</kbd><span class="then">then</span><kbd>G</kbd></td><td>Go to line 42</td></tr>
+          <tr><td><kbd>Ctrl-u</kbd> / <kbd>Ctrl-d</kbd></td><td>Half a page up / down</td></tr>
+          <tr><td><kbd>%</kbd></td><td>Jump to matching bracket</td></tr>
+          <tr><td><kbd>Ctrl-o</kbd> / <kbd>Ctrl-i</kbd></td><td>Back / forward in jump history</td></tr>
+        </table>
+        <p class="note">Any motion takes a count first: <kbd>3</kbd><kbd>w</kbd> moves three words.</p>
+      </section>
+
+      <section class="card">
+        <h2>Jump within the line</h2>
+        <table>
+          <tr><td><kbd>f</kbd><span class="then">then</span><kbd>x</kbd></td><td>Forward <strong>onto</strong> the next <code>x</code></td></tr>
+          <tr><td><kbd>F</kbd><span class="then">then</span><kbd>x</kbd></td><td>Backward onto the previous <code>x</code></td></tr>
+          <tr><td><kbd>t</kbd><span class="then">then</span><kbd>x</kbd></td><td>Forward <strong>till just before</strong> <code>x</code></td></tr>
+          <tr><td><kbd>T</kbd><span class="then">then</span><kbd>x</kbd></td><td>Backward till just after <code>x</code></td></tr>
+          <tr><td><kbd>;</kbd></td><td>Repeat the last <kbd>f</kbd>/<kbd>t</kbd> jump</td></tr>
+          <tr><td><kbd>,</kbd></td><td>Repeat it in the opposite direction</td></tr>
+        </table>
+        <p class="note"><kbd>f</kbd> only looks on the current line. <kbd>3</kbd><kbd>f</kbd><kbd>,</kbd> lands on the third comma.</p>
+      </section>
+
+      <section class="card">
+        <h2>Insert text</h2>
+        <table>
+          <tr><td><kbd>i</kbd> / <kbd>a</kbd></td><td>Insert before / after cursor</td></tr>
+          <tr><td><kbd>I</kbd> / <kbd>A</kbd></td><td>Insert at line start / end</td></tr>
+          <tr><td><kbd>o</kbd> / <kbd>O</kbd></td><td>Open a line below / above</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td>Back to normal mode</td></tr>
+        </table>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="card">
+        <h2>Search</h2>
+        <table>
+          <tr><td><kbd>/</kbd><span class="then">then</span>text</td><td>Search forward, <kbd>Enter</kbd> to jump</td></tr>
+          <tr><td><kbd>?</kbd><span class="then">then</span>text</td><td>Search backward</td></tr>
+          <tr><td><kbd>n</kbd></td><td>Next match (same direction)</td></tr>
+          <tr><td><kbd>N</kbd></td><td>Previous match (opposite direction)</td></tr>
+          <tr class="custom"><td><kbd>*</kbd></td><td><strong>Search forward for the word under the cursor</strong></td></tr>
+          <tr class="custom"><td><kbd>#</kbd></td><td><strong>Search backward for the word under the cursor</strong></td></tr>
+          <tr><td><kbd>g</kbd><span class="then">then</span><kbd>*</kbd></td><td>Like <kbd>*</kbd>, but also matches inside longer words</td></tr>
+          <tr><td><kbd>/</kbd><span class="then">then</span><kbd>Enter</kbd></td><td>Repeat the previous search</td></tr>
+          <tr><td><kbd>:</kbd><code>noh</code></td><td>Clear the highlighting</td></tr>
+        </table>
+        <p class="note"><kbd>*</kbd> matches whole words only: on <code>count</code> it skips <code>counter</code>. Searches wrap around the end of the file.</p>
+      </section>
+
+      <section class="card">
+        <h2>Replace the next occurrence</h2>
+        <table>
+          <tr class="custom"><td><kbd>*</kbd></td><td><strong>1. Put the word under the cursor into the search</strong></td></tr>
+          <tr class="custom"><td><kbd>c</kbd><span class="then">then</span><kbd>g</kbd><kbd>n</kbd></td><td><strong>2. Change the next match; type the new text, <kbd>Esc</kbd></strong></td></tr>
+          <tr class="custom"><td><kbd>.</kbd></td><td><strong>3. Repeat on the following match</strong></td></tr>
+          <tr><td><kbd>n</kbd><span class="then">then</span><kbd>.</kbd></td><td>Skip a match, then replace the one after it</td></tr>
+          <tr><td><kbd>d</kbd><span class="then">then</span><kbd>g</kbd><kbd>n</kbd></td><td>Delete the next match instead</td></tr>
+        </table>
+        <p class="note"><code>gn</code> means “the next search match”. This is the quickest rename-as-you-go: review each hit, press <kbd>.</kbd> to accept, <kbd>n</kbd> to skip.</p>
+      </section>
+
+      <section class="card">
+        <h2>Replace &amp; substitute</h2>
+        <table>
+          <tr><td><kbd>r</kbd><span class="then">then</span><kbd>x</kbd></td><td>Replace one character with <code>x</code></td></tr>
+          <tr><td><kbd>R</kbd></td><td>Overwrite mode until <kbd>Esc</kbd></td></tr>
+          <tr><td><kbd>:</kbd><code>s/old/new/</code></td><td>First match on this line</td></tr>
+          <tr><td><kbd>:</kbd><code>s/old/new/g</code></td><td>Every match on this line</td></tr>
+          <tr><td><kbd>:</kbd><code>%s/old/new/g</code></td><td>Every match in the file</td></tr>
+          <tr><td><kbd>:</kbd><code>%s/old/new/gc</code></td><td>Same, asking to confirm each one</td></tr>
+          <tr><td><kbd>:</kbd><code>%s//new/g</code></td><td>Reuse the last search as <code>old</code></td></tr>
+        </table>
+        <p class="note">At a <code>c</code> prompt: <kbd>y</kbd> replace · <kbd>n</kbd> skip · <kbd>a</kbd> all the rest · <kbd>q</kbd> stop.</p>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="card">
+        <h2>Change &amp; delete</h2>
+        <table>
+          <tr><td><kbd>x</kbd></td><td>Delete the character under the cursor</td></tr>
+          <tr><td><kbd>d</kbd><span class="then">then</span><kbd>d</kbd></td><td>Delete the whole line</td></tr>
+          <tr><td><kbd>d</kbd><span class="then">then</span><kbd>w</kbd></td><td>Delete to the start of the next word</td></tr>
+          <tr><td><kbd>D</kbd> / <kbd>C</kbd></td><td>Delete / change to end of line</td></tr>
+          <tr><td><kbd>c</kbd><span class="then">then</span><kbd>w</kbd></td><td>Change a word (deletes, then inserts)</td></tr>
+          <tr><td><kbd>c</kbd><span class="then">then</span><kbd>i</kbd><kbd>w</kbd></td><td>Change the <em>whole</em> word, cursor anywhere in it</td></tr>
+          <tr><td><kbd>&gt;&gt;</kbd> / <kbd>&lt;&lt;</kbd></td><td>Indent / unindent the line</td></tr>
+          <tr><td><kbd>u</kbd></td><td>Undo</td></tr>
+          <tr><td><kbd>Ctrl-r</kbd></td><td>Redo</td></tr>
+          <tr><td><kbd>.</kbd></td><td>Repeat the last change</td></tr>
+        </table>
+        <p class="note">Grammar: <strong>operator + motion</strong>. <kbd>d</kbd>=delete <kbd>c</kbd>=change <kbd>y</kbd>=yank, then any motion above — so <kbd>d</kbd><kbd>$</kbd>, <kbd>y</kbd><kbd>f</kbd><kbd>)</kbd>, <kbd>c</kbd><kbd>3</kbd><kbd>w</kbd>.</p>
+      </section>
+
+      <section class="card">
+        <h2>Text objects</h2>
+        <table>
+          <tr><td><kbd>i</kbd><kbd>w</kbd> / <kbd>a</kbd><kbd>w</kbd></td><td>Inner word / word plus its space</td></tr>
+          <tr><td><kbd>i</kbd><kbd>"</kbd> / <kbd>a</kbd><kbd>"</kbd></td><td>Inside quotes / including them</td></tr>
+          <tr><td><kbd>i</kbd><kbd>(</kbd> / <kbd>i</kbd><kbd>{</kbd></td><td>Inside brackets / braces</td></tr>
+          <tr><td><kbd>i</kbd><kbd>p</kbd></td><td>Inner paragraph</td></tr>
+          <tr><td><kbd>i</kbd><kbd>t</kbd></td><td>Inside an HTML/XML tag</td></tr>
+        </table>
+        <p class="note">Use them after an operator: <kbd>d</kbd><kbd>i</kbd><kbd>(</kbd> empties the brackets, <kbd>c</kbd><kbd>i</kbd><kbd>"</kbd> retypes a string. <strong>i</strong> = inner, <strong>a</strong> = around.</p>
+      </section>
+
+      <section class="card">
+        <h2>Copy &amp; paste</h2>
+        <table>
+          <tr><td><kbd>y</kbd><span class="then">then</span><kbd>y</kbd></td><td>Yank (copy) the line</td></tr>
+          <tr><td><kbd>y</kbd><span class="then">then</span><kbd>i</kbd><kbd>w</kbd></td><td>Yank a word</td></tr>
+          <tr><td><kbd>p</kbd> / <kbd>P</kbd></td><td>Paste after / before the cursor</td></tr>
+          <tr><td><kbd>"</kbd><kbd>+</kbd><kbd>y</kbd></td><td>Yank to the system clipboard</td></tr>
+          <tr><td><kbd>"</kbd><kbd>+</kbd><kbd>p</kbd></td><td>Paste from the system clipboard</td></tr>
+        </table>
+        <p class="note">Deletes also fill the register, so <kbd>d</kbd><kbd>d</kbd> then <kbd>p</kbd> moves a line.</p>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="card">
+        <h2>Visual mode</h2>
+        <table>
+          <tr><td><kbd>v</kbd></td><td>Select by character</td></tr>
+          <tr><td><kbd>V</kbd></td><td>Select whole lines</td></tr>
+          <tr><td><kbd>Ctrl-v</kbd></td><td>Select a block (column)</td></tr>
+          <tr><td>motion</td><td>Extend the selection</td></tr>
+          <tr><td><kbd>d</kbd> / <kbd>y</kbd> / <kbd>c</kbd></td><td>Delete / yank / change the selection</td></tr>
+          <tr><td><kbd>&gt;</kbd> / <kbd>&lt;</kbd></td><td>Indent / unindent the selection</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td>Leave visual mode</td></tr>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>Files, windows &amp; tabs</h2>
+        <table>
+          <tr><td><kbd>:</kbd><code>w</code></td><td>Save</td></tr>
+          <tr><td><kbd>:</kbd><code>q</code></td><td>Close the window</td></tr>
+          <tr><td><kbd>:</kbd><code>wq</code> / <kbd>Z</kbd><kbd>Z</kbd></td><td>Save and close</td></tr>
+          <tr><td><kbd>:</kbd><code>q!</code></td><td>Close and throw the changes away</td></tr>
+          <tr><td><kbd>:</kbd><code>e path</code></td><td>Open a file</td></tr>
+          <tr><td><kbd>:</kbd><code>sp</code> / <kbd>:</kbd><code>vs</code></td><td>Split horizontally / vertically</td></tr>
+          <tr><td><kbd>Ctrl-w</kbd><span class="then">then</span><kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd></td><td>Move to the window in that direction</td></tr>
+          <tr><td><kbd>:</kbd><code>bn</code> / <kbd>:</kbd><code>bp</code></td><td>Next / previous buffer</td></tr>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>Three useful workflows</h2>
+        <ol class="workflow">
+          <li><strong>Rename a variable by hand:</strong> put the cursor on it, press <kbd>*</kbd>, then <kbd>c</kbd><kbd>g</kbd><kbd>n</kbd>, type the new name, <kbd>Esc</kbd> — now press <kbd>.</kbd> for each further occurrence and <kbd>n</kbd> to skip one.</li>
+          <li><strong>Rename it everywhere at once:</strong> <kbd>*</kbd> then <kbd>:</kbd><code>%s//newname/g</code> — the empty pattern reuses what <kbd>*</kbd> searched for.</li>
+          <li><strong>Fix a string:</strong> anywhere inside the quotes, press <kbd>c</kbd><kbd>i</kbd><kbd>"</kbd> and type the replacement.</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <h2>Escape hatch</h2>
+        <table>
+          <tr><td><kbd>Esc</kbd></td><td>Leave any mode; press it when lost</td></tr>
+          <tr><td><kbd>u</kbd></td><td>Undo whatever just happened</td></tr>
+          <tr><td><kbd>:</kbd><code>help f</code></td><td>Help for a key; <kbd>:</kbd><code>q</code> closes it</td></tr>
+          <tr><td><kbd>:</kbd><code>Tutor</code></td><td>Built-in 30-minute tutorial</td></tr>
+          <tr><td><kbd>:</kbd><code>q!</code></td><td>Get out without saving</td></tr>
+        </table>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <span><strong>Notation:</strong> “then” means a sequence, not simultaneous keys. Uppercase means <kbd>Shift</kbd> + key. Commands starting with <kbd>:</kbd> end with <kbd>Enter</kbd>.</span>
+    <span>Stock Neovim keys, no plugins assumed · 2026-09-22</span>
+  </footer>
+</body>
+</html>

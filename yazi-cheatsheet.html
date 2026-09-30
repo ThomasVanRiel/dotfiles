@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Yazi keybindings cheatsheet</title>
+  <style>
+    :root {
+      --ink: #17202a;
+      --muted: #59636e;
+      --line: #c9cfd6;
+      --panel: #f4f6f8;
+      --accent: #315a78;
+      --custom: #fff2bf;
+    }
+
+    * { box-sizing: border-box; }
+
+    @page {
+      size: A4 landscape;
+      margin: 8mm;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: white;
+      font: 8.5pt/1.17 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 2.2mm;
+      margin-bottom: 2.4mm;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20pt;
+      line-height: 1;
+      letter-spacing: -.03em;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 8pt;
+    }
+
+    .starter {
+      display: grid;
+      grid-template-columns: 19mm 1fr;
+      gap: 2mm;
+      align-items: center;
+      padding: 2mm 2.5mm;
+      margin-bottom: 2.5mm;
+      background: var(--panel);
+      border-left: 3px solid var(--accent);
+    }
+
+    .starter strong {
+      color: var(--accent);
+      font-size: 9pt;
+      line-height: 1.05;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .starter-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2mm 3.2mm;
+    }
+
+    .starter-item { white-space: nowrap; }
+
+    .columns {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3mm;
+      align-items: start;
+    }
+
+    .column {
+      display: grid;
+      gap: 2.3mm;
+    }
+
+    .card {
+      break-inside: avoid;
+      border-top: 1.5px solid var(--ink);
+      padding-top: 1mm;
+    }
+
+    h2 {
+      margin: 0 0 .8mm;
+      color: var(--accent);
+      font-size: 10pt;
+      line-height: 1.1;
+      letter-spacing: .015em;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    td {
+      padding: .46mm 0;
+      vertical-align: top;
+      border-bottom: .35px solid #e2e5e8;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    td:first-child {
+      width: 22mm;
+      padding-right: 1.2mm;
+      white-space: nowrap;
+    }
+
+    kbd {
+      display: inline-block;
+      min-width: 3.8mm;
+      padding: .12mm .7mm .18mm;
+      border: 1px solid #9aa3ad;
+      border-radius: 1mm;
+      background: white;
+      box-shadow: 0 .45mm 0 #c2c8ce;
+      color: #111820;
+      font: 700 7.5pt/1.05 ui-monospace, "SFMono-Regular", Consolas, monospace;
+      text-align: center;
+    }
+
+    .then {
+      padding: 0 .45mm;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .custom td { background: var(--custom); }
+    .custom td:first-child { padding-left: .7mm; }
+    .custom td:last-child { padding-right: .7mm; }
+
+    .note {
+      margin: .7mm 0 0;
+      color: var(--muted);
+      font-size: 7.3pt;
+      line-height: 1.2;
+    }
+
+    .workflow {
+      margin: 0;
+      padding-left: 4mm;
+    }
+
+    .workflow li { margin: 0 0 .8mm; }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 5mm;
+      margin-top: 2.3mm;
+      padding-top: 1.5mm;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 7pt;
+    }
+
+    footer span:last-child { text-align: right; }
+
+    @media screen {
+      body {
+        max-width: 297mm;
+        min-height: 210mm;
+        margin: 8mm auto;
+        padding: 0 8mm;
+      }
+    }
+
+    @media print {
+      .screen-only { display: none; }
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Yazi keybindings</h1>
+    <div class="subtitle">Your config · Yazi 26.9.1 · keys are case-sensitive</div>
+  </header>
+
+  <section class="starter" aria-label="Essential keys">
+    <strong>Learn these first</strong>
+    <div class="starter-items">
+      <span class="starter-item"><kbd>j</kbd>/<kbd>k</kbd> move</span>
+      <span class="starter-item"><kbd>h</kbd>/<kbd>l</kbd> out / in</span>
+      <span class="starter-item"><kbd>Space</kbd> select</span>
+      <span class="starter-item"><kbd>Enter</kbd> open</span>
+      <span class="starter-item"><kbd>y</kbd> copy</span>
+      <span class="starter-item"><kbd>x</kbd> cut</span>
+      <span class="starter-item"><kbd>p</kbd> paste</span>
+      <span class="starter-item"><kbd>a</kbd> create</span>
+      <span class="starter-item"><kbd>r</kbd> rename</span>
+      <span class="starter-item"><kbd>d</kbd> trash</span>
+      <span class="starter-item"><kbd>z</kbd> fuzzy jump</span>
+      <span class="starter-item"><kbd>q</kbd> quit</span>
+      <span class="starter-item"><kbd>F1</kbd> help</span>
+    </div>
+  </section>
+
+  <main class="columns">
+    <div class="column">
+      <section class="card">
+        <h2>Move around</h2>
+        <table>
+          <tr><td><kbd>j</kbd> / <kbd>↓</kbd></td><td>Next item</td></tr>
+          <tr><td><kbd>k</kbd> / <kbd>↑</kbd></td><td>Previous item</td></tr>
+          <tr><td><kbd>h</kbd> / <kbd>←</kbd></td><td>Parent directory</td></tr>
+          <tr><td><kbd>l</kbd> / <kbd>→</kbd></td><td>Enter directory</td></tr>
+          <tr><td><kbd>g</kbd><span class="then">then</span><kbd>g</kbd></td><td>Top of list</td></tr>
+          <tr><td><kbd>G</kbd></td><td>Bottom of list</td></tr>
+          <tr><td><kbd>Ctrl-u</kbd> / <kbd>Ctrl-d</kbd></td><td>Up / down half a page</td></tr>
+          <tr><td><kbd>Ctrl-b</kbd> / <kbd>Ctrl-f</kbd></td><td>Up / down a full page</td></tr>
+          <tr><td><kbd>H</kbd> / <kbd>L</kbd></td><td>Back / forward in history</td></tr>
+          <tr><td><kbd>K</kbd> / <kbd>J</kbd></td><td>Scroll the preview up / down</td></tr>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>Jump somewhere</h2>
+        <table>
+          <tr><td><kbd>z</kbd></td><td>Fuzzy-find a file or directory</td></tr>
+          <tr class="custom"><td><kbd>g</kbd><span class="then">then</span><kbd>z</kbd></td><td><strong>Fuzzy-find directories only ★</strong></td></tr>
+          <tr><td><kbd>Z</kbd></td><td>Jump to a directory with zoxide</td></tr>
+          <tr><td><kbd>g</kbd><span class="then">then</span><kbd>Space</kbd></td><td>Type a directory to jump to</td></tr>
+          <tr><td><kbd>g</kbd><span class="then">then</span><kbd>h</kbd></td><td>Home</td></tr>
+          <tr><td><kbd>g</kbd><span class="then">then</span><kbd>c</kbd></td><td><code>~/.config</code></td></tr>
+          <tr><td><kbd>g</kbd><span class="then">then</span><kbd>d</kbd></td><td><code>~/Downloads</code></td></tr>
+          <tr><td><kbd>g</kbd><span class="then">then</span><kbd>t</kbd></td><td>Trash bin</td></tr>
+          <tr><td><kbd>g</kbd><span class="then">then</span><kbd>f</kbd></td><td>Follow hovered symlink</td></tr>
+        </table>
+        <p class="note">★ Custom to this dotfiles repo. In fzf, type to narrow, then press <kbd>Enter</kbd>.</p>
+      </section>
+
+      <section class="card">
+        <h2>Tabs</h2>
+        <table>
+          <tr><td><kbd>t</kbd><span class="then">then</span><kbd>t</kbd></td><td>New tab in current directory</td></tr>
+          <tr><td><kbd>t</kbd><span class="then">then</span><kbd>r</kbd></td><td>Rename current tab</td></tr>
+          <tr><td><kbd>1</kbd> … <kbd>9</kbd></td><td>Switch to tab 1 … 9</td></tr>
+          <tr><td><kbd>[</kbd> / <kbd>]</kbd></td><td>Previous / next tab</td></tr>
+          <tr><td><kbd>{</kbd> / <kbd>}</kbd></td><td>Move tab left / right</td></tr>
+          <tr><td><kbd>Ctrl-c</kbd></td><td>Close tab; quit if it is the last</td></tr>
+        </table>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="card">
+        <h2>Select</h2>
+        <table>
+          <tr><td><kbd>Space</kbd></td><td>Toggle item, then move down</td></tr>
+          <tr><td><kbd>v</kbd></td><td>Visual selection mode</td></tr>
+          <tr><td><kbd>V</kbd></td><td>Visual unselection mode</td></tr>
+          <tr><td><kbd>Ctrl-a</kbd></td><td>Select all</td></tr>
+          <tr><td><kbd>Ctrl-r</kbd></td><td>Invert selection</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td>Cancel mode / clear selection</td></tr>
+        </table>
+        <p class="note">Actions use the selected items—or the hovered item when nothing is selected.</p>
+      </section>
+
+      <section class="card">
+        <h2>Open & inspect</h2>
+        <table>
+          <tr><td><kbd>Enter</kbd> / <kbd>o</kbd></td><td>Open selected or hovered item</td></tr>
+          <tr><td><kbd>Shift-Enter</kbd> / <kbd>O</kbd></td><td>Choose which application opens it</td></tr>
+          <tr><td><kbd>Tab</kbd></td><td>Show file information</td></tr>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>Create & change</h2>
+        <table>
+          <tr><td><kbd>a</kbd></td><td>Create; end the name with <code>/</code> for a directory</td></tr>
+          <tr><td><kbd>A</kbd></td><td>Bulk-create files</td></tr>
+          <tr><td><kbd>r</kbd></td><td>Rename selected item(s)</td></tr>
+          <tr><td><kbd>.</kbd></td><td>Show / hide dotfiles</td></tr>
+          <tr><td><kbd>d</kbd></td><td>Move selected item(s) to trash</td></tr>
+          <tr><td><kbd>D</kbd></td><td><strong>Delete permanently</strong></td></tr>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>Copy, cut & link</h2>
+        <table>
+          <tr><td><kbd>y</kbd></td><td>Yank for copying</td></tr>
+          <tr><td><kbd>x</kbd></td><td>Yank for moving (cut)</td></tr>
+          <tr><td><kbd>p</kbd></td><td>Paste into current directory</td></tr>
+          <tr><td><kbd>P</kbd></td><td>Paste and overwrite conflicts</td></tr>
+          <tr><td><kbd>Y</kbd> / <kbd>X</kbd></td><td>Cancel yank / cut</td></tr>
+          <tr><td><kbd>-</kbd></td><td>Symlink yanked item (absolute)</td></tr>
+          <tr><td><kbd>_</kbd></td><td>Symlink yanked item (relative)</td></tr>
+          <tr><td><kbd>Ctrl--</kbd></td><td>Hardlink yanked item</td></tr>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>Copy text to clipboard</h2>
+        <table>
+          <tr><td><kbd>c</kbd><span class="then">then</span><kbd>c</kbd></td><td>File path</td></tr>
+          <tr><td><kbd>c</kbd><span class="then">then</span><kbd>d</kbd></td><td>Directory path</td></tr>
+          <tr><td><kbd>c</kbd><span class="then">then</span><kbd>f</kbd></td><td>Filename</td></tr>
+          <tr><td><kbd>c</kbd><span class="then">then</span><kbd>n</kbd></td><td>Filename without extension</td></tr>
+        </table>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="card">
+        <h2>Find, filter & search</h2>
+        <table>
+          <tr><td><kbd>f</kbd></td><td>Filter the current directory as you type</td></tr>
+          <tr><td><kbd>/</kbd></td><td>Find next filename match</td></tr>
+          <tr><td><kbd>?</kbd></td><td>Find previous filename match</td></tr>
+          <tr><td><kbd>n</kbd> / <kbd>N</kbd></td><td>Next / previous match</td></tr>
+          <tr><td><kbd>s</kbd></td><td>Search filenames recursively with fd</td></tr>
+          <tr><td><kbd>S</kbd></td><td>Search file contents with ripgrep</td></tr>
+          <tr><td><kbd>Ctrl-s</kbd></td><td>Cancel recursive search</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td>Cancel find / filter / search</td></tr>
+        </table>
+        <p class="note"><strong>Filter</strong> narrows this folder. <strong>Search</strong> replaces the list with recursive results.</p>
+      </section>
+
+      <section class="card">
+        <h2>Sort</h2>
+        <table>
+          <tr><td><kbd>,</kbd><span class="then">then</span><kbd>m</kbd> / <kbd>M</kbd></td><td>Modified time / reverse</td></tr>
+          <tr><td><kbd>,</kbd><span class="then">then</span><kbd>b</kbd> / <kbd>B</kbd></td><td>Birth time / reverse</td></tr>
+          <tr><td><kbd>,</kbd><span class="then">then</span><kbd>e</kbd> / <kbd>E</kbd></td><td>Extension / reverse</td></tr>
+          <tr><td><kbd>,</kbd><span class="then">then</span><kbd>a</kbd> / <kbd>A</kbd></td><td>Alphabetical / reverse</td></tr>
+          <tr><td><kbd>,</kbd><span class="then">then</span><kbd>n</kbd> / <kbd>N</kbd></td><td>Natural / reverse</td></tr>
+          <tr><td><kbd>,</kbd><span class="then">then</span><kbd>s</kbd> / <kbd>S</kbd></td><td>Size / reverse</td></tr>
+          <tr><td><kbd>,</kbd><span class="then">then</span><kbd>r</kbd></td><td>Random</td></tr>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>Change detail column</h2>
+        <table>
+          <tr><td><kbd>m</kbd><span class="then">then</span><kbd>s</kbd></td><td>Size</td></tr>
+          <tr><td><kbd>m</kbd><span class="then">then</span><kbd>p</kbd></td><td>Permissions</td></tr>
+          <tr><td><kbd>m</kbd><span class="then">then</span><kbd>m</kbd></td><td>Modified time</td></tr>
+          <tr><td><kbd>m</kbd><span class="then">then</span><kbd>b</kbd></td><td>Birth time</td></tr>
+          <tr><td><kbd>m</kbd><span class="then">then</span><kbd>o</kbd></td><td>Owner</td></tr>
+          <tr><td><kbd>m</kbd><span class="then">then</span><kbd>n</kbd></td><td>No detail column</td></tr>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>Shell & background tasks</h2>
+        <table>
+          <tr><td><kbd>;</kbd></td><td>Run a shell command asynchronously</td></tr>
+          <tr><td><kbd>:</kbd></td><td>Run a shell command and wait</td></tr>
+          <tr><td><kbd>w</kbd></td><td>Show background tasks</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td>Move through tasks</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td>Inspect selected task</td></tr>
+          <tr><td><kbd>x</kbd></td><td>Cancel selected task</td></tr>
+          <tr><td><kbd>w</kbd> / <kbd>Esc</kbd></td><td>Close task manager</td></tr>
+        </table>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="card">
+        <h2>Prompts & dialogs</h2>
+        <table>
+          <tr><td><kbd>Enter</kbd></td><td>Accept / submit</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td>Leave input mode; press again to cancel</td></tr>
+          <tr><td><kbd>Ctrl-c</kbd></td><td>Cancel immediately</td></tr>
+          <tr><td><kbd>y</kbd> / <kbd>n</kbd></td><td>Confirm / reject a confirmation</td></tr>
+          <tr><td><kbd>↑</kbd> / <kbd>↓</kbd></td><td>Previous / next history or option</td></tr>
+          <tr><td><kbd>Tab</kbd></td><td>Accept a completion</td></tr>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>Edit text in prompts</h2>
+        <table>
+          <tr><td><kbd>i</kbd> / <kbd>a</kbd></td><td>Insert before / after cursor</td></tr>
+          <tr><td><kbd>I</kbd> / <kbd>A</kbd></td><td>Insert at start / append at end</td></tr>
+          <tr><td><kbd>h</kbd> / <kbd>l</kbd></td><td>Move left / right in normal mode</td></tr>
+          <tr><td><kbd>b</kbd> / <kbd>w</kbd></td><td>Previous / next word</td></tr>
+          <tr><td><kbd>0</kbd> / <kbd>$</kbd></td><td>Start / end of line</td></tr>
+          <tr><td><kbd>v</kbd></td><td>Visual selection</td></tr>
+          <tr><td><kbd>d</kbd> / <kbd>x</kbd></td><td>Delete selection / character</td></tr>
+          <tr><td><kbd>c</kbd></td><td>Change selection</td></tr>
+          <tr><td><kbd>y</kbd> / <kbd>p</kbd></td><td>Yank / paste text</td></tr>
+          <tr><td><kbd>u</kbd> / <kbd>Ctrl-r</kbd></td><td>Undo / redo</td></tr>
+        </table>
+        <p class="note">Prompts begin in insert mode. <kbd>Esc</kbd> enters a small Vim-like normal mode.</p>
+      </section>
+
+      <section class="card">
+        <h2>Three useful workflows</h2>
+        <ol class="workflow">
+          <li><strong>Copy several files:</strong> mark each with <kbd>Space</kbd>, press <kbd>y</kbd>, move to the destination, then <kbd>p</kbd>.</li>
+          <li><strong>Move several files:</strong> select them, press <kbd>x</kbd>, navigate away, then <kbd>p</kbd>.</li>
+          <li><strong>Make a folder:</strong> press <kbd>a</kbd>, type its name ending in <code>/</code>, then <kbd>Enter</kbd>.</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <h2>Escape hatch</h2>
+        <table>
+          <tr><td><kbd>Esc</kbd></td><td>Cancel the current mode or operation</td></tr>
+          <tr><td><kbd>F1</kbd> / <kbd>~</kbd></td><td>Searchable in-app keybinding help</td></tr>
+          <tr><td><kbd>q</kbd></td><td>Quit Yazi</td></tr>
+          <tr><td><kbd>Ctrl-z</kbd></td><td>Suspend Yazi; run <code>fg</code> to return</td></tr>
+        </table>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <span><strong>Notation:</strong> “then” means a sequence, not simultaneous keys. Uppercase means <kbd>Shift</kbd> + key.</span>
+    <span>Verified against installed Yazi 26.9.1 and <code>yazi/.config/yazi/keymap.toml</code> · 2026-09-10</span>
+  </footer>
+</body>
+</html>
