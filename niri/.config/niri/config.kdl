@@ -205,6 +205,15 @@ window-rule {
   default-window-height { proportion 0.6; }
 }
 
+// yazi as the file manager (Super+E, xdg-open on a directory, "show in folder").
+// Sized like the termfilechooser picker above.
+window-rule {
+  match app-id="^yazi$"
+  open-floating true
+  default-column-width { proportion 0.5; }
+  default-window-height { proportion 0.6; }
+}
+
 debug {
   // Allows notification actions and window activation from Noctalia.
   honor-xdg-activation-with-invalid-serial
@@ -232,7 +241,9 @@ binds {
   Super+Return { spawn "kitty"; }
   Super+Q { close-window; }
   Super+Shift+E { quit; }
-  Super+E { spawn "dolphin"; }
+  // Same class as yazi-kitty.desktop, so the ^yazi$ window rule floats it.
+  // FZF_DEFAULT_COMMAND: keep in sync with ~/.zshrc, no shell runs here.
+  Super+E { spawn "env" "FZF_DEFAULT_COMMAND=fd --type f --type d --hidden --exclude .git --strip-cwd-prefix" "kitty" "--class=yazi" "--title=yazi" "yazi"; }
   Super+B { spawn "zen-browser"; }
   //Super+Space { spawn "rofi" "-show" "drun"; }
   Super+Space { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
