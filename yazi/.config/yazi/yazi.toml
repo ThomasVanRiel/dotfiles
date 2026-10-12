@@ -18,3 +18,9 @@ group = "git"
 url = "*/"
 run = "git"
 group = "git"
+
+# repo-status.yazi: branch and status next to directories that are repositories.
+[[plugin.prepend_fetchers]]
+url = "*/"
+run = "repo-status"
+group = "repo-status"

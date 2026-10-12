@@ -28,7 +28,12 @@ use = "Rolv-Apneseth/starship"
 rev = "ea92cf4"
 hash = "9776f378459072b6c2875eae5addc49d"
 
+[[plugin.deps]]
+use = "ThomasVanRiel/repo-status"
+rev = "1021873"
+hash = "9455eb8d4186ead2b205c284d3bcc3fd"
+
 [[flavor.deps]]
 use = "yazi-rs/flavors:catppuccin-mocha"
-rev = "20b47bf"
+rev = "1183892"
 hash = "ce320f877fe709b189433941aba747c4"
