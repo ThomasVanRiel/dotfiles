@@ -1,0 +1,9 @@
+# Overrides yazi's default `edit` opener, which falls back to `vi` when
+# $EDITOR is unset. $EDITOR only comes from ~/.zshrc, so a yazi that was not
+# started from an interactive shell -- the tmux popup (prefix + y), Super+E in
+# niri, the file-picker portal -- has none, and `vi` is not installed: opening
+# a file or bulk-renaming died with exit 127. Fall back to nvim instead.
+[opener]
+edit = [
+	{ run = "${EDITOR:-nvim} %s", desc = "$EDITOR", for = "unix", block = true },
+]
