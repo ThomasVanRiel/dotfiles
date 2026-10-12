@@ -222,7 +222,7 @@ debug {
 // ========================================
 // STARTUP
 // ========================================
-spawn-at-startup "qs" "-c" "noctalia-shell"
+spawn-at-startup "noctalia"
 spawn-at-startup "wl-paste" "--type" "text" "--watch" "cliphist" "store"
 spawn-at-startup "wl-paste" "--type" "image" "--watch" "cliphist" "store"
 spawn-at-startup "solaar" "--window=hide"
@@ -246,14 +246,14 @@ binds {
   Super+E { spawn "env" "FZF_DEFAULT_COMMAND=fd --type f --type d --hidden --exclude .git --strip-cwd-prefix" "kitty" "--class=yazi" "--title=yazi" "yazi"; }
   Super+B { spawn "zen-browser"; }
   //Super+Space { spawn "rofi" "-show" "drun"; }
-  Super+Space { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
-  Super+S { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "controlCenter" "toggle"; }
-  Super+D { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "settings" "toggle"; }
+  Super+Space { spawn "noctalia" "msg" "panel-toggle" "launcher"; }
+  Super+S { spawn "noctalia" "msg" "panel-toggle" "control-center"; }
+  Super+D { spawn "noctalia" "msg" "settings-toggle"; }
   Super+F { maximize-column; }
   Super+Up { maximize-column; }
   Super+Shift+F { fullscreen-window; }
   Super+T { toggle-column-tabbed-display; }
-  Super+X { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "sessionMenu" "toggle"; }
+  Super+X { spawn "noctalia" "msg" "panel-toggle" "session"; }
 
   // Toggle floating
   Super+V { toggle-window-floating; }
@@ -351,7 +351,7 @@ binds {
   XF86AudioStop allow-when-locked=true { spawn "playerctl" "stop"; }
 
   // Search key opens the launcher
-  XF86Search { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
+  XF86Search { spawn "noctalia" "msg" "panel-toggle" "launcher"; }
 }
 
 include "./noctalia.kdl"

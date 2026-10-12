@@ -1,0 +1,244 @@
+# Noctalia v5 config, ported from the v4 settings.json
+
+[shell]
+avatar_path = "/home/thomas/.face"
+font_family = "Fira Sans"
+corner_radius_scale = 0.4
+telemetry_enabled = false
+# cliphist (started from niri) handles clipboard history
+clipboard_enabled = false
+
+    [shell.animation]
+    speed = 2.0
+
+    [shell.shadow]
+    direction = "center"
+
+    [shell.launcher]
+    app_grid = true
+    categories = true
+    sort_by_usage = true
+    pinned = [ "factorio", "firefox", "zen", "org.darktable.darktable" ]
+
+    [shell.session]
+    show_shortcuts = true
+
+        [[shell.session.actions]]
+        action = "suspend"
+        shortcut = "1"
+
+        [[shell.session.actions]]
+        action = "custom"
+        label = "Hibernate"
+        command = "systemctl hibernate"
+        shortcut = "2"
+
+        [[shell.session.actions]]
+        action = "reboot"
+        shortcut = "3"
+
+        [[shell.session.actions]]
+        action = "logout"
+        shortcut = "4"
+
+        [[shell.session.actions]]
+        action = "shutdown"
+        shortcut = "5"
+        variant = "destructive"
+
+[theme]
+mode = "dark"
+source = "custom"
+custom_palette = "Catppuccin Blue"
+# Fallback when the custom palette cannot be loaded
+builtin = "Catppuccin"
+
+    [theme.templates]
+    enable_builtin_templates = true
+    builtin_ids = [ "kitty", "btop", "gtk3", "gtk4", "niri" ]
+
+[bar.default]
+position = "top"
+margin_edge = 4
+margin_ends = 12
+radius = 12
+font_scale = 1.2
+widget_spacing = 6
+capsule = false
+background_opacity = 1.0
+show_on_workspace_switch = true
+start = [ "cpu", "cpu_freq", "temp", "gpu_temp", "ram", "network_rx", "network_tx", "disk", "spacer", "active_window" ]
+center = [ "workspaces" ]
+end = [ "tray", "notifications", "volume", "network", "brightness", "battery", "clock", "control-center" ]
+
+[widget.cpu]
+type = "sysmon"
+show_value = false
+visualization = "gauge"
+stat = "cpu_usage"
+
+[widget.cpu_freq]
+type = "sysmon"
+show_value = false
+visualization = "gauge"
+stat = "cpu_freq"
+
+[widget.temp]
+type = "sysmon"
+show_value = false
+visualization = "gauge"
+stat = "cpu_temp"
+
+[widget.gpu_temp]
+type = "sysmon"
+show_value = false
+visualization = "gauge"
+stat = "gpu_temp"
+
+[widget.ram]
+type = "sysmon"
+show_value = false
+visualization = "gauge"
+stat = "ram_used"
+
+[widget.network_rx]
+type = "sysmon"
+show_value = false
+visualization = "gauge"
+stat = "net_rx"
+
+[widget.network_tx]
+type = "sysmon"
+show_value = false
+visualization = "gauge"
+stat = "net_tx"
+
+[widget.disk]
+type = "sysmon"
+show_value = false
+visualization = "gauge"
+stat = "disk_used"
+path = "/home"
+
+[widget.spacer]
+type = "spacer"
+length = 20
+
+[widget.active_window]
+type = "active_window"
+display = "text_only"
+max_length = 800.0
+title_scroll = "on_hover"
+
+[widget.workspaces]
+type = "workspaces"
+label_source = "id"
+show_labels = true
+labels_only_when_occupied = true
+hide_when_empty = true
+max_label_chars = 7
+focused_color = "primary"
+occupied_color = "on_surface"
+font_weight = 700
+
+[widget.notifications]
+type = "notifications"
+hide_when_no_unread = true
+
+[widget.volume]
+type = "volume"
+device = "output"
+
+    [widget.volume.actions]
+    middle = "pwvucontrol || pavucontrol"
+
+[widget.battery]
+type = "battery"
+display_mode = "graphic"
+
+[widget.clock]
+type = "clock"
+format = "{:%A, %b %d - %H:%M}"
+color = "primary"
+
+[widget.control-center]
+type = "control-center"
+glyph = "user-screen"
+color = "error"
+
+[control_center]
+
+    [[control_center.shortcuts]]
+    type = "wifi"
+
+    [[control_center.shortcuts]]
+    type = "bluetooth"
+
+    [[control_center.shortcuts]]
+    type = "wallpaper"
+
+    [[control_center.shortcuts]]
+    type = "notification"
+
+    [[control_center.shortcuts]]
+    type = "caffeine"
+
+[wallpaper]
+enabled = true
+directory = "/home/thomas/Pictures/Wallpaper"
+fill_mode = "crop"
+fill_color = "#000000"
+transition_duration = 1500.0
+edge_smoothness = 0.05
+
+[lockscreen]
+lock_before_suspend = true
+fingerprint = false
+blur_intensity = 0.0
+tint_intensity = 0.0
+
+[hooks]
+# lock.sh swaps in a pixelated screenshot before locking; restore afterwards
+session_unlocked = [ "noctalia msg wallpaper-set /home/thomas/Pictures/Wallpaper/655A0363.jpg" ]
+
+[location]
+address = "Leuven"
+auto_locate = false
+
+[weather]
+enabled = true
+unit = "metric"
+effects = true
+
+[nightlight]
+enabled = true
+temperature_day = 6500
+temperature_night = 4259
+
+[notification]
+position = "top_right"
+background_opacity = 1.0
+layer = "overlay"
+
+[osd]
+enabled = true
+position = "top_right"
+hide_delay_ms = 2000
+monitors = [ "DP-5" ]
+background_opacity = 1.0
+
+[battery]
+warning_threshold = 20
+
+[system.monitor]
+cpu_usage_critical_threshold = 90.0
+cpu_temp_critical_threshold = 90.0
+gpu_temp_critical_threshold = 90.0
+gpu_usage_critical_threshold = 90.0
+ram_pct_critical_threshold = 90.0
+
+[desktop_widgets]
+enabled = false
+
+[plugins]
+auto_update = "none"
