@@ -31,3 +31,29 @@ desc = "Quit, staying in the original directory"
 on = "Q"
 run = "quit"
 desc = "Quit, cd'ing to the current directory"
+
+# --- Plugins (installed via `ya pkg`, listed in package.toml) ---
+
+# compress.yazi: prompts for a name; the extension picks the format (.zip when
+# none is given). Pair to the built-in extract-on-open.
+[[mgr.prepend_keymap]]
+on = ["c", "a"]
+run = "plugin compress"
+desc = "Archive selected files"
+
+[[mgr.prepend_keymap]]
+on = ["c", "m"]
+run = "plugin chmod"
+desc = "Chmod on selected files"
+
+# mount.yazi: m/u/e to mount, unmount, eject; l to enter the mount point.
+[[mgr.prepend_keymap]]
+on = "M"
+run = "plugin mount"
+desc = "Mount manager"
+
+# restore.yazi: needs trash-cli. Puts back the most recently trashed batch.
+[[mgr.prepend_keymap]]
+on = "u"
+run = "plugin restore"
+desc = "Restore last trashed files"

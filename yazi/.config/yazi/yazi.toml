@@ -7,3 +7,14 @@
 edit = [
 	{ run = "${EDITOR:-nvim} %s", desc = "$EDITOR", for = "unix", block = true },
 ]
+
+# git.yazi: status signs in the file list (set up in init.lua).
+[[plugin.prepend_fetchers]]
+url = "*"
+run = "git"
+group = "git"
+
+[[plugin.prepend_fetchers]]
+url = "*/"
+run = "git"
+group = "git"

@@ -1,5 +1,32 @@
-[plugin]
-deps = []
+[[plugin.deps]]
+use = "yazi-rs/plugins:git"
+rev = "603fa36"
+hash = "347cc6b190eb0c2fd60513cc7ae37412"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:mount"
+rev = "603fa36"
+hash = "b95f898e6dc60b52edbc415952e14395"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:chmod"
+rev = "603fa36"
+hash = "87472b05a8c420100f6a2b9cde1e7746"
+
+[[plugin.deps]]
+use = "KKV9/compress"
+rev = "80e5268"
+hash = "868db729374b97871bc30b96d0e9061f"
+
+[[plugin.deps]]
+use = "boydaihungst/restore"
+rev = "864dd05"
+hash = "3070b579618c4831f5d7ca4293c1c275"
+
+[[plugin.deps]]
+use = "Rolv-Apneseth/starship"
+rev = "ea92cf4"
+hash = "9776f378459072b6c2875eae5addc49d"
 
 [[flavor.deps]]
 use = "yazi-rs/flavors:catppuccin-mocha"
