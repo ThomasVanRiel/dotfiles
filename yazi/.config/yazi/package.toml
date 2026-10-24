@@ -30,8 +30,18 @@ hash = "9776f378459072b6c2875eae5addc49d"
 
 [[plugin.deps]]
 use = "ThomasVanRiel/repo-status"
-rev = "95f21af"
-hash = "67154ab54edd3abfa8dd939a4c63b952"
+rev = "2b3ef8b"
+hash = "28fd4e30ed2aaf2e2bbabe38a22c67d0"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:smart-filter"
+rev = "e0bbd20"
+hash = "d6f7351ea25a43c9b5f4315fa1e23935"
+
+[[plugin.deps]]
+use = "boydaihungst/mediainfo"
+rev = "f1cec0b"
+hash = "fd9312e974c63438b1f8737711462d52"
 
 [[flavor.deps]]
 use = "yazi-rs/flavors:catppuccin-mocha"

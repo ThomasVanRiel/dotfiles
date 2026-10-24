@@ -14,6 +14,16 @@ run = '''shell --block -- dir="$(fd --type d --hidden --follow --exclude .git --
 desc = "Jump to a subdirectory via fzf"
 
 [[mgr.prepend_keymap]]
+on = ["g", "s"]
+run = "cd ~/source"
+desc = "Go to ~/source"
+
+[[mgr.prepend_keymap]]
+on = ["g", "p"]
+run = "cd /mnt/photography"
+desc = "Go to /mnt/photography"
+
+[[mgr.prepend_keymap]]
 on = "!"
 for = "unix"
 run = 'shell "$SHELL" --block'
@@ -57,3 +67,9 @@ desc = "Mount manager"
 on = "u"
 run = "plugin restore"
 desc = "Restore last trashed files"
+
+# smart-filter.yazi: filters as you type; Enter on a lone match opens it.
+[[mgr.prepend_keymap]]
+on = "F"
+run = "plugin smart-filter"
+desc = "Smart filter"

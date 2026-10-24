@@ -28,3 +28,20 @@ group = "repo-status"
 [[plugin.prepend_previewers]]
 url = "*/"
 run = "repo-status"
+
+# mediainfo.yazi: EXIF and other media metadata under the preview (needs the
+# `mediainfo` package). It renders the image itself through yazi's built-in
+# previewers, so it replaces them for these types. RAW files are image/* too.
+[[plugin.prepend_preloaders]]
+mime = "{audio,video,image}/*"
+run = "mediainfo"
+
+[[plugin.prepend_previewers]]
+mime = "{audio,video,image}/*"
+run = "mediainfo"
+
+# Newest first. `,` then a sort key changes it for the session.
+[mgr]
+sort_by = "mtime"
+sort_reverse = true
+sort_dir_first = true
