@@ -5,7 +5,7 @@
 # a file or bulk-renaming died with exit 127. Fall back to nvim instead.
 [opener]
 edit = [
-	{ run = "${EDITOR:-nvim} %s", desc = "$EDITOR", for = "unix", block = true },
+  { run = "${EDITOR:-nvim} %s", desc = "$EDITOR", for = "unix", block = true },
 ]
 
 # git.yazi: status signs in the file list (set up in init.lua).
@@ -24,3 +24,7 @@ group = "git"
 url = "*/"
 run = "repo-status"
 group = "repo-status"
+
+[[plugin.prepend_previewers]]
+url = "*/"
+run = "repo-status"
