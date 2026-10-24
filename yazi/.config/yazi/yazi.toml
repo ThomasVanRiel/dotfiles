@@ -39,9 +39,3 @@ run = "mediainfo"
 [[plugin.prepend_previewers]]
 mime = "{audio,video,image}/*"
 run = "mediainfo"
-
-# Newest first. `,` then a sort key changes it for the session.
-[mgr]
-sort_by = "mtime"
-sort_reverse = true
-sort_dir_first = true
