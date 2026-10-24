@@ -30,8 +30,8 @@ hash = "9776f378459072b6c2875eae5addc49d"
 
 [[plugin.deps]]
 use = "ThomasVanRiel/repo-status"
-rev = "1021873"
-hash = "9455eb8d4186ead2b205c284d3bcc3fd"
+rev = "cf71e77"
+hash = "76d076ca72bdc146198f8d8f2a71ef3d"
 
 [[flavor.deps]]
 use = "yazi-rs/flavors:catppuccin-mocha"
