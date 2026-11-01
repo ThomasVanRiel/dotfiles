@@ -130,6 +130,7 @@ workspace "browser"
 workspace "general"
 workspace "dev"
 workspace "games"
+workspace "engineering"
 workspace "windows"
 
 // ========================================
@@ -141,16 +142,16 @@ window-rule {
   draw-border-with-background true
 }
 
-// Open initial terminal window fullscreen on workspace 2
+// Open initial terminal window fullscreen on the dev workspace
 window-rule {
   match app-id="kitty" at-startup=true
   open-fullscreen true
   open-on-workspace "dev"
 }
 
-// Open initial browser window on workspace 1
+// Open initial browser window on the browser workspace (Zen reports app-id "zen")
 window-rule {
-  match app-id="zen-browser" at-startup=true
+  match app-id="^zen$" at-startup=true
   open-fullscreen false
   open-on-workspace "browser"
 }
@@ -164,9 +165,16 @@ window-rule {
   match app-id="^bottles$"
   match app-id="^net.davidotek.pupgui2$"
   match app-id="^com.usebottles.bottles$"
-  match app-id="^prismlauncher$"
+  match app-id="^org\\.prismlauncher\\.PrismLauncher$"
   match app-id="^r2modman$"
   open-on-workspace "games"
+}
+
+// Minecraft's app-id includes the version, e.g. "Minecraft* 1.21.1"
+window-rule {
+  match app-id="^Minecraft"
+  open-on-workspace "games"
+  open-fullscreen true
 }
 
 // Games
@@ -181,6 +189,22 @@ window-rule {
 window-rule {
   match app-id="(?i)freerdp"
   open-on-workspace "windows"
+}
+
+window-rule {
+  match app-id="^org\\.darktable\\.darktable$"
+  open-on-workspace "general"
+}
+
+window-rule {
+  match app-id="^prusa-slicer$"
+  open-on-workspace "engineering"
+}
+
+// No workspace rule, so it opens on whichever workspace it was launched from
+window-rule {
+  match app-id="^org\\.speedcrunch\\.SpeedCrunch$"
+  open-floating true
 }
 
 window-rule {
