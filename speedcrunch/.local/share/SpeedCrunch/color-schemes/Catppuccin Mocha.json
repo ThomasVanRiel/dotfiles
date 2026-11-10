@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://speedcrunch.org/schemas/theme-v1.schema.json",
+  "name": "Catppuccin Mocha",
+  "author": "Thomas Van Riel (colors from github.com/catppuccin/speedcrunch)",
+  "homepage": "https://github.com/catppuccin/speedcrunch",
+  "version": "1",
+  "list": "#fab387",
+  "unit": "#f38ba8",
+  "number": "#fab387",
+  "parens": "#cdd6f4",
+  "result": "#a6e3a1",
+  "comment": "#6c7086",
+  "function": "#89b4fa",
+  "operator": "#89dceb",
+  "variable": "#f38ba8",
+  "separator": "#9399b2",
+  "background": "#1e1e2e"
+}
