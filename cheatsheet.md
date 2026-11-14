@@ -122,3 +122,36 @@ from, so the paths land at the cursor without a clipboard round-trip:
 - `fd` skips anything in `.gitignore`, so ignored secrets never show up.
 - Inside Claude Code itself, `Ctrl-G` opens the prompt in `$EDITOR` if a
   selection is easier to assemble there.
+
+## restic — browse or restore a backup from the home server
+
+```sh
+# Point restic at the rest-server repo (--private-repos: path starts with the user)
+export RESTIC_REPOSITORY='rest:http://<user>:<htpasswd-pass>@<host>:8484/<user>/<repo>'
+export RESTIC_PASSWORD_FILE=~/.restic-pass   # optional; otherwise it prompts
+
+# List snapshots, optionally for one machine
+restic snapshots --host <hostname>
+
+# Mount read-only and browse in a second terminal; Ctrl-C to unmount
+mkdir -p ~/restic && restic mount ~/restic
+
+# Restore a subtree directly (faster than copying from the mount)
+restic restore latest --host <hostname> --target ~/restored --include '/C/Users/<name>/Documents'
+```
+
+### Flags
+
+- `-r <repo>`, `--repo`: repository URL; overrides `RESTIC_REPOSITORY`.
+- `--host <name>`: filter snapshots by the machine that made them.
+- `--target <dir>`: where `restore` writes files.
+- `--include '<path>'`, `--exclude '<path>'`: restore only or skip matching
+  paths; Windows drives appear as `/C/...`.
+- `latest`: the newest snapshot; use a snapshot ID from `restic snapshots`
+  for older ones.
+
+The mount has `snapshots/`, `hosts/<hostname>/`, `ids/` and `tags/`; each
+snapshot holds the backed-up tree. The URL has two passwords: the htpasswd one
+goes in the URL (URL-encode special characters, like `@` as `%40`), and the
+repository password is the one restic asks for. If `mount` says `fusermount`
+is not found, install `fuse2` (`sudo pacman -S fuse2`).
