@@ -7,6 +7,10 @@
 edit = [
   { run = "${EDITOR:-nvim} %s", desc = "$EDITOR", for = "unix", block = true },
 ]
+# zathura for PDFs. orphan = true detaches it so the viewer survives yazi quitting.
+pdf = [
+  { run = 'zathura %s', orphan = true, desc = "Zathura", for = "unix" },
+]
 
 # git.yazi: status signs in the file list (set up in init.lua).
 [[plugin.prepend_fetchers]]
@@ -39,3 +43,9 @@ run = "mediainfo"
 [[plugin.prepend_previewers]]
 mime = "{audio,video,image}/*"
 run = "mediainfo"
+
+# Route PDFs to the `pdf` opener above, ahead of yazi's default rules.
+[open]
+prepend_rules = [
+  { mime = "application/pdf", use = "pdf" },
+]

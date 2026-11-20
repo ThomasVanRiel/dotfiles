@@ -1,0 +1,48 @@
+# zathura: Catppuccin Mocha, vim-style keys.
+
+set selection-clipboard clipboard
+set recolor-keephue true
+set adjust-open best-fit
+set scroll-step 80
+set zoom-step 10
+set page-padding 4
+set statusbar-h-padding 8
+set statusbar-v-padding 6
+set guioptions sv
+set font "monospace normal 10"
+set window-title-basename true
+
+# Catppuccin Mocha
+set default-bg                  "#1e1e2e"
+set default-fg                  "#cdd6f4"
+set statusbar-bg                "#181825"
+set statusbar-fg                "#cdd6f4"
+set inputbar-bg                 "#181825"
+set inputbar-fg                 "#cdd6f4"
+set notification-bg             "#181825"
+set notification-fg             "#cdd6f4"
+set notification-error-bg       "#181825"
+set notification-error-fg       "#f38ba8"
+set notification-warning-bg     "#181825"
+set notification-warning-fg     "#fab387"
+set highlight-color             "#f9e2af"
+set highlight-active-color      "#f5c2e7"
+set completion-bg               "#313244"
+set completion-fg               "#cdd6f4"
+set completion-group-bg         "#181825"
+set completion-group-fg         "#89b4fa"
+set completion-highlight-bg     "#89b4fa"
+set completion-highlight-fg     "#1e1e2e"
+set index-bg                    "#1e1e2e"
+set index-fg                    "#cdd6f4"
+set index-active-bg             "#89b4fa"
+set index-active-fg             "#1e1e2e"
+
+# Dark-mode page colors (toggle with Ctrl+r, or `r` bound below)
+set recolor-lightcolor          "#1e1e2e"
+set recolor-darkcolor           "#cdd6f4"
+
+# Start with the page colors untouched; press `i` to toggle recolor.
+set recolor false
+map i recolor
+map <C-r> reload
